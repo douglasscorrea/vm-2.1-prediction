@@ -222,6 +222,11 @@ int main(int argc, char **argv) {
     Block4D lfBlock, rBlock, gBlock, bBlock, yBlock, cbBlock, crBlock;
     Hierarchical4DEncoder hdt;
     TransformPartition tp;
+
+	// DSC begin
+	Block4D rOrigBlock, gOrigBlock, bOrigBlock, rPredictBlock, gPredictBlock, bPredictBlock;
+	// DSC end
+
     tp.mPartitionData.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
     
     lfBlock.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
@@ -264,11 +269,6 @@ int main(int argc, char **argv) {
     hdt.mNumberOfViewColumns = inputLF.mNumberOfViewColumns;
     hdt.mPGMScale = inputLF.mPGMScale;
     hdt.StartEncoder(par.outputFileName);
-    
-	// DSC begin
-	//printf("t, s, v, u: %d, %d, %d, %d\n", inputLF.mNumberOfVerticalViews, inputLF.mNumberOfHorizontalViews, 
-	//										inputLF.mNumberOfViewLines, inputLF.mNumberOfViewColumns);
-	// DSC end
 	
     for(int verticalView = 0; verticalView < inputLF.mNumberOfVerticalViews; verticalView += par.transformLength_t) {
         for(int horizontalView = 0; horizontalView < inputLF.mNumberOfHorizontalViews; horizontalView += par.transformLength_s) {
@@ -284,10 +284,34 @@ int main(int argc, char **argv) {
                     inputLF.ReadBlock4DfromLightField(&bBlock, verticalView, horizontalView, viewLine, viewColumn, 2);
 
 					// DSC begin
+					/*
+					 * rBlock, gBlock and bBlock are now residues blocks
+					 */
 					Prediction pred;
-					pred.simplePredictor(&rBlock, verticalView, horizontalView, viewLine, viewColumn, 0);
-					pred.simplePredictor(&gBlock, verticalView, horizontalView, viewLine, viewColumn, 0);
-					pred.simplePredictor(&bBlock, verticalView, horizontalView, viewLine, viewColumn, 0);
+					int rDCPredictor, gDCPredictor, bDCPredictor;
+
+					/* initialize 4D blocks */
+					rOrigBlock.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
+					gOrigBlock.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
+					bOrigBlock.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
+					rOrigBlock.Zeros();
+					gOrigBlock.Zeros();
+					bOrigBlock.Zeros();
+
+					/* read LF content to the original block */
+					inputLF.ReadBlock4DfromLightField(&rOrigBlock, verticalView, horizontalView, viewLine, viewColumn, 0);
+                    inputLF.ReadBlock4DfromLightField(&gOrigBlock, verticalView, horizontalView, viewLine, viewColumn, 1);
+                    inputLF.ReadBlock4DfromLightField(&bOrigBlock, verticalView, horizontalView, viewLine, viewColumn, 2);
+
+					/* Perform DC prediction */
+					rDCPredictor = pred.simplePredictor(&rOrigBlock);
+					gDCPredictor = pred.simplePredictor(&gOrigBlock);
+					bDCPredictor = pred.simplePredictor(&bOrigBlock);
+
+					/* Calculates residues */
+					pred.calculateResidue(&rBlock, &rOrigBlock, rDCPredictor);
+					pred.calculateResidue(&gBlock, &gOrigBlock, gDCPredictor);
+					pred.calculateResidue(&bBlock, &bOrigBlock, bDCPredictor);
 					// DSC end
 
 					if(par.isLenslet13x13 == 1) {
@@ -304,7 +328,7 @@ int main(int argc, char **argv) {
                             }
                         }
                         if((verticalView + par.transformLength_t >= inputLF.mNumberOfVerticalViews)&&(verticalView <= inputLF.mNumberOfVerticalViews)) {
-                            if(horizontalView == 0) {
+							if(horizontalView == 0) {
                                 rBlock.Shift_UVPlane(2, inputLF.mNumberOfVerticalViews-verticalView-1, 0);
                                 gBlock.Shift_UVPlane(2, inputLF.mNumberOfVerticalViews-verticalView-1, 0);
                                 bBlock.Shift_UVPlane(2, inputLF.mNumberOfVerticalViews-verticalView-1, 0);

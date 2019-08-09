@@ -4,5 +4,6 @@ class Prediction
 {
 public:
 	Prediction(void);
-	void simplePredictor(Block4D *targetBlock, int position_t, int position_s, int position_v, int position_u, int component);
+	int simplePredictor(Block4D *origBlock);
+	void calculateResidue(Block4D *residueBlock, Block4D *origBlock, int DCPredictor);
 };

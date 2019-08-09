@@ -61,7 +61,7 @@ public:
     void Shift_UVPlane(int shift, int position_t, int position_s);
 
 	//DSC begin
-	int sumAllPixels(int position_t, int position_s, int position_v, int position_u);
+	int sumAllPixels();
 	// DSC end
 
 	block4DElementType GetPixel(int position_t, int position_s, int position_v, int position_u) {
