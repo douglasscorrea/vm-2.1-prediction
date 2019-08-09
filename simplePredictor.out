@@ -1,0 +1,623 @@
+Lambda = 1024.000000
+transformLength_t = 13
+transformLength_s = 13
+transformLength_v = 15
+transformLength_u = 15
+min_transformLength_t = 4
+min_transformLength_s = 4
+min_transformLength_v = 4
+min_transformLength_u = 4
+inputNumberOfVerticalViews = 13
+inputNumberOfHorizontalViews = 13
+firstHorizontalViewNumber = 0
+firstVerticalViewNumber = 0
+isLenslet13x13 = 0
+inputDirectory = /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/
+outputFileName = /home/douglascorrea/light-field/resultados_VM-2.1/Mule/Bike/coding/output.LF
+configurationFileName = /home/douglascorrea/GitHub/vm-2.1-prediction/MULE_CFGs/Bikes/I01_Bikes_22016.json
+extensionMethod = 1
+transform_scale_t = 1.000000
+transform_scale_s = 1.000000
+transform_scale_v = 1.000000
+transform_scale_u = 1.000000
+verbosity = 1
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/000_000.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/001_000.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/002_000.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/003_000.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/004_000.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/005_000.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/006_000.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/007_000.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/008_000.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/009_000.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/010_000.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/011_000.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/012_000.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/000_001.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/001_001.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/002_001.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/003_001.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/004_001.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/005_001.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/006_001.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/007_001.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/008_001.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/009_001.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/010_001.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/011_001.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/012_001.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/000_002.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/001_002.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/002_002.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/003_002.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/004_002.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/005_002.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/006_002.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/007_002.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/008_002.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/009_002.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/010_002.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/011_002.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/012_002.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/000_003.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/001_003.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/002_003.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/003_003.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/004_003.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/005_003.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/006_003.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/007_003.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/008_003.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/009_003.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/010_003.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/011_003.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/012_003.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/000_004.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/001_004.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/002_004.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/003_004.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/004_004.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/005_004.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/006_004.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/007_004.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/008_004.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/009_004.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/010_004.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/011_004.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/012_004.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/000_005.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/001_005.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/002_005.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/003_005.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/004_005.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/005_005.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/006_005.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/007_005.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/008_005.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/009_005.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/010_005.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/011_005.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/012_005.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/000_006.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/001_006.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/002_006.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/003_006.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/004_006.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/005_006.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/006_006.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/007_006.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/008_006.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/009_006.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/010_006.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/011_006.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/012_006.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/000_007.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/001_007.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/002_007.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/003_007.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/004_007.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/005_007.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/006_007.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/007_007.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/008_007.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/009_007.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/010_007.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/011_007.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/012_007.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/000_008.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/001_008.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/002_008.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/003_008.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/004_008.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/005_008.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/006_008.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/007_008.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/008_008.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/009_008.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/010_008.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/011_008.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/012_008.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/000_009.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/001_009.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/002_009.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/003_009.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/004_009.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/005_009.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/006_009.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/007_009.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/008_009.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/009_009.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/010_009.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/011_009.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/012_009.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/000_010.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/001_010.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/002_010.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/003_010.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/004_010.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/005_010.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/006_010.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/007_010.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/008_010.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/009_010.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/010_010.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/011_010.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/012_010.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/000_011.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/001_011.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/002_011.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/003_011.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/004_011.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/005_011.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/006_011.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/007_011.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/008_011.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/009_011.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/010_011.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/011_011.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/012_011.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/000_012.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/001_012.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/002_012.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/003_012.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/004_012.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/005_012.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/006_012.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/007_012.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/008_012.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/009_012.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/010_012.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/011_012.ppm view file
+Opening /home/douglascorrea/light-field/LF_Database/Lenslet/Bikes/012_012.ppm view file
+lengths_list[0] = 15
+lengths_list[1] = 13
+lengths_list[2] = 8
+lengths_list[3] = 7
+lengths_list[4] = 6
+lengths_list[5] = 4
+transforming the 4D block at position (0 0 0 0)
+Average: 406
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = T
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 15)
+Average: 461
+
+Processing spectral component 0
+mPartitionCode = VTTTT
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = T
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 30)
+Average: 370
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = T
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 45)
+Average: 578
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = T
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 60)
+Average: 695
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = T
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 75)
+Average: 530
+
+Processing spectral component 0
+mPartitionCode = VTTTT
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = T
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 90)
+Average: 406
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = T
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 105)
+Average: 324
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = T
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 120)
+Average: 422
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = STTTT
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 135)
+Average: 477
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = T
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 150)
+Average: 505
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = STTTT
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = T
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 165)
+Average: 505
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = STTTT
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = STTTT
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 180)
+Average: 582
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = T
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 195)
+Average: 655
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = T
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 210)
+Average: 693
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = T
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 225)
+Average: 628
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = T
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 240)
+Average: 378
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = STTTT
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = STTTT
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 255)
+Average: 342
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = T
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 270)
+Average: 312
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = T
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 285)
+Average: 302
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = T
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 300)
+Average: 348
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = T
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 315)
+Average: 329
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = STTTT
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = STTTT
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 330)
+Average: 335
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = STTSTTTTT
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = T
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 345)
+Average: 356
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = T
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 360)
+Average: 425
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = STTTT
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 375)
+Average: 515
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = T
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 390)
+Average: 458
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = T
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 405)
+Average: 383
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = T
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 420)
+Average: 321
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = T
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 435)
+Average: 371
+
+Processing spectral component 0
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 1
+mPartitionCode = T
+mInferiorBitPlane = 13
+
+Processing spectral component 2
+mPartitionCode = T
+mInferiorBitPlane = 13
+transforming the 4D block at position (0 0 0 450)
+Average: 349
+
+Processing spectral component 0
+mPartitionCode =

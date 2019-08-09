@@ -154,6 +154,10 @@ void LightField :: ReadBlock4DfromLightField(Block4D *targetBlock, int position_
 /*! position_s is the horizontal view index; */
 /*! position_v is the line index; */
 /*! position_u is the column index. */    
+	
+	// DSC begin
+	//printf("t, s, v, u: %d, %d, %d, %d\n", position_t, position_s, position_v, position_u);
+	// DSC end
 
     //if((position_t >= mFirstCacheVerticalView)&&(position_t + targetBlock->mlength_t <= mFirstCacheVerticalView + mNumberOfCacheVerticalViews)&&(position_s >= mFirstCacheHorizontalView)&&(position_s +targetBlock->mlength_s <= mFirstCacheHorizontalView + mNumberOfCacheHorizontalViews)) {
     if((position_t >= mFirstCacheVerticalView)&&((position_t + targetBlock->mlength_t < mNumberOfVerticalViews ? position_t + targetBlock->mlength_t : mNumberOfVerticalViews) <= mFirstCacheVerticalView + mNumberOfCacheVerticalViews)&&(position_s >= mFirstCacheHorizontalView)&&((position_s +targetBlock->mlength_s < mNumberOfHorizontalViews ? position_s +targetBlock->mlength_s : mNumberOfHorizontalViews ) <= mFirstCacheHorizontalView + mNumberOfCacheHorizontalViews)) {

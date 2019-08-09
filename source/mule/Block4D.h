@@ -60,6 +60,10 @@ public:
     void Threshold(int minMagnitude, int maxMagnitude);
     void Shift_UVPlane(int shift, int position_t, int position_s);
 
+	//DSC begin
+	int sumAllPixels(int position_t, int position_s, int position_v, int position_u);
+	// DSC end
+
 	block4DElementType GetPixel(int position_t, int position_s, int position_v, int position_u) {
 		return(mPixelData[LinearPosition(position_t, position_s, position_v, position_u)]);
 	}

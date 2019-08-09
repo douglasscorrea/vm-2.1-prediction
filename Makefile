@@ -94,13 +94,13 @@ MULE_HH = source/mule/Aritmetico.h source/mule/Hierarchical4DEncoder.h \
   source/mule/MultiscaleTransform.h source/mule/View.h source/mule/Block4D.h \
   source/mule/LightField.h source/mule/PartitionDecoder.h \
   source/mule/Hierarchical4DDecoder.h source/mule/Matrix.h \
-  source/mule/TransformPartition.h
+  source/mule/TransformPartition.h source/mule/Prediction.h
 
 MULE_ENCODER = source/mule/Matrix.cpp source/mule/Block4D.cpp \
   source/mule/MultiscaleTransform.cpp source/mule/View.cpp \
   source/mule/LightField.cpp source/mule/Aritmetico.cpp \
   source/mule/TransformPartition.cpp source/mule/Hierarchical4DEncoder.cpp \
-  source/mule/encoder.cpp
+  source/mule/encoder.cpp source/mule/Prediction.cpp
 
 MULE_DECODER = source/mule/Matrix.cpp source/mule/Block4D.cpp \
   source/mule/MultiscaleTransform.cpp source/mule/View.cpp \

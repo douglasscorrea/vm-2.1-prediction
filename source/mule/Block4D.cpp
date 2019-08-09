@@ -4,6 +4,12 @@
 #include <stdlib.h>
 #include <math.h>
 
+// DSC begin
+#include <iostream>
+
+using namespace std;
+//DSC end
+
 /*******************************************************************************/
 /*                         Block4D class methods                               */
 /*******************************************************************************/
@@ -1027,3 +1033,23 @@ void Block4D :: Shift_UVPlane(int shift, int position_t, int position_s) {
     }
 
 }
+
+//DSC begin
+int Block4D :: sumAllPixels(int position_t, int position_s, int position_v, int position_u) {
+	int sum = 0;
+
+	for(int verticalView = 0; verticalView < mlength_t; verticalView += 1) {
+		for(int horizontalView = 0; horizontalView < mlength_s; horizontalView += 1) {
+			for(int viewLine = 0; viewLine < mlength_v; viewLine += 1) {
+				for(int viewColumn = 0; viewColumn < mlength_u; viewColumn += 1) {
+					//printf("t, s, v, u: %d, %d, %d, %d\n", verticalView, horizontalView, viewLine, viewColumn);
+					sum += mPixel[verticalView][horizontalView][viewLine][viewColumn];
+				}
+			}
+		}
+	}
+
+	return sum/(13*13*15*15);
+
+}
+// DSC end

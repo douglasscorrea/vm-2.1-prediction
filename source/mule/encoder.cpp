@@ -3,6 +3,11 @@
 #include "Hierarchical4DEncoder.h"
 #include "MultiscaleTransform.h"
 #include "TransformPartition.h"
+
+//DSC begin
+#include "Prediction.h"
+//DSC end
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -260,6 +265,11 @@ int main(int argc, char **argv) {
     hdt.mPGMScale = inputLF.mPGMScale;
     hdt.StartEncoder(par.outputFileName);
     
+	// DSC begin
+	//printf("t, s, v, u: %d, %d, %d, %d\n", inputLF.mNumberOfVerticalViews, inputLF.mNumberOfHorizontalViews, 
+	//										inputLF.mNumberOfViewLines, inputLF.mNumberOfViewColumns);
+	// DSC end
+	
     for(int verticalView = 0; verticalView < inputLF.mNumberOfVerticalViews; verticalView += par.transformLength_t) {
         for(int horizontalView = 0; horizontalView < inputLF.mNumberOfHorizontalViews; horizontalView += par.transformLength_s) {
             for(int viewLine = 0; viewLine < inputLF.mNumberOfViewLines; viewLine += par.transformLength_v) {
@@ -272,7 +282,15 @@ int main(int argc, char **argv) {
                     inputLF.ReadBlock4DfromLightField(&rBlock, verticalView, horizontalView, viewLine, viewColumn, 0);
                     inputLF.ReadBlock4DfromLightField(&gBlock, verticalView, horizontalView, viewLine, viewColumn, 1);
                     inputLF.ReadBlock4DfromLightField(&bBlock, verticalView, horizontalView, viewLine, viewColumn, 2);
-                    if(par.isLenslet13x13 == 1) {
+
+					// DSC begin
+					Prediction pred;
+					pred.simplePredictor(&rBlock, verticalView, horizontalView, viewLine, viewColumn, 0);
+					pred.simplePredictor(&gBlock, verticalView, horizontalView, viewLine, viewColumn, 0);
+					pred.simplePredictor(&bBlock, verticalView, horizontalView, viewLine, viewColumn, 0);
+					// DSC end
+
+					if(par.isLenslet13x13 == 1) {
                         if(verticalView == 0) {
                             if(horizontalView == 0) {
                                 rBlock.Shift_UVPlane(2, 0, 0);
