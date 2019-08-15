@@ -52,8 +52,11 @@ void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTr
     //Restores the current arithmetic model using current_model. 
     entropyCoder.SetOptimizerProbabilisticModelState(currentCoderModelState);
     entropyCoder.DeleteProbabilisticModelState(currentCoderModelState);
-printf("mPartitionCode = %s\n", mPartitionCode);    
-printf("mInferiorBitPlane = %d\n", entropyCoder.mInferiorBitPlane);    
+	// DSC begin
+	/* commenting */
+	//printf("mPartitionCode = %s\n", mPartitionCode);    
+	//printf("mInferiorBitPlane = %d\n", entropyCoder.mInferiorBitPlane);
+	// DSC end   
 }
 
 double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4D &transformedBlock, int *position, int *length, MultiscaleTransform &mt, Hierarchical4DEncoder &entropyCoder, double lambda, char **partitionCode) {

@@ -224,7 +224,7 @@ int main(int argc, char **argv) {
     TransformPartition tp;
 
 	// DSC begin
-	Block4D rOrigBlock, gOrigBlock, bOrigBlock, rPredictBlock, gPredictBlock, bPredictBlock;
+	Block4D rOrigBlock, gOrigBlock, bOrigBlock, yOrigBlock, crOrigBlock, cbOrigBlock;
 	// DSC end
 
     tp.mPartitionData.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
@@ -282,38 +282,6 @@ int main(int argc, char **argv) {
                     inputLF.ReadBlock4DfromLightField(&rBlock, verticalView, horizontalView, viewLine, viewColumn, 0);
                     inputLF.ReadBlock4DfromLightField(&gBlock, verticalView, horizontalView, viewLine, viewColumn, 1);
                     inputLF.ReadBlock4DfromLightField(&bBlock, verticalView, horizontalView, viewLine, viewColumn, 2);
-
-					// DSC begin
-					/*
-					 * rBlock, gBlock and bBlock are now residues blocks
-					 */
-					Prediction pred;
-					int rDCPredictor, gDCPredictor, bDCPredictor;
-
-					/* initialize 4D blocks */
-					rOrigBlock.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-					gOrigBlock.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-					bOrigBlock.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-					rOrigBlock.Zeros();
-					gOrigBlock.Zeros();
-					bOrigBlock.Zeros();
-
-					/* read LF content to the original block */
-					inputLF.ReadBlock4DfromLightField(&rOrigBlock, verticalView, horizontalView, viewLine, viewColumn, 0);
-                    inputLF.ReadBlock4DfromLightField(&gOrigBlock, verticalView, horizontalView, viewLine, viewColumn, 1);
-                    inputLF.ReadBlock4DfromLightField(&bOrigBlock, verticalView, horizontalView, viewLine, viewColumn, 2);
-
-					/* Perform DC prediction */
-					rDCPredictor = pred.simplePredictor(&rOrigBlock);
-					gDCPredictor = pred.simplePredictor(&gOrigBlock);
-					bDCPredictor = pred.simplePredictor(&bOrigBlock);
-
-					/* Calculates residues */
-					pred.calculateResidue(&rBlock, &rOrigBlock, rDCPredictor);
-					pred.calculateResidue(&gBlock, &gOrigBlock, gDCPredictor);
-					pred.calculateResidue(&bBlock, &bOrigBlock, bDCPredictor);
-					// DSC end
-
 					if(par.isLenslet13x13 == 1) {
                         if(verticalView == 0) {
                             if(horizontalView == 0) {
@@ -340,9 +308,44 @@ int main(int argc, char **argv) {
                             }
                         }
                     }
-                    RGB2YCbCr_BT601(yBlock, cbBlock, crBlock, rBlock, gBlock, bBlock, inputLF.mPGMScale);
+
+                    //RGB2YCbCr_BT601(yBlock, cbBlock, crBlock, rBlock, gBlock, bBlock, inputLF.mPGMScale);
+
+					// DSC begin
+					/*
+					 * yBlock, cbBlock and crBlock are now residues blocks
+					 */
+					Prediction pred;
+					int yDCPredictor, cbDCPredictor, crDCPredictor;
+
+					/* initialize 4D blocks */
+					yOrigBlock.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
+					cbOrigBlock.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
+					crOrigBlock.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
+
+					/* read LF content to the original block */
+					// inputLF.ReadBlock4DfromLightField(&rOrigBlock, verticalView, horizontalView, viewLine, viewColumn, 0);
+                    // inputLF.ReadBlock4DfromLightField(&gOrigBlock, verticalView, horizontalView, viewLine, viewColumn, 1);
+                    // inputLF.ReadBlock4DfromLightField(&bOrigBlock, verticalView, horizontalView, viewLine, viewColumn, 2);
+
+					RGB2YCbCr_BT601(yOrigBlock, cbOrigBlock, crOrigBlock, rBlock, gBlock, bBlock, inputLF.mPGMScale);
+
+					/* Perform DC prediction */
+					yDCPredictor = pred.simplePredictor(&yOrigBlock);
+					cbDCPredictor = pred.simplePredictor(&cbOrigBlock);
+					crDCPredictor = pred.simplePredictor(&crOrigBlock);
+
+					/* Calculates residues */
+					pred.calculateResidue(&yBlock, &yOrigBlock, yDCPredictor);
+					pred.calculateResidue(&cbBlock, &cbOrigBlock, cbDCPredictor);
+					pred.calculateResidue(&crBlock, &crOrigBlock, crDCPredictor);
+					// DSC end
+
                     for(int spectralComponent = 0; spectralComponent < 3; spectralComponent++) {
-                        printf("\nProcessing spectral component %d\n", spectralComponent);
+						// DSC begin
+						/* commenting */
+                        //printf("\nProcessing spectral component %d\n", spectralComponent);
+						// DSC end
                         if(spectralComponent == 0)
                             lfBlock.CopySubblockFrom(yBlock, 0, 0, 0, 0);
                         if(spectralComponent == 1)
@@ -361,6 +364,7 @@ int main(int argc, char **argv) {
                         if(verticalView + par.transformLength_t > inputLF.mNumberOfVerticalViews)
                             ExtendBlock4D(lfBlock, par.extensionMethod, extensionLength_t, 't');                                                                      
 
+						//printf("LAMBDA: %d\n", par.Lambda);
                         tp.RDoptimizeTransform(lfBlock, DCTarray, hdt, par.Lambda);
                         tp.EncodePartition(hdt, par.Lambda);
 
