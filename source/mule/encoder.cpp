@@ -6,6 +6,10 @@
 
 //DSC begin
 #include "Prediction.h"
+#include <iostream>
+#include <fstream>
+
+using namespace std;
 //DSC end
 
 #include <stdio.h>
@@ -225,6 +229,10 @@ int main(int argc, char **argv) {
 
 	// DSC begin
 	Block4D rOrigBlock, gOrigBlock, bOrigBlock, yOrigBlock, crOrigBlock, cbOrigBlock;
+	ofstream predictionFile;
+	Prediction pred;
+	int yDCPredictor, cbDCPredictor, crDCPredictor;
+	predictionFile.open("teste.txt");
 	// DSC end
 
     tp.mPartitionData.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
@@ -315,9 +323,6 @@ int main(int argc, char **argv) {
 					/*
 					 * yBlock, cbBlock and crBlock are now residues blocks
 					 */
-					Prediction pred;
-					int yDCPredictor, cbDCPredictor, crDCPredictor;
-
 					/* initialize 4D blocks */
 					yOrigBlock.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
 					cbOrigBlock.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
@@ -334,6 +339,14 @@ int main(int argc, char **argv) {
 					yDCPredictor = pred.simplePredictor(&yOrigBlock);
 					cbDCPredictor = pred.simplePredictor(&cbOrigBlock);
 					crDCPredictor = pred.simplePredictor(&crOrigBlock);
+
+					/*
+					 * write prediction values on a text file
+					 * used to reconstruct in decoding process 
+					*/
+					predictionFile << yDCPredictor << endl;
+					predictionFile << cbDCPredictor << endl;
+					predictionFile << crDCPredictor << endl;
 
 					/* Calculates residues */
 					pred.calculateResidue(&yBlock, &yOrigBlock, yDCPredictor);
@@ -378,6 +391,9 @@ int main(int argc, char **argv) {
     
     inputLF.CloseLightField();
     
+	// DSC begin
+	predictionFile.close();
+	// DSC end
     
 }
 

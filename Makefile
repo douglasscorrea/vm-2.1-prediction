@@ -106,7 +106,7 @@ MULE_DECODER = source/mule/Matrix.cpp source/mule/Block4D.cpp \
   source/mule/MultiscaleTransform.cpp source/mule/View.cpp \
   source/mule/LightField.cpp source/mule/Aritmetico.cpp \
   source/mule/PartitionDecoder.cpp source/mule/Hierarchical4DDecoder.cpp \
-  source/mule/decoder.cpp
+  source/mule/decoder.cpp source/mule/Prediction.cpp
 
 %.o: %.cpp $(HH_DEPS) $(MULE_HH)
 	$(CC) -c -o $@ $< $(CFLAGS)

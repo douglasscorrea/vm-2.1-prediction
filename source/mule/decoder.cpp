@@ -8,6 +8,13 @@
 #include <math.h>
 #include <string.h>
 
+// DSC begin
+#include <fstream>
+#include "Prediction.h"
+
+using namespace std;
+// DSC end
+
 enum ExtensionType {ZERO_PADDING, REPEAT_LAST, CYCLIC, EXTENDED_IDCT, TRANSFORM_DOMAIN_ZERO_PADDING, MEAN_VALUE, NONE};
 void ExtendIDCT(Matrix &extendedIDCT, ExtensionType extensionMethod, int transformLength, int extensionLength);
 void ExtendBlock4D(Block4D &extendedblock, ExtensionType extensionMethod, int extensionLength, char direction);
@@ -139,6 +146,13 @@ int main(int argc, char **argv) {
     outputLF.mHorizontalViewNumberOffset = par.firstHorizontalViewNumber;
     
     Block4D lfBlock, rBlock, gBlock, bBlock, yBlock, cbBlock, crBlock;
+
+	// DSC begin
+	int yDCPredictor, cbDCPredictor, crDCPredictor;
+	Prediction pred;
+	ifstream predictionFile("teste.txt");
+	// DSC end
+
     lfBlock.SetDimension(transformLength_t,transformLength_s,transformLength_v,transformLength_u);
     rBlock.SetDimension(transformLength_t,transformLength_s,transformLength_v,transformLength_u);
     gBlock.SetDimension(transformLength_t,transformLength_s,transformLength_v,transformLength_u);
@@ -187,7 +201,10 @@ int main(int argc, char **argv) {
             for(int viewLine = 0; viewLine < outputLF.mNumberOfViewLines; viewLine += transformLength_v) {
                 for(int viewColumn = 0; viewColumn < outputLF.mNumberOfViewColumns; viewColumn += transformLength_u) {
                     for(int spectralComponent = 0; spectralComponent < 3; spectralComponent++) {
-                        printf("\nProcessing spectral component %d\n", spectralComponent);
+						// DSC begin
+						/* commenting */
+                        //printf("\nProcessing spectral component %d\n", spectralComponent);
+						// DSC end
                         if(par.verbosity > 0) 
                             printf("transforming the 4D block at position (%d %d %d %d)\n", verticalView, horizontalView, viewLine, viewColumn);
                         lfBlock.Zeros();
@@ -215,6 +232,20 @@ int main(int argc, char **argv) {
                         if(spectralComponent == 2)
                             crBlock.CopySubblockFrom(lfBlock, 0, 0, 0, 0);
                     }
+
+					// DSC begin
+					predictionFile >> yDCPredictor;
+					predictionFile >> cbDCPredictor;
+					predictionFile >> crDCPredictor;
+
+					printf("ypred: %d\n", yDCPredictor);
+					printf("cbpred: %d\n", cbDCPredictor);
+					printf("crpred: %d\n", crDCPredictor);
+					pred.reconstruct4DBlock(&yBlock, yDCPredictor);
+					pred.reconstruct4DBlock(&cbBlock, cbDCPredictor);
+					pred.reconstruct4DBlock(&crBlock, crDCPredictor);
+					// DSC end
+
                     YCbCr2RGB_BT601(rBlock, gBlock, bBlock, yBlock, cbBlock, crBlock, outputLF.mPGMScale);
                     if(par.isLenslet13x13 == 1) {
                         if(verticalView == 0) {

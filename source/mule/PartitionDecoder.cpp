@@ -141,7 +141,10 @@ void PartitionDecoder :: DecodePartitionString(Hierarchical4DDecoder &entropyDec
     DecodePartitionStringStep(entropyDecoder);
     
     mPartitionCode[mPartitionCodeIndex] = 0;
-    printf("partitionCode = %s\n", mPartitionCode);    
+	// DSC begin
+	/* commenting */
+    //printf("partitionCode = %s\n", mPartitionCode);
+	// DSC end   
 }
 
 void PartitionDecoder :: DecodePartitionStringStep(Hierarchical4DDecoder &entropyDecoder) {
