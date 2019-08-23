@@ -150,7 +150,7 @@ int main(int argc, char **argv) {
 	// DSC begin
 	int yDCPredictor, cbDCPredictor, crDCPredictor;
 	Prediction pred;
-	ifstream predictionFile("teste.txt");
+	ifstream predictionFile("predicted_values.txt");
 	// DSC end
 
     lfBlock.SetDimension(transformLength_t,transformLength_s,transformLength_v,transformLength_u);
