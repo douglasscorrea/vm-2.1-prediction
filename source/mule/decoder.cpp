@@ -149,6 +149,7 @@ int main(int argc, char **argv) {
 
 	// DSC begin
 	int yDCPredictor, cbDCPredictor, crDCPredictor;
+	Block4D yOrigBlock, cbOrigBlock, crOrigBlock;
 	Prediction pred;
 	ifstream predictionFile("predicted_values.txt");
 	// DSC end
@@ -160,6 +161,12 @@ int main(int argc, char **argv) {
     yBlock.SetDimension(transformLength_t,transformLength_s,transformLength_v,transformLength_u);
     cbBlock.SetDimension(transformLength_t,transformLength_s,transformLength_v,transformLength_u);
     crBlock.SetDimension(transformLength_t,transformLength_s,transformLength_v,transformLength_u);
+
+	// DSC begin
+	yOrigBlock.SetDimension(transformLength_t,transformLength_s,transformLength_v,transformLength_u);
+    cbOrigBlock.SetDimension(transformLength_t,transformLength_s,transformLength_v,transformLength_u);
+    crOrigBlock.SetDimension(transformLength_t,transformLength_s,transformLength_v,transformLength_u);
+	// DSC end
    
     int inputNumberOfVerticalViews = hdt.mNumberOfVerticalViews;
     int inputNumberOfHorizontalViews = hdt.mNumberOfHorizontalViews;
@@ -234,16 +241,20 @@ int main(int argc, char **argv) {
                     }
 
 					// DSC begin
-					predictionFile >> yDCPredictor;
-					predictionFile >> cbDCPredictor;
-					predictionFile >> crDCPredictor;
+					pred.recDifferentialPredictionRaster(&yBlock, &yOrigBlock);
+					pred.recDifferentialPredictionRaster(&cbBlock, &cbOrigBlock);
+					pred.recDifferentialPredictionRaster(&crBlock, &crOrigBlock);
+					/* DC prediction reconstruction */
+					// predictionFile >> yDCPredictor;
+					// predictionFile >> cbDCPredictor;
+					// predictionFile >> crDCPredictor;
 
-					printf("ypred: %d\n", yDCPredictor);
-					printf("cbpred: %d\n", cbDCPredictor);
-					printf("crpred: %d\n", crDCPredictor);
-					pred.reconstruct4DBlock(&yBlock, yDCPredictor);
-					pred.reconstruct4DBlock(&cbBlock, cbDCPredictor);
-					pred.reconstruct4DBlock(&crBlock, crDCPredictor);
+					// printf("ypred: %d\n", yDCPredictor);
+					// printf("cbpred: %d\n", cbDCPredictor);
+					// printf("crpred: %d\n", crDCPredictor);
+					// pred.reconstruct4DBlock(&yBlock, yDCPredictor);
+					// pred.reconstruct4DBlock(&cbBlock, cbDCPredictor);
+					// pred.reconstruct4DBlock(&crBlock, crDCPredictor);
 					// DSC end
 
                     YCbCr2RGB_BT601(rBlock, gBlock, bBlock, yBlock, cbBlock, crBlock, outputLF.mPGMScale);

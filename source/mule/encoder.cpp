@@ -228,7 +228,7 @@ int main(int argc, char **argv) {
     TransformPartition tp;
 
 	// DSC begin
-	Block4D rOrigBlock, gOrigBlock, bOrigBlock, yOrigBlock, crOrigBlock, cbOrigBlock;
+	Block4D yOrigBlock, crOrigBlock, cbOrigBlock;
 	Block4D rRefBlock0, rRefBlock1, rRefBlock2, rRefBlock3;
 	Block4D gRefBlock0, gRefBlock1, gRefBlock2, gRefBlock3;
 	Block4D bRefBlock0, bRefBlock1, bRefBlock2, bRefBlock3;
@@ -324,7 +324,9 @@ int main(int argc, char **argv) {
                 for(int viewColumn = 0; viewColumn < inputLF.mNumberOfViewColumns; viewColumn += par.transformLength_u) {
 					if(par.verbosity > 0)
                         printf("transforming the 4D block at position (%d %d %d %d)\n", verticalView, horizontalView, viewLine, viewColumn);
-                    rBlock.Zeros();
+						cout << "Teste"
+						cerr << "Teste"
+					rBlock.Zeros();
                     gBlock.Zeros();
                     bBlock.Zeros();
                     inputLF.ReadBlock4DfromLightField(&rBlock, verticalView, horizontalView, viewLine, viewColumn, 0);
@@ -365,31 +367,46 @@ int main(int argc, char **argv) {
 					 */
 
 					/*
+					 * Perform intra prediction 4 refs
 					 * Read all references for current 4D block 
 					 */
-					if(viewLine >= 15 && viewColumn >= 15) {
-						inputLF.ReadBlock4DfromLightField(&rRefBlock0, verticalView, horizontalView, viewLine, viewColumn-15, 0);
-						inputLF.ReadBlock4DfromLightField(&rRefBlock1, verticalView, horizontalView, viewLine-15, viewColumn-15, 0);
-						inputLF.ReadBlock4DfromLightField(&rRefBlock2, verticalView, horizontalView, viewLine-15, viewColumn, 0);
-						inputLF.ReadBlock4DfromLightField(&rRefBlock3, verticalView, horizontalView, viewLine-15, viewColumn+15, 0);
+					// if(viewLine >= 15 && viewColumn >= 15) {
+					// 	inputLF.ReadBlock4DfromLightField(&rRefBlock0, verticalView, horizontalView, viewLine, viewColumn-15, 0);
+					// 	inputLF.ReadBlock4DfromLightField(&rRefBlock1, verticalView, horizontalView, viewLine-15, viewColumn-15, 0);
+					// 	inputLF.ReadBlock4DfromLightField(&rRefBlock2, verticalView, horizontalView, viewLine-15, viewColumn, 0);
+					// 	inputLF.ReadBlock4DfromLightField(&rRefBlock3, verticalView, horizontalView, viewLine-15, viewColumn+15, 0);
 						
-						inputLF.ReadBlock4DfromLightField(&gRefBlock0, verticalView, horizontalView, viewLine, viewColumn-15, 1);
-						inputLF.ReadBlock4DfromLightField(&gRefBlock1, verticalView, horizontalView, viewLine-15, viewColumn-15, 1);
-						inputLF.ReadBlock4DfromLightField(&gRefBlock2, verticalView, horizontalView, viewLine-15, viewColumn, 1);
-						inputLF.ReadBlock4DfromLightField(&gRefBlock3, verticalView, horizontalView, viewLine-15, viewColumn+15, 1);
+					// 	inputLF.ReadBlock4DfromLightField(&gRefBlock0, verticalView, horizontalView, viewLine, viewColumn-15, 1);
+					// 	inputLF.ReadBlock4DfromLightField(&gRefBlock1, verticalView, horizontalView, viewLine-15, viewColumn-15, 1);
+					// 	inputLF.ReadBlock4DfromLightField(&gRefBlock2, verticalView, horizontalView, viewLine-15, viewColumn, 1);
+					// 	inputLF.ReadBlock4DfromLightField(&gRefBlock3, verticalView, horizontalView, viewLine-15, viewColumn+15, 1);
 
-						inputLF.ReadBlock4DfromLightField(&bRefBlock0, verticalView, horizontalView, viewLine, viewColumn-15, 2);
-						inputLF.ReadBlock4DfromLightField(&bRefBlock1, verticalView, horizontalView, viewLine-15, viewColumn-15, 2);
-						inputLF.ReadBlock4DfromLightField(&bRefBlock2, verticalView, horizontalView, viewLine-15, viewColumn, 2);
-						inputLF.ReadBlock4DfromLightField(&bRefBlock3, verticalView, horizontalView, viewLine-15, viewColumn+15, 2);
+					// 	inputLF.ReadBlock4DfromLightField(&bRefBlock0, verticalView, horizontalView, viewLine, viewColumn-15, 2);
+					// 	inputLF.ReadBlock4DfromLightField(&bRefBlock1, verticalView, horizontalView, viewLine-15, viewColumn-15, 2);
+					// 	inputLF.ReadBlock4DfromLightField(&bRefBlock2, verticalView, horizontalView, viewLine-15, viewColumn, 2);
+					// 	inputLF.ReadBlock4DfromLightField(&bRefBlock3, verticalView, horizontalView, viewLine-15, viewColumn+15, 2);
 
-						RGB2YCbCr_BT601(yRefBlock0, cbRefBlock0, crRefBlock0, rRefBlock0, gRefBlock0, bRefBlock0, inputLF.mPGMScale);
-						RGB2YCbCr_BT601(yRefBlock1, cbRefBlock1, crRefBlock1, rRefBlock1, gRefBlock1, bRefBlock1, inputLF.mPGMScale);
-						RGB2YCbCr_BT601(yRefBlock2, cbRefBlock2, crRefBlock2, rRefBlock2, gRefBlock2, bRefBlock2, inputLF.mPGMScale);
-						RGB2YCbCr_BT601(yRefBlock3, cbRefBlock3, crRefBlock3, rRefBlock3, gRefBlock3, bRefBlock3, inputLF.mPGMScale);
-					}
+					// 	RGB2YCbCr_BT601(yRefBlock0, cbRefBlock0, crRefBlock0, rRefBlock0, gRefBlock0, bRefBlock0, inputLF.mPGMScale);
+					// 	RGB2YCbCr_BT601(yRefBlock1, cbRefBlock1, crRefBlock1, rRefBlock1, gRefBlock1, bRefBlock1, inputLF.mPGMScale);
+					// 	RGB2YCbCr_BT601(yRefBlock2, cbRefBlock2, crRefBlock2, rRefBlock2, gRefBlock2, bRefBlock2, inputLF.mPGMScale);
+					// 	RGB2YCbCr_BT601(yRefBlock3, cbRefBlock3, crRefBlock3, rRefBlock3, gRefBlock3, bRefBlock3, inputLF.mPGMScale);
+					// }
 
+					// RGB2YCbCr_BT601(yOrigBlock, cbOrigBlock, crOrigBlock, rBlock, gBlock, bBlock, inputLF.mPGMScale);
+
+					// /* Performs 4 refs prediction */
+					// if(viewLine >= 15 && viewColumn >= 15) {
+					// 	pred.fourRefsPredictor(&yBlock, &yOrigBlock, &yRefBlock0, &yRefBlock1, &yRefBlock2, &yRefBlock3);
+					// 	pred.fourRefsPredictor(&cbBlock, &cbOrigBlock, &cbRefBlock0, &cbRefBlock1, &cbRefBlock2, &cbRefBlock3);
+					// 	pred.fourRefsPredictor(&crBlock, &crOrigBlock, &crRefBlock0, &crRefBlock1, &crRefBlock2, &crRefBlock3);
+					// }
+
+					/* Differential Inter View Prediction */
 					RGB2YCbCr_BT601(yOrigBlock, cbOrigBlock, crOrigBlock, rBlock, gBlock, bBlock, inputLF.mPGMScale);
+
+					pred.differentialPredictionRaster(&yBlock, &yOrigBlock);
+					pred.differentialPredictionRaster(&cbBlock, &cbOrigBlock);
+					pred.differentialPredictionRaster(&crBlock, &crOrigBlock);
 
 					/* 
 					 * To use DC prediction uncomment until Calculates residues block
@@ -410,13 +427,6 @@ int main(int argc, char **argv) {
 					// pred.calculateResidue(&yBlock, &yOrigBlock, yDCPredictor);
 					// pred.calculateResidue(&cbBlock, &cbOrigBlock, cbDCPredictor);
 					// pred.calculateResidue(&crBlock, &crOrigBlock, crDCPredictor);
-
-					/* Performs 4 refs prediction */
-					if(viewLine >= 15 && viewColumn >= 15) {
-						pred.fourRefsPredictor(&yBlock, &yOrigBlock, &yRefBlock0, &yRefBlock1, &yRefBlock2, &yRefBlock3);
-						pred.fourRefsPredictor(&cbBlock, &cbOrigBlock, &cbRefBlock0, &cbRefBlock1, &cbRefBlock2, &cbRefBlock3);
-						pred.fourRefsPredictor(&crBlock, &crOrigBlock, &crRefBlock0, &crRefBlock1, &crRefBlock2, &crRefBlock3);
-					}
 					// DSC end
 
                     for(int spectralComponent = 0; spectralComponent < 3; spectralComponent++) {
