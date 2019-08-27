@@ -324,8 +324,6 @@ int main(int argc, char **argv) {
                 for(int viewColumn = 0; viewColumn < inputLF.mNumberOfViewColumns; viewColumn += par.transformLength_u) {
 					if(par.verbosity > 0)
                         printf("transforming the 4D block at position (%d %d %d %d)\n", verticalView, horizontalView, viewLine, viewColumn);
-						cout << "Teste"
-						cerr << "Teste"
 					rBlock.Zeros();
                     gBlock.Zeros();
                     bBlock.Zeros();
