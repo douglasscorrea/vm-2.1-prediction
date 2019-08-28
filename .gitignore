@@ -23,6 +23,7 @@ source/*.o
 .settings/*
 kakadu/
 *.out
+*.txt
 
 # User-specific files
 *.suo
