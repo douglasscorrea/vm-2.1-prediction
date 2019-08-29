@@ -241,9 +241,13 @@ int main(int argc, char **argv) {
                     }
 
 					// DSC begin
-					pred.recDifferentialPredictionRaster(&yBlock, &yOrigBlock);
-					pred.recDifferentialPredictionRaster(&cbBlock, &cbOrigBlock);
-					pred.recDifferentialPredictionRaster(&crBlock, &crOrigBlock);
+					pred.recHierarchicalDifferentialPrediction1Level(&yBlock, &yOrigBlock);
+					pred.recHierarchicalDifferentialPrediction1Level(&cbBlock, &cbOrigBlock);
+					pred.recHierarchicalDifferentialPrediction1Level(&crBlock, &crOrigBlock);
+
+					//pred.recHierarchicalDifferentialPrediction(&yBlock, &yOrigBlock);
+					//pred.recHierarchicalDifferentialPrediction(&cbBlock, &cbOrigBlock);
+					//pred.recHierarchicalDifferentialPrediction(&crBlock, &crOrigBlock);
 					/* DC prediction reconstruction */
 					// predictionFile >> yDCPredictor;
 					// predictionFile >> cbDCPredictor;
@@ -257,7 +261,7 @@ int main(int argc, char **argv) {
 					// pred.reconstruct4DBlock(&crBlock, crDCPredictor);
 					// DSC end
 
-                    YCbCr2RGB_BT601(rBlock, gBlock, bBlock, yBlock, cbBlock, crBlock, outputLF.mPGMScale);
+                    YCbCr2RGB_BT601(rBlock, gBlock, bBlock, yOrigBlock, cbOrigBlock, crOrigBlock, outputLF.mPGMScale);
                     if(par.isLenslet13x13 == 1) {
                         if(verticalView == 0) {
                             if(horizontalView == 0) {
