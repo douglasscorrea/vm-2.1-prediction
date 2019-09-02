@@ -241,9 +241,13 @@ int main(int argc, char **argv) {
                     }
 
 					// DSC begin
-					pred.recHierarchicalDifferentialPrediction1Level(&yBlock, &yOrigBlock);
-					pred.recHierarchicalDifferentialPrediction1Level(&cbBlock, &cbOrigBlock);
-					pred.recHierarchicalDifferentialPrediction1Level(&crBlock, &crOrigBlock);
+					// pred.recDifferentialPredictionCentral(&yBlock, &yOrigBlock);
+					// pred.recDifferentialPredictionCentral(&cbBlock, &cbOrigBlock);
+					// pred.recDifferentialPredictionCentral(&crBlock, &crOrigBlock);
+
+					pred.recDifferentialPredictionRaster(&yBlock, &yOrigBlock);
+					pred.recDifferentialPredictionRaster(&cbBlock, &cbOrigBlock);
+					pred.recDifferentialPredictionRaster(&crBlock, &crOrigBlock);
 
 					//pred.recHierarchicalDifferentialPrediction(&yBlock, &yOrigBlock);
 					//pred.recHierarchicalDifferentialPrediction(&cbBlock, &cbOrigBlock);

@@ -10,8 +10,11 @@ public:
 	void calculateResidue(Block4D *residueBlock, Block4D *origBlock, int DCPredictor);
 	void differentialPredictionRaster(Block4D *residueBlock, Block4D *origBlock);
 	void recDifferentialPredictionRaster(Block4D *recBlock, Block4D *origBlock);
+	void differentialPredictionCentral(Block4D *residueBlock, Block4D *origBlock);
+	void recDifferentialPredictionCentral(Block4D *recBlock, Block4D *origBlock);
 	void hierarchicalDifferentialPrediction(Block4D *residueBlock, Block4D *origBlock);
 	void recHierarchicalDifferentialPrediction(Block4D *recBlock, Block4D *origBlock);
 	void hierarchicalDifferentialPrediction1Level(Block4D *residueBlock, Block4D *origBlock);
 	void recHierarchicalDifferentialPrediction1Level(Block4D *recBlock, Block4D *origBlock);
+
 };

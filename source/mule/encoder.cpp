@@ -400,20 +400,26 @@ int main(int argc, char **argv) {
 					// }
 
 					/* Differential Inter View Prediction */
-					// RGB2YCbCr_BT601(yOrigBlock, cbOrigBlock, crOrigBlock, rBlock, gBlock, bBlock, inputLF.mPGMScale);
+					RGB2YCbCr_BT601(yOrigBlock, cbOrigBlock, crOrigBlock, rBlock, gBlock, bBlock, inputLF.mPGMScale);
 
-					// pred.differentialPredictionRaster(&yBlock, &yOrigBlock);
-					// pred.differentialPredictionRaster(&cbBlock, &cbOrigBlock);
-					// pred.differentialPredictionRaster(&crBlock, &crOrigBlock);
+					pred.differentialPredictionRaster(&yBlock, &yOrigBlock);
+					pred.differentialPredictionRaster(&cbBlock, &cbOrigBlock);
+					pred.differentialPredictionRaster(&crBlock, &crOrigBlock);
 
 					/* Hierarchical Differential Inter View Prediction */
-					RGB2YCbCr_BT601(yOrigBlock, cbOrigBlock, crOrigBlock, rBlock, gBlock, bBlock, inputLF.mPGMScale);
+					//RGB2YCbCr_BT601(yOrigBlock, cbOrigBlock, crOrigBlock, rBlock, gBlock, bBlock, inputLF.mPGMScale);
 					//RGB2YCbCr_BT601(yBlock, cbBlock, crBlock, rBlock, gBlock, bBlock, inputLF.mPGMScale);
 
-					pred.hierarchicalDifferentialPrediction1Level(&yBlock, &yOrigBlock);
-					pred.hierarchicalDifferentialPrediction1Level(&cbBlock, &cbOrigBlock);
-					pred.hierarchicalDifferentialPrediction1Level(&crBlock, &crOrigBlock);
+					// pred.hierarchicalDifferentialPrediction1Level(&yBlock, &yOrigBlock);
+					// pred.hierarchicalDifferentialPrediction1Level(&cbBlock, &cbOrigBlock);
+					// pred.hierarchicalDifferentialPrediction1Level(&crBlock, &crOrigBlock);
 
+					/* Differential Inter View Prediction Central */
+					//RGB2YCbCr_BT601(yOrigBlock, cbOrigBlock, crOrigBlock, rBlock, gBlock, bBlock, inputLF.mPGMScale);
+
+					// pred.differentialPredictionCentral(&yBlock, &yOrigBlock);
+					// pred.differentialPredictionCentral(&cbBlock, &cbOrigBlock);
+					// pred.differentialPredictionCentral(&crBlock, &crOrigBlock);
 					/* 
 					 * To use DC prediction uncomment until Calculates residues block
 					 * /
