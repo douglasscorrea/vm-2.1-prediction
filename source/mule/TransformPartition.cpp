@@ -1,6 +1,10 @@
 #include "TransformPartition.h"
 #include "Aritmetico.h"
 
+// DSC begin
+#include "Prediction.h"
+// DSC end
+
 /*******************************************************************************/
 /*                      TransformPartition class methods                    */
 /*******************************************************************************/
@@ -25,6 +29,7 @@ void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTr
    
     double scaledLambda = mPartitionData.mlength_t*mPartitionData.mlength_s;
     scaledLambda *= lambda*mPartitionData.mlength_v*mPartitionData.mlength_u;
+
     
     int position[4];
     position[0] = 0;
@@ -44,9 +49,13 @@ void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTr
     
     Block4D transformedBlock;
     transformedBlock.SetDimension(length[0], length[1], length[2], length[3]);
-        
     mLagrangianCost = RDoptimizeTransformStep(inputBlock, transformedBlock, position, length, mt, entropyCoder, scaledLambda, &mPartitionCode);
-    
+	
+	// DSC begin
+	//Prediction pred;
+	//pred.printOneBlock(&transformedBlock);
+	// DSC end
+
     mPartitionData.CopySubblockFrom(transformedBlock, 0, 0, 0, 0);
     
     //Restores the current arithmetic model using current_model. 
@@ -55,7 +64,7 @@ void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTr
 	// DSC begin
 	/* commenting */
 	//printf("mPartitionCode = %s\n", mPartitionCode);    
-	//printf("mInferiorBitPlane = %d\n", entropyCoder.mInferiorBitPlane);
+	printf("mInferiorBitPlane = %d\n", entropyCoder.mInferiorBitPlane);
 	// DSC end   
 }
 

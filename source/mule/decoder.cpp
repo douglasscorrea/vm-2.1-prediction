@@ -149,7 +149,7 @@ int main(int argc, char **argv) {
 
 	// DSC begin
 	int yDCPredictor, cbDCPredictor, crDCPredictor;
-	Block4D yOrigBlock, cbOrigBlock, crOrigBlock;
+	Block4D yReconstructedBlock, cbReconstructedBlock, crReconstructedBlock, lfRecBlock;
 	Prediction pred;
 	ifstream predictionFile("predicted_values.txt");
 	// DSC end
@@ -163,9 +163,10 @@ int main(int argc, char **argv) {
     crBlock.SetDimension(transformLength_t,transformLength_s,transformLength_v,transformLength_u);
 
 	// DSC begin
-	yOrigBlock.SetDimension(transformLength_t,transformLength_s,transformLength_v,transformLength_u);
-    cbOrigBlock.SetDimension(transformLength_t,transformLength_s,transformLength_v,transformLength_u);
-    crOrigBlock.SetDimension(transformLength_t,transformLength_s,transformLength_v,transformLength_u);
+	lfRecBlock.SetDimension(transformLength_t,transformLength_s,transformLength_v,transformLength_u);
+	yReconstructedBlock.SetDimension(transformLength_t,transformLength_s,transformLength_v,transformLength_u);
+    cbReconstructedBlock.SetDimension(transformLength_t,transformLength_s,transformLength_v,transformLength_u);
+    crReconstructedBlock.SetDimension(transformLength_t,transformLength_s,transformLength_v,transformLength_u);
 	// DSC end
    
     int inputNumberOfVerticalViews = hdt.mNumberOfVerticalViews;
@@ -215,10 +216,10 @@ int main(int argc, char **argv) {
                         if(par.verbosity > 0) 
                             printf("transforming the 4D block at position (%d %d %d %d)\n", verticalView, horizontalView, viewLine, viewColumn);
                         lfBlock.Zeros();
+						lfRecBlock.Zeros();
                         pd.DecodePartition(hdt, IDCTarray);
 
                         lfBlock.CopySubblockFrom(pd.mPartitionData, 0, 0, 0, 0);
-
                         if(viewColumn + transformLength_u > outputLF.mNumberOfViewColumns)
                             ExtendBlock4D(lfBlock, par.extensionMethod, extensionLength_u, 'u');                                   
                         if(viewLine + transformLength_v > outputLF.mNumberOfViewLines) 
@@ -227,27 +228,29 @@ int main(int argc, char **argv) {
                             ExtendBlock4D(lfBlock, par.extensionMethod, extensionLength_s, 's');                                  
                         if(verticalView + transformLength_t > outputLF.mNumberOfVerticalViews)
                             ExtendBlock4D(lfBlock, par.extensionMethod, extensionLength_t, 't');                                  
-                                    
+                        
+						// DSC begin
+						pred.recHierarchicalDifferentialPrediction(&lfBlock, &lfRecBlock);
+						// DSC end
 
-                        lfBlock = lfBlock + (outputLF.mPGMScale+1)/2;
-                                                                        
+                        lfRecBlock = lfRecBlock + (outputLF.mPGMScale+1)/2;
                         //lfBlock.Clip(0, outputLF.mPGMScale);
                         if(spectralComponent == 0)
-                            yBlock.CopySubblockFrom(lfBlock, 0, 0, 0, 0);
+                            yBlock.CopySubblockFrom(lfRecBlock, 0, 0, 0, 0);
                         if(spectralComponent == 1)
-                            cbBlock.CopySubblockFrom(lfBlock, 0, 0, 0, 0);
+                            cbBlock.CopySubblockFrom(lfRecBlock, 0, 0, 0, 0);
                         if(spectralComponent == 2)
-                            crBlock.CopySubblockFrom(lfBlock, 0, 0, 0, 0);
+                            crBlock.CopySubblockFrom(lfRecBlock, 0, 0, 0, 0);
                     }
 
 					// DSC begin
-					// pred.recDifferentialPredictionCentral(&yBlock, &yOrigBlock);
-					// pred.recDifferentialPredictionCentral(&cbBlock, &cbOrigBlock);
-					// pred.recDifferentialPredictionCentral(&crBlock, &crOrigBlock);
+					//pred.recDifferentialPredictionCentral(&yBlock, &yReconstructedBlock);
+					//pred.recDifferentialPredictionCentral(&cbBlock, &cbReconstructedBlock);
+					//pred.recDifferentialPredictionCentral(&crBlock, &crReconstructedBlock);
 
-					pred.recDifferentialPredictionRaster(&yBlock, &yOrigBlock);
-					pred.recDifferentialPredictionRaster(&cbBlock, &cbOrigBlock);
-					pred.recDifferentialPredictionRaster(&crBlock, &crOrigBlock);
+					// pred.recDifferentialPredictionRaster(&yBlock, &yOrigBlock);
+					// pred.recDifferentialPredictionRaster(&cbBlock, &cbOrigBlock);
+					// pred.recDifferentialPredictionRaster(&crBlock, &crOrigBlock);
 
 					//pred.recHierarchicalDifferentialPrediction(&yBlock, &yOrigBlock);
 					//pred.recHierarchicalDifferentialPrediction(&cbBlock, &cbOrigBlock);
@@ -264,8 +267,8 @@ int main(int argc, char **argv) {
 					// pred.reconstruct4DBlock(&cbBlock, cbDCPredictor);
 					// pred.reconstruct4DBlock(&crBlock, crDCPredictor);
 					// DSC end
-
-                    YCbCr2RGB_BT601(rBlock, gBlock, bBlock, yOrigBlock, cbOrigBlock, crOrigBlock, outputLF.mPGMScale);
+                    YCbCr2RGB_BT601(rBlock, gBlock, bBlock, yBlock, cbBlock, crBlock, outputLF.mPGMScale);
+					//pred.printOneBlock(&rBlock, &gBlock, &bBlock);
                     if(par.isLenslet13x13 == 1) {
                         if(verticalView == 0) {
                             if(horizontalView == 0) {

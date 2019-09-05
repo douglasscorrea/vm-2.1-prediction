@@ -6,8 +6,13 @@
 /*******************************************************************************/
 
 Hierarchical4DEncoder :: Hierarchical4DEncoder(void) {
+	// DSC begin
     mSuperiorBitPlane = 30;
+	//mSuperiorBitPlane = 20;
+
     mInferiorBitPlane = 0;
+	//mInferiorBitPlane = 10;
+	// DSC end
     mPreSegmentation = 1;
     mSegmentationTreeCodeBuffer = NULL;
     mSegmentationTreeCodeBufferSize = 0;
@@ -146,6 +151,7 @@ double Hierarchical4DEncoder :: RdOptimizeHexadecaTree(int position_t, int posit
                         int coefficient = mSubbandLF.mPixel[position_t+index_t][position_s+index_s][position_v+index_v][position_u+index_u];
                         J0 = coefficient;
                         signalEnergy += J0*J0;
+						//printf("coeff: %d\n", coefficient);
                     }
                 }
             }
@@ -184,7 +190,6 @@ double Hierarchical4DEncoder :: RdOptimizeHexadecaTree(int position_t, int posit
        }
         if(allZeros == 0)
             accumulatedRate += 1.0;
-
         int bitMask = onesMask << mInferiorBitPlane;
         int quantizedMagnitude = magnitude&bitMask;
         if(allZeros == 0) {
@@ -193,7 +198,6 @@ double Hierarchical4DEncoder :: RdOptimizeHexadecaTree(int position_t, int posit
         J = magnitude - quantizedMagnitude;
         
         J = J*J + lambda*(accumulatedRate);
-        
         *codeString[0] = 0;
 
         return(J);
@@ -569,7 +573,6 @@ int Hierarchical4DEncoder :: OptimumBitplane(double lambda) {
     subbandSize *= mSubbandLF.mlength_v*mSubbandLF.mlength_u;
     double Jmin;
     int optimumBitplane;
-    
     double accumulatedRate = 0;
 //    double estimatedRate;
 //    double estimatedDistortion;
@@ -587,9 +590,8 @@ int Hierarchical4DEncoder :: OptimumBitplane(double lambda) {
         onesMask = ~onesMask;
         int bitMask = onesMask << bit_position;
        
-
         for(long int coefficient_index=0; coefficient_index < subbandSize; coefficient_index++) {
-        
+			//printf("bit_pos: %d\n", bit_position);
             int magnitude = mSubbandLF.mPixelData[coefficient_index];
             if(magnitude < 0) {
                 magnitude = -magnitude;
@@ -609,17 +611,17 @@ int Hierarchical4DEncoder :: OptimumBitplane(double lambda) {
             int quantizedMagnitude = magnitude&bitMask;
             if(quantizedMagnitude > 0) {
                 quantizedMagnitude += (1 << bit_position)/2;
-            }  
+            } 
+			//printf("[mag, qMag]: %d, %d\n", magnitude, quantizedMagnitude);
             double magnitude_error = magnitude - quantizedMagnitude;
-            
             distortion += magnitude_error*magnitude_error;
             if(magnitude >= (1 << bit_position)) {
                 coefficientsDistortion += magnitude_error*magnitude_error;
-            }  
+            }
         }
-           
         J = distortion + lambda*(accumulatedRate + signalRate);
-        
+		printf("[distortion, rate, bit]: %.2lf, %.2lf, %d\n", distortion, lambda*(accumulatedRate + signalRate), bit_position);
+		//printf("[J, Jmin, bit_position]: %.2f, %.2f, %d\n", J, Jmin, bit_position);
         //if((J < Jmin)||(bit_position == mSuperiorBitPlane)) {
         if((J <= Jmin)||(bit_position == mSuperiorBitPlane)) {
             Jmin = J;
@@ -630,7 +632,6 @@ int Hierarchical4DEncoder :: OptimumBitplane(double lambda) {
         }
        
     }
-    
     return(optimumBitplane);
 }
 

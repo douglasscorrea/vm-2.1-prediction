@@ -4,8 +4,13 @@
 /*******************************************************************************/
 
 Hierarchical4DDecoder :: Hierarchical4DDecoder(void) {
+	// DSC begin
     mSuperiorBitPlane = 30;
+	//mSuperiorBitPlane = 20;
+
     mInferiorBitPlane = 0;
+	//mInferiorBitPlane = 5;
+	// DSC end
     mPreSegmentation = 1;
 }
 Hierarchical4DDecoder :: ~Hierarchical4DDecoder(void) {

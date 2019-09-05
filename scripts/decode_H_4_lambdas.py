@@ -2,7 +2,7 @@ import os
 
 lf_dataset = ['Bikes']#, 'Danger_de_Mort']
 lambdas = [322, 5800, 127000, 1250000]
-exec_names = ['./mule-decoder-bin_DC']
+exec_names = ['./mule-decoder-bin_H']
 
 for lf in lf_dataset:
 	for name in exec_names:
@@ -18,5 +18,3 @@ for lf in lf_dataset:
 			cmd = 'mv *.ppm /home/douglascorrea/light-field/resultados_prediction/' + lf + '/decoding/' + alg_name + '_' + str(_lambda) + '/ '
 			print(cmd)
 			os.system(cmd)
-
-

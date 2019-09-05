@@ -228,6 +228,7 @@ int main(int argc, char **argv) {
     TransformPartition tp;
 
 	// DSC begin
+	Block4D lfBlockResidue;
 	Block4D yOrigBlock, crOrigBlock, cbOrigBlock;
 	Block4D rRefBlock0, rRefBlock1, rRefBlock2, rRefBlock3;
 	Block4D gRefBlock0, gRefBlock1, gRefBlock2, gRefBlock3;
@@ -235,10 +236,10 @@ int main(int argc, char **argv) {
 	Block4D yRefBlock0, yRefBlock1, yRefBlock2, yRefBlock3;
 	Block4D cbRefBlock0, cbRefBlock1, cbRefBlock2, cbRefBlock3;
 	Block4D crRefBlock0, crRefBlock1, crRefBlock2, crRefBlock3;
-	ofstream predictionFile;
+	//ofstream predictionFile;
 	Prediction pred;
 	int yDCPredictor, cbDCPredictor, crDCPredictor;
-	predictionFile.open("predicted_values.txt");
+	//predictionFile.open("predicted_values.txt");
 	// DSC end
 
     tp.mPartitionData.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
@@ -252,6 +253,7 @@ int main(int argc, char **argv) {
     crBlock.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
 	// DSC begin
 	/* initialize 4D blocks */
+	lfBlockResidue.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
 	yOrigBlock.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
 	cbOrigBlock.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
 	crOrigBlock.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
@@ -402,12 +404,16 @@ int main(int argc, char **argv) {
 					/* Differential Inter View Prediction */
 					RGB2YCbCr_BT601(yOrigBlock, cbOrigBlock, crOrigBlock, rBlock, gBlock, bBlock, inputLF.mPGMScale);
 
-					pred.differentialPredictionRaster(&yBlock, &yOrigBlock);
-					pred.differentialPredictionRaster(&cbBlock, &cbOrigBlock);
-					pred.differentialPredictionRaster(&crBlock, &crOrigBlock);
+					//pred.differentialPredictionRaster(&yBlock, &yOrigBlock);
+					// pred.differentialPredictionRaster(&cbBlock, &cbOrigBlock);
+					// pred.differentialPredictionRaster(&crBlock, &crOrigBlock);
+
+					// pred.differentialPredictionRasterHalf(&yBlock, &yOrigBlock);
+					// pred.differentialPredictionRasterHalf(&cbBlock, &cbOrigBlock);
+					// pred.differentialPredictionRasterHalf(&crBlock, &crOrigBlock);
+
 
 					/* Hierarchical Differential Inter View Prediction */
-					//RGB2YCbCr_BT601(yOrigBlock, cbOrigBlock, crOrigBlock, rBlock, gBlock, bBlock, inputLF.mPGMScale);
 					//RGB2YCbCr_BT601(yBlock, cbBlock, crBlock, rBlock, gBlock, bBlock, inputLF.mPGMScale);
 
 					// pred.hierarchicalDifferentialPrediction1Level(&yBlock, &yOrigBlock);
@@ -447,27 +453,34 @@ int main(int argc, char **argv) {
                         //printf("\nProcessing spectral component %d\n", spectralComponent);
 						// DSC end
                         if(spectralComponent == 0)
-                            lfBlock.CopySubblockFrom(yBlock, 0, 0, 0, 0);
+                            lfBlock.CopySubblockFrom(yOrigBlock, 0, 0, 0, 0);
                         if(spectralComponent == 1)
-                            lfBlock.CopySubblockFrom(cbBlock, 0, 0, 0, 0);
+                            lfBlock.CopySubblockFrom(cbOrigBlock, 0, 0, 0, 0);
                         if(spectralComponent == 2)
-                            lfBlock.CopySubblockFrom(crBlock, 0, 0, 0, 0);
-
+                            lfBlock.CopySubblockFrom(crOrigBlock, 0, 0, 0, 0);
+	
                         lfBlock = lfBlock - (inputLF.mPGMScale+1)/2;
-                                    
+						//printf("PGMscale: %d\n", (inputLF.mPGMScale+1)/2);
                         if(viewColumn + par.transformLength_u > inputLF.mNumberOfViewColumns)
-                            ExtendBlock4D(lfBlock, par.extensionMethod, extensionLength_u, 'u');                                   
+                            ExtendBlock4D(lfBlock, par.extensionMethod, extensionLength_u, 'u');
                         if(viewLine + par.transformLength_v > inputLF.mNumberOfViewLines) 
                             ExtendBlock4D(lfBlock, par.extensionMethod, extensionLength_v, 'v');                                  
                         if(horizontalView + par.transformLength_s > inputLF.mNumberOfHorizontalViews)
                             ExtendBlock4D(lfBlock, par.extensionMethod, extensionLength_s, 's');                                  
                         if(verticalView + par.transformLength_t > inputLF.mNumberOfVerticalViews)
                             ExtendBlock4D(lfBlock, par.extensionMethod, extensionLength_t, 't');                                                                      
+						
+						// DSC begin
+						//pred.differentialPredictionRaster(&lfBlockResidue, &lfBlock);
+						pred.differentialPredictionRaster(&lfBlockResidue, &lfBlock);
+						tp.RDoptimizeTransform(lfBlockResidue, DCTarray, hdt, par.Lambda);
+						// DSC end
 
-                        tp.RDoptimizeTransform(lfBlock, DCTarray, hdt, par.Lambda);
+                        //tp.RDoptimizeTransform(lfBlock, DCTarray, hdt, par.Lambda);
+
                         tp.EncodePartition(hdt, par.Lambda);
 
-		    }            
+		    		}            
                 }
             }
         }
@@ -478,7 +491,7 @@ int main(int argc, char **argv) {
     inputLF.CloseLightField();
     
 	// DSC begin
-	predictionFile.close();
+	//predictionFile.close();
 	// DSC end
     
 }

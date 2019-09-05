@@ -111,15 +111,15 @@ def select_minimun_neighbors(index, neighbors_list, level):
 			if distance == minimum_distance_l3:
 				best_neighbors.append(neighbor_index)
 
-		# for neighbor_index in l2_neighbors:
-		# 	distance = math.sqrt((neighbor_index[0] - index[0])**2 + (neighbor_index[1] - index[1])**2)
-		# 	if distance < minimum_distance_l2:
-		# 		minimum_distance_l2 = distance
+		for neighbor_index in l2_neighbors:
+			distance = math.sqrt((neighbor_index[0] - index[0])**2 + (neighbor_index[1] - index[1])**2)
+			if distance < minimum_distance_l2:
+				minimum_distance_l2 = distance
 
-		# for neighbor_index in l2_neighbors:
-		# 	distance = math.sqrt((neighbor_index[0] - index[0])**2 + (neighbor_index[1] - index[1])**2)
-		# 	if distance == minimum_distance_l2:
-		# 		best_neighbors.append(neighbor_index)
+		for neighbor_index in l2_neighbors:
+			distance = math.sqrt((neighbor_index[0] - index[0])**2 + (neighbor_index[1] - index[1])**2)
+			if distance == minimum_distance_l2:
+				best_neighbors.append(neighbor_index)
 
 	if level == 5:
 		for neighbor_index in neighbors_list:
@@ -142,23 +142,24 @@ def select_minimun_neighbors(index, neighbors_list, level):
 			if distance == minimum_distance_l4:
 				best_neighbors.append(neighbor_index)
 
-		# for neighbor_index in l3_neighbors:
-		# 	distance = math.sqrt((neighbor_index[0] - index[0])**2 + (neighbor_index[1] - index[1])**2)
-		# 	if distance < minimum_distance_l3:
-		# 		minimum_distance_l3 = distance
-		# for neighbor_index in l3_neighbors:
-		# 	distance = math.sqrt((neighbor_index[0] - index[0])**2 + (neighbor_index[1] - index[1])**2)
-		# 	if distance == minimum_distance_l3:
-		# 		best_neighbors.append(neighbor_index)
+		for neighbor_index in l3_neighbors:
+			distance = math.sqrt((neighbor_index[0] - index[0])**2 + (neighbor_index[1] - index[1])**2)
+			if distance < minimum_distance_l3:
+				minimum_distance_l3 = distance
+		for neighbor_index in l3_neighbors:
+			distance = math.sqrt((neighbor_index[0] - index[0])**2 + (neighbor_index[1] - index[1])**2)
+			if distance == minimum_distance_l3:
+				best_neighbors.append(neighbor_index)
 
-		# for neighbor_index in l2_neighbors:
-		# 	distance = math.sqrt((neighbor_index[0] - index[0])**2 + (neighbor_index[1] - index[1])**2)
-		# 	if distance < minimum_distance_l2:
-		# 		minimum_distance_l2 = distance
-		# for neighbor_index in l2_neighbors:
-		# 	distance = math.sqrt((neighbor_index[0] - index[0])**2 + (neighbor_index[1] - index[1])**2)
-		# 	if distance == minimum_distance_l2:
-		# 		best_neighbors.append(neighbor_index)
+		for neighbor_index in l2_neighbors:
+			distance = math.sqrt((neighbor_index[0] - index[0])**2 + (neighbor_index[1] - index[1])**2)
+			if distance < minimum_distance_l2:
+				minimum_distance_l2 = distance
+		for neighbor_index in l2_neighbors:
+			distance = math.sqrt((neighbor_index[0] - index[0])**2 + (neighbor_index[1] - index[1])**2)
+			if distance == minimum_distance_l2:
+				best_neighbors.append(neighbor_index)
+
 	if level == 6:
 		for neighbor_index in neighbors_list:
 			if matrix[neighbor_index[0]][neighbor_index[1]] == 5:
@@ -184,32 +185,32 @@ def select_minimun_neighbors(index, neighbors_list, level):
 			if distance == minimum_distance_l5:
 				best_neighbors.append(neighbor_index)
 
-		# for neighbor_index in l4_neighbors:
-		# 	distance = math.sqrt((neighbor_index[0] - index[0])**2 + (neighbor_index[1] - index[1])**2)
-		# 	if distance < minimum_distance_l4:
-		# 		minimum_distance_l4 = distance
-		# for neighbor_index in l4_neighbors:
-		# 	distance = math.sqrt((neighbor_index[0] - index[0])**2 + (neighbor_index[1] - index[1])**2)
-		# 	if distance == minimum_distance_l4:
-		# 		best_neighbors.append(neighbor_index)
+		for neighbor_index in l4_neighbors:
+			distance = math.sqrt((neighbor_index[0] - index[0])**2 + (neighbor_index[1] - index[1])**2)
+			if distance < minimum_distance_l4:
+				minimum_distance_l4 = distance
+		for neighbor_index in l4_neighbors:
+			distance = math.sqrt((neighbor_index[0] - index[0])**2 + (neighbor_index[1] - index[1])**2)
+			if distance == minimum_distance_l4:
+				best_neighbors.append(neighbor_index)
 
-		# for neighbor_index in l3_neighbors:
-		# 	distance = math.sqrt((neighbor_index[0] - index[0])**2 + (neighbor_index[1] - index[1])**2)
-		# 	if distance < minimum_distance_l3:
-		# 		minimum_distance_l3 = distance
-		# for neighbor_index in l3_neighbors:
-		# 	distance = math.sqrt((neighbor_index[0] - index[0])**2 + (neighbor_index[1] - index[1])**2)
-		# 	if distance == minimum_distance_l3:
-		# 		best_neighbors.append(neighbor_index)
+		for neighbor_index in l3_neighbors:
+			distance = math.sqrt((neighbor_index[0] - index[0])**2 + (neighbor_index[1] - index[1])**2)
+			if distance < minimum_distance_l3:
+				minimum_distance_l3 = distance
+		for neighbor_index in l3_neighbors:
+			distance = math.sqrt((neighbor_index[0] - index[0])**2 + (neighbor_index[1] - index[1])**2)
+			if distance == minimum_distance_l3:
+				best_neighbors.append(neighbor_index)
 
-		# for neighbor_index in l2_neighbors:
-		# 	distance = math.sqrt((neighbor_index[0] - index[0])**2 + (neighbor_index[1] - index[1])**2)
-		# 	if distance < minimum_distance_l2:
-		# 		minimum_distance_l2 = distance
-		# for neighbor_index in l2_neighbors:
-		# 	distance = math.sqrt((neighbor_index[0] - index[0])**2 + (neighbor_index[1] - index[1])**2)
-		# 	if distance == minimum_distance_l2:
-		# 		best_neighbors.append(neighbor_index)
+		for neighbor_index in l2_neighbors:
+			distance = math.sqrt((neighbor_index[0] - index[0])**2 + (neighbor_index[1] - index[1])**2)
+			if distance < minimum_distance_l2:
+				minimum_distance_l2 = distance
+		for neighbor_index in l2_neighbors:
+			distance = math.sqrt((neighbor_index[0] - index[0])**2 + (neighbor_index[1] - index[1])**2)
+			if distance == minimum_distance_l2:
+				best_neighbors.append(neighbor_index)
 	
 	#print(str(index) + ": " + str(best_neighbors) + " - len: " + str(len(best_neighbors)))
 	#print()
@@ -219,11 +220,12 @@ def select_minimun_neighbors(index, neighbors_list, level):
 
 
 def generate_text_coding(index, best_neighbors, level):
-	weight = 1/len(best_neighbors)
+	weight = 1/(len(best_neighbors))
 	#print(str(index) + ": ")
 	str2 = ""
 	str1 = "residueBlock->mPixel[" + str(index[0]) + "][" + str(index[1]) + "][viewLine][viewColumn] = origBlock->mPixel[" + str(index[0]) + "][" + str(index[1]) + "][viewLine][viewColumn] - (origBlock->mPixel[6][6][viewLine][viewColumn]"
 	for neighbor in best_neighbors:
+		#print(best_neighbors)
 		str2 += " + residueBlock->mPixel[" + str(neighbor[0]) + "][" + str(neighbor[1]) + "][viewLine][viewColumn]*" + str(round(weight,2))
 	
 	print(str1 + str2 + ");")
@@ -233,9 +235,9 @@ def generate_text_decoding(index, best_neighbors, level):
 	weight = 1/len(best_neighbors)
 	#print(str(index) + ": ")
 	str2 = ""
-	str1 = "origBlock->mPixel[" + str(index[0]) + "][" + str(index[1]) + "][viewLine][viewColumn] = recBlock->mPixel[" + str(index[0]) + "][" + str(index[1]) + "][viewLine][viewColumn] + recBlock->mPixel[6][6][viewLine][viewColumn]"
+	str1 = "reconstructedBlock->mPixel[" + str(index[0]) + "][" + str(index[1]) + "][viewLine][viewColumn] = residueBlock->mPixel[" + str(index[0]) + "][" + str(index[1]) + "][viewLine][viewColumn] + residueBlock->mPixel[6][6][viewLine][viewColumn]"
 	for neighbor in best_neighbors:
-		str2 += " + recBlock->mPixel[" + str(neighbor[0]) + "][" + str(neighbor[1]) + "][viewLine][viewColumn]*" + str(round(weight,2))
+		str2 += " + residueBlock->mPixel[" + str(neighbor[0]) + "][" + str(neighbor[1]) + "][viewLine][viewColumn]*" + str(round(weight,2))
 	
 	print(str1 + str2 + ";")
 
