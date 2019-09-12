@@ -14,8 +14,19 @@
 #define BITPLANE_BYPASS -1
 #define BITPLANE_BYPASS_FLAGS -1
 
+// DSC begin
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+// DSC end
+
 class Hierarchical4DEncoder {
 public:
+	// DSC begin
+	int counter;
+	ofstream magnitudeFile;
+	// DSC end
     Block4D mSubbandLF;   
     ArithmeticCoder mEntropyCoder;
     int mSuperiorBitPlane, mInferiorBitPlane;

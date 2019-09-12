@@ -9,6 +9,7 @@
 #include <string.h>
 
 // DSC begin
+#include <iostream>
 #include <fstream>
 #include "Prediction.h"
 
@@ -22,6 +23,9 @@ void YCbCr2RGB_BT601(Block4D &R, Block4D &G, Block4D &B, Block4D const &Y, Block
 
 class DecoderParameters {
 public:
+	// DSC begin
+	char Prediction[20];
+	// DSC end
     int firstHorizontalViewNumber;
     int firstVerticalViewNumber;
     char isLenslet13x13;
@@ -63,6 +67,9 @@ void DecoderParameters :: ReadConfigurationFile(char *parametersFileName) {
     }
 }
 void DecoderParameters :: DisplayConfiguration(void) {
+	// DSC begin
+	printf("prediction = %s\n", Prediction);
+	// DSC end
     printf("firstHorizontalViewNumber = %d\n", firstHorizontalViewNumber);
     printf("firstVerticalViewNumber = %d\n", firstVerticalViewNumber);
     printf("isLenslet13x13 = %d\n", isLenslet13x13);
@@ -84,6 +91,10 @@ int main(int argc, char **argv) {
     par.firstHorizontalViewNumber=0;
     par.firstVerticalViewNumber=0;
     
+	// DSC begin
+	strcpy(par.Prediction, "None");
+	// DSC end
+
     strcpy(par.inputFileName, "out.comp");
     strcpy(par.outputLightFieldDirectory, "./");
     
@@ -107,6 +118,9 @@ int main(int argc, char **argv) {
         }
     }
     for(int n = 0; n < argc; n++) {
+		// DSC begin
+		if(strcmp(argv[n], "-prediction") == 0) strcpy(par.Prediction, argv[n+1]);
+		// DSC end
         if(strcmp(argv[n], "-lf") == 0) strcpy(par.outputLightFieldDirectory, argv[n+1]);
         if(strcmp(argv[n], "-i") == 0) strcpy(par.inputFileName, argv[n+1]);        
         if(strcmp(argv[n], "-off_h") == 0) par.firstHorizontalViewNumber = atoi(argv[n+1]);
@@ -148,10 +162,20 @@ int main(int argc, char **argv) {
     Block4D lfBlock, rBlock, gBlock, bBlock, yBlock, cbBlock, crBlock;
 
 	// DSC begin
-	int yDCPredictor, cbDCPredictor, crDCPredictor;
+	int yDCPredictor, cbDCPredictor, crDCPredictor, average;
 	Block4D yReconstructedBlock, cbReconstructedBlock, crReconstructedBlock, lfRecBlock;
-	Prediction pred;
-	ifstream predictionFile("predicted_values.txt");
+	int prediction = 2;
+	if (strcmp(par.Prediction, "diffR") == 0) {
+		int prediction = 0;
+	}
+	else if (strcmp(par.Prediction, "diffC") == 0) {
+		int prediction = 1;
+	}
+	else {
+		int prediction = 2;
+	}
+	Prediction pred(prediction);
+	ifstream predictionValues("average_predictor.txt");
 	// DSC end
 
     lfBlock.SetDimension(transformLength_t,transformLength_s,transformLength_v,transformLength_u);
@@ -230,10 +254,12 @@ int main(int argc, char **argv) {
                             ExtendBlock4D(lfBlock, par.extensionMethod, extensionLength_t, 't');                                  
                         
 						// DSC begin
-						pred.recHierarchicalDifferentialPrediction(&lfBlock, &lfRecBlock);
+						predictionValues >> average;
+						printf("average_predictor: %d\n", average);
+						pred.recDifferentialPredictionRaster(&lfBlock, &lfRecBlock, average);
 						// DSC end
 
-                        lfRecBlock = lfRecBlock + (outputLF.mPGMScale+1)/2;
+                        //lfRecBlock = lfRecBlock + (outputLF.mPGMScale+1)/2;
                         //lfBlock.Clip(0, outputLF.mPGMScale);
                         if(spectralComponent == 0)
                             yBlock.CopySubblockFrom(lfRecBlock, 0, 0, 0, 0);

@@ -24,6 +24,9 @@ void RGB2YCbCr_BT601(Block4D &Y, Block4D &Cb, Block4D &Cr, Block4D const &R, Blo
 
 class EncoderParameters {
 public:
+	// DSC begin
+	char Prediction[20];
+	// DSC end
     double Lambda;
     int transformLength_t;
     int transformLength_s;
@@ -104,6 +107,8 @@ void EncoderParameters :: ReadConfigurationFile(char *parametersFileName) {
 }
 
 void EncoderParameters :: DisplayConfiguration(void) {
+	// DSC begin
+	printf("Prediction = %s\n", Prediction);
     printf("Lambda = %f\n", Lambda);
     printf("transformLength_t = %d\n", transformLength_t);
     printf("transformLength_s = %d\n", transformLength_s);
@@ -134,6 +139,9 @@ int main(int argc, char **argv) {
     EncoderParameters par;
     
     //Set default parameters
+	// DSC begin
+	strcpy(par.Prediction, "None");
+	// DSC end
     par.Lambda = 1024;
     par.transformLength_t=13;
     par.transformLength_s=13;
@@ -169,6 +177,10 @@ int main(int argc, char **argv) {
         }
     }
     for(int n = 0; n < argc; n++) {
+		// DSC begin
+		if(strcmp(argv[n], "-prediction") == 0) {
+			strcpy(par.Prediction, argv[n+1]);
+        }
         if(strcmp(argv[n], "-lambda") == 0) {
             par.Lambda = atof(argv[n+1]);
         }
@@ -230,15 +242,19 @@ int main(int argc, char **argv) {
 	// DSC begin
 	Block4D lfBlockResidue;
 	Block4D yOrigBlock, crOrigBlock, cbOrigBlock;
-	Block4D rRefBlock0, rRefBlock1, rRefBlock2, rRefBlock3;
-	Block4D gRefBlock0, gRefBlock1, gRefBlock2, gRefBlock3;
-	Block4D bRefBlock0, bRefBlock1, bRefBlock2, bRefBlock3;
-	Block4D yRefBlock0, yRefBlock1, yRefBlock2, yRefBlock3;
-	Block4D cbRefBlock0, cbRefBlock1, cbRefBlock2, cbRefBlock3;
-	Block4D crRefBlock0, crRefBlock1, crRefBlock2, crRefBlock3;
+	int predictionType = 2;
+	if (strcmp(par.Prediction, "diffR") == 0) {
+		predictionType = 0;
+	}
+	else if (strcmp(par.Prediction, "diffC") == 0) {
+		predictionType = 1;
+	}
+	else {
+		predictionType = 2;
+	}
+
+	Prediction pred(predictionType);
 	//ofstream predictionFile;
-	Prediction pred;
-	int yDCPredictor, cbDCPredictor, crDCPredictor;
 	//predictionFile.open("predicted_values.txt");
 	// DSC end
 
@@ -251,40 +267,13 @@ int main(int argc, char **argv) {
     yBlock.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
     cbBlock.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
     crBlock.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
+
 	// DSC begin
 	/* initialize 4D blocks */
 	lfBlockResidue.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
 	yOrigBlock.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
 	cbOrigBlock.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
 	crOrigBlock.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-
-	rRefBlock0.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-	gRefBlock0.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-	bRefBlock0.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-	yRefBlock0.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-	cbRefBlock0.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-	crRefBlock0.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-
-	rRefBlock1.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-	gRefBlock1.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-	bRefBlock1.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-	yRefBlock1.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-	cbRefBlock1.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-	crRefBlock1.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-
-	rRefBlock2.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-	gRefBlock2.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-	bRefBlock2.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-	yRefBlock2.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-	cbRefBlock2.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-	crRefBlock2.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-
-	rRefBlock3.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-	gRefBlock3.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-	bRefBlock3.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-	yRefBlock3.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-	cbRefBlock3.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
-	crRefBlock3.SetDimension(par.transformLength_t,par.transformLength_s,par.transformLength_v,par.transformLength_u);
 	// DSC end
    
     inputLF.mVerticalViewNumberOffset = par.firstVerticalViewNumber;
@@ -319,7 +308,11 @@ int main(int argc, char **argv) {
     hdt.mNumberOfViewColumns = inputLF.mNumberOfViewColumns;
     hdt.mPGMScale = inputLF.mPGMScale;
     hdt.StartEncoder(par.outputFileName);
-	
+
+	// for(int verticalView = 0; verticalView < inputLF.mNumberOfVerticalViews; verticalView += par.transformLength_t) {
+	// 	for(int horizontalView = 0; horizontalView < inputLF.mNumberOfHorizontalViews; horizontalView += par.transformLength_s) {
+	// 		for(int viewLine = 0; viewLine < 15; viewLine += par.transformLength_v) {
+	// 			for(int viewColumn = 0; viewColumn < 15; viewColumn += par.transformLength_u) {
     for(int verticalView = 0; verticalView < inputLF.mNumberOfVerticalViews; verticalView += par.transformLength_t) {
         for(int horizontalView = 0; horizontalView < inputLF.mNumberOfHorizontalViews; horizontalView += par.transformLength_s) {
             for(int viewLine = 0; viewLine < inputLF.mNumberOfViewLines; viewLine += par.transformLength_v) {
@@ -358,94 +351,8 @@ int main(int argc, char **argv) {
                             }
                         }
                     }
-
-                    //RGB2YCbCr_BT601(yBlock, cbBlock, crBlock, rBlock, gBlock, bBlock, inputLF.mPGMScale);
-
-					// DSC begin
-					/*
-					 * yBlock, cbBlock and crBlock are now residues blocks
-					 */
-
-					/*
-					 * Perform intra prediction 4 refs
-					 * Read all references for current 4D block 
-					 */
-					// if(viewLine >= 15 && viewColumn >= 15) {
-					// 	inputLF.ReadBlock4DfromLightField(&rRefBlock0, verticalView, horizontalView, viewLine, viewColumn-15, 0);
-					// 	inputLF.ReadBlock4DfromLightField(&rRefBlock1, verticalView, horizontalView, viewLine-15, viewColumn-15, 0);
-					// 	inputLF.ReadBlock4DfromLightField(&rRefBlock2, verticalView, horizontalView, viewLine-15, viewColumn, 0);
-					// 	inputLF.ReadBlock4DfromLightField(&rRefBlock3, verticalView, horizontalView, viewLine-15, viewColumn+15, 0);
-						
-					// 	inputLF.ReadBlock4DfromLightField(&gRefBlock0, verticalView, horizontalView, viewLine, viewColumn-15, 1);
-					// 	inputLF.ReadBlock4DfromLightField(&gRefBlock1, verticalView, horizontalView, viewLine-15, viewColumn-15, 1);
-					// 	inputLF.ReadBlock4DfromLightField(&gRefBlock2, verticalView, horizontalView, viewLine-15, viewColumn, 1);
-					// 	inputLF.ReadBlock4DfromLightField(&gRefBlock3, verticalView, horizontalView, viewLine-15, viewColumn+15, 1);
-
-					// 	inputLF.ReadBlock4DfromLightField(&bRefBlock0, verticalView, horizontalView, viewLine, viewColumn-15, 2);
-					// 	inputLF.ReadBlock4DfromLightField(&bRefBlock1, verticalView, horizontalView, viewLine-15, viewColumn-15, 2);
-					// 	inputLF.ReadBlock4DfromLightField(&bRefBlock2, verticalView, horizontalView, viewLine-15, viewColumn, 2);
-					// 	inputLF.ReadBlock4DfromLightField(&bRefBlock3, verticalView, horizontalView, viewLine-15, viewColumn+15, 2);
-
-					// 	RGB2YCbCr_BT601(yRefBlock0, cbRefBlock0, crRefBlock0, rRefBlock0, gRefBlock0, bRefBlock0, inputLF.mPGMScale);
-					// 	RGB2YCbCr_BT601(yRefBlock1, cbRefBlock1, crRefBlock1, rRefBlock1, gRefBlock1, bRefBlock1, inputLF.mPGMScale);
-					// 	RGB2YCbCr_BT601(yRefBlock2, cbRefBlock2, crRefBlock2, rRefBlock2, gRefBlock2, bRefBlock2, inputLF.mPGMScale);
-					// 	RGB2YCbCr_BT601(yRefBlock3, cbRefBlock3, crRefBlock3, rRefBlock3, gRefBlock3, bRefBlock3, inputLF.mPGMScale);
-					// }
-
-					// RGB2YCbCr_BT601(yOrigBlock, cbOrigBlock, crOrigBlock, rBlock, gBlock, bBlock, inputLF.mPGMScale);
-
-					// /* Performs 4 refs prediction */
-					// if(viewLine >= 15 && viewColumn >= 15) {
-					// 	pred.fourRefsPredictor(&yBlock, &yOrigBlock, &yRefBlock0, &yRefBlock1, &yRefBlock2, &yRefBlock3);
-					// 	pred.fourRefsPredictor(&cbBlock, &cbOrigBlock, &cbRefBlock0, &cbRefBlock1, &cbRefBlock2, &cbRefBlock3);
-					// 	pred.fourRefsPredictor(&crBlock, &crOrigBlock, &crRefBlock0, &crRefBlock1, &crRefBlock2, &crRefBlock3);
-					// }
-
-					/* Differential Inter View Prediction */
+					
 					RGB2YCbCr_BT601(yOrigBlock, cbOrigBlock, crOrigBlock, rBlock, gBlock, bBlock, inputLF.mPGMScale);
-
-					//pred.differentialPredictionRaster(&yBlock, &yOrigBlock);
-					// pred.differentialPredictionRaster(&cbBlock, &cbOrigBlock);
-					// pred.differentialPredictionRaster(&crBlock, &crOrigBlock);
-
-					// pred.differentialPredictionRasterHalf(&yBlock, &yOrigBlock);
-					// pred.differentialPredictionRasterHalf(&cbBlock, &cbOrigBlock);
-					// pred.differentialPredictionRasterHalf(&crBlock, &crOrigBlock);
-
-
-					/* Hierarchical Differential Inter View Prediction */
-					//RGB2YCbCr_BT601(yBlock, cbBlock, crBlock, rBlock, gBlock, bBlock, inputLF.mPGMScale);
-
-					// pred.hierarchicalDifferentialPrediction1Level(&yBlock, &yOrigBlock);
-					// pred.hierarchicalDifferentialPrediction1Level(&cbBlock, &cbOrigBlock);
-					// pred.hierarchicalDifferentialPrediction1Level(&crBlock, &crOrigBlock);
-
-					/* Differential Inter View Prediction Central */
-					//RGB2YCbCr_BT601(yOrigBlock, cbOrigBlock, crOrigBlock, rBlock, gBlock, bBlock, inputLF.mPGMScale);
-
-					// pred.differentialPredictionCentral(&yBlock, &yOrigBlock);
-					// pred.differentialPredictionCentral(&cbBlock, &cbOrigBlock);
-					// pred.differentialPredictionCentral(&crBlock, &crOrigBlock);
-					/* 
-					 * To use DC prediction uncomment until Calculates residues block
-					 * /
-					yDCPredictor = pred.simplePredictor(&yOrigBlock);
-					cbDCPredictor = pred.simplePredictor(&cbOrigBlock);
-					crDCPredictor = pred.simplePredictor(&crOrigBlock);
-
-					/*
-					 * write prediction values on a text file
-					 * used to reconstruct in decoding process 
-					*/
-					// predictionFile << yDCPredictor << endl;
-					// predictionFile << cbDCPredictor << endl;
-					// predictionFile << crDCPredictor << endl;
-
-					/* Calculates residues */
-					// pred.calculateResidue(&yBlock, &yOrigBlock, yDCPredictor);
-					// pred.calculateResidue(&cbBlock, &cbOrigBlock, cbDCPredictor);
-					// pred.calculateResidue(&crBlock, &crOrigBlock, crDCPredictor);
-					// DSC end
 
                     for(int spectralComponent = 0; spectralComponent < 3; spectralComponent++) {
 						// DSC begin
@@ -460,7 +367,6 @@ int main(int argc, char **argv) {
                             lfBlock.CopySubblockFrom(crOrigBlock, 0, 0, 0, 0);
 	
                         lfBlock = lfBlock - (inputLF.mPGMScale+1)/2;
-						//printf("PGMscale: %d\n", (inputLF.mPGMScale+1)/2);
                         if(viewColumn + par.transformLength_u > inputLF.mNumberOfViewColumns)
                             ExtendBlock4D(lfBlock, par.extensionMethod, extensionLength_u, 'u');
                         if(viewLine + par.transformLength_v > inputLF.mNumberOfViewLines) 
@@ -471,12 +377,18 @@ int main(int argc, char **argv) {
                             ExtendBlock4D(lfBlock, par.extensionMethod, extensionLength_t, 't');                                                                      
 						
 						// DSC begin
-						//pred.differentialPredictionRaster(&lfBlockResidue, &lfBlock);
-						pred.differentialPredictionRaster(&lfBlockResidue, &lfBlock);
-						tp.RDoptimizeTransform(lfBlockResidue, DCTarray, hdt, par.Lambda);
+						if(strcmp(par.Prediction, "diffR") == 0) {
+							pred.differentialPredictionRaster(&lfBlockResidue, &lfBlock, spectralComponent);
+       	 				}
+						else if (strcmp(par.Prediction, "diffC") == 0) {
+							pred.differentialPredictionCentral(&lfBlockResidue, &lfBlock, spectralComponent);
+       	 				}
+						else {
+							pred.saveSamplesMule(&lfBlockResidue, &lfBlock, spectralComponent);
+       	 				}
 						// DSC end
-
-                        //tp.RDoptimizeTransform(lfBlock, DCTarray, hdt, par.Lambda);
+								
+						tp.RDoptimizeTransform(lfBlockResidue, DCTarray, hdt, par.Lambda);
 
                         tp.EncodePartition(hdt, par.Lambda);
 

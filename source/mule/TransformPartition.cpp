@@ -64,7 +64,7 @@ void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTr
 	// DSC begin
 	/* commenting */
 	//printf("mPartitionCode = %s\n", mPartitionCode);    
-	printf("mInferiorBitPlane = %d\n", entropyCoder.mInferiorBitPlane);
+	//printf("mInferiorBitPlane = %d\n", entropyCoder.mInferiorBitPlane);
 	// DSC end   
 }
 

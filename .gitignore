@@ -24,6 +24,7 @@ source/*.o
 kakadu/
 *.out
 *.txt
+*.mat
 
 # User-specific files
 *.suo
