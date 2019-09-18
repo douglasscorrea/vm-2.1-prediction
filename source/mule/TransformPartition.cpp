@@ -1,18 +1,24 @@
 #include "TransformPartition.h"
 #include "Aritmetico.h"
 
-// DSC begin
-#include "Prediction.h"
-// DSC end
-
 /*******************************************************************************/
 /*                      TransformPartition class methods                    */
 /*******************************************************************************/
 
-TransformPartition :: TransformPartition(void) {
+// DSC begin
+TransformPartition :: TransformPartition(int predType) {
+	// DSC begin
+	pred = new Prediction(predType);
+	// DSC ned
     mPartitionCode = NULL;
     mUseSameBitPlane = 1;
 }
+// TransformPartition :: TransformPartition(void) {
+//     mPartitionCode = NULL;
+//     mUseSameBitPlane = 1;
+// }
+// DSC end
+
 TransformPartition :: ~TransformPartition(void) {
     if(mPartitionCode != NULL)
         delete [] mPartitionCode;
@@ -52,8 +58,9 @@ void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTr
     mLagrangianCost = RDoptimizeTransformStep(inputBlock, transformedBlock, position, length, mt, entropyCoder, scaledLambda, &mPartitionCode);
 	
 	// DSC begin
-	//Prediction pred;
-	//pred.printOneBlock(&transformedBlock);
+	//printf("length: %d, %d, %d, %d\n", length[0], length[1], length[2], length[3]);
+	pred->printFirstPlaneCoefficients(&transformedBlock);
+	pred->printAllCoefficients(&transformedBlock);
 	// DSC end
 
     mPartitionData.CopySubblockFrom(transformedBlock, 0, 0, 0, 0);
@@ -63,7 +70,7 @@ void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTr
     entropyCoder.DeleteProbabilisticModelState(currentCoderModelState);
 	// DSC begin
 	/* commenting */
-	//printf("mPartitionCode = %s\n", mPartitionCode);    
+	//printf("\t\tmPartitionCode = %s\n", mPartitionCode);    
 	//printf("mInferiorBitPlane = %d\n", entropyCoder.mInferiorBitPlane);
 	// DSC end   
 }

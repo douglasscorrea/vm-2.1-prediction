@@ -25,6 +25,7 @@ class Hierarchical4DEncoder {
 public:
 	// DSC begin
 	int counter;
+	long long int signalTotalEnergy;
 	ofstream magnitudeFile;
 	// DSC end
     Block4D mSubbandLF;   

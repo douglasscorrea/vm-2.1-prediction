@@ -175,7 +175,6 @@ int main(int argc, char **argv) {
 		int prediction = 2;
 	}
 	Prediction pred(prediction);
-	ifstream predictionValues("average_predictor.txt");
 	// DSC end
 
     lfBlock.SetDimension(transformLength_t,transformLength_s,transformLength_v,transformLength_u);
@@ -254,12 +253,18 @@ int main(int argc, char **argv) {
                             ExtendBlock4D(lfBlock, par.extensionMethod, extensionLength_t, 't');                                  
                         
 						// DSC begin
-						predictionValues >> average;
-						printf("average_predictor: %d\n", average);
-						pred.recDifferentialPredictionRaster(&lfBlock, &lfRecBlock, average);
+						if(strcmp(par.Prediction, "diffR") == 0) {
+							pred.recDifferentialPredictionRaster(&lfBlock, &lfRecBlock);
+       	 				}
+						else if (strcmp(par.Prediction, "diffC") == 0) {
+							pred.recDifferentialPredictionCentral(&lfBlock, &lfRecBlock);
+       	 				}
+						else {
+							lfRecBlock = lfBlock;
+       	 				}
 						// DSC end
 
-                        //lfRecBlock = lfRecBlock + (outputLF.mPGMScale+1)/2;
+                        lfRecBlock = lfRecBlock + (outputLF.mPGMScale+1)/2;
                         //lfBlock.Clip(0, outputLF.mPGMScale);
                         if(spectralComponent == 0)
                             yBlock.CopySubblockFrom(lfRecBlock, 0, 0, 0, 0);
@@ -269,32 +274,7 @@ int main(int argc, char **argv) {
                             crBlock.CopySubblockFrom(lfRecBlock, 0, 0, 0, 0);
                     }
 
-					// DSC begin
-					//pred.recDifferentialPredictionCentral(&yBlock, &yReconstructedBlock);
-					//pred.recDifferentialPredictionCentral(&cbBlock, &cbReconstructedBlock);
-					//pred.recDifferentialPredictionCentral(&crBlock, &crReconstructedBlock);
-
-					// pred.recDifferentialPredictionRaster(&yBlock, &yOrigBlock);
-					// pred.recDifferentialPredictionRaster(&cbBlock, &cbOrigBlock);
-					// pred.recDifferentialPredictionRaster(&crBlock, &crOrigBlock);
-
-					//pred.recHierarchicalDifferentialPrediction(&yBlock, &yOrigBlock);
-					//pred.recHierarchicalDifferentialPrediction(&cbBlock, &cbOrigBlock);
-					//pred.recHierarchicalDifferentialPrediction(&crBlock, &crOrigBlock);
-					/* DC prediction reconstruction */
-					// predictionFile >> yDCPredictor;
-					// predictionFile >> cbDCPredictor;
-					// predictionFile >> crDCPredictor;
-
-					// printf("ypred: %d\n", yDCPredictor);
-					// printf("cbpred: %d\n", cbDCPredictor);
-					// printf("crpred: %d\n", crDCPredictor);
-					// pred.reconstruct4DBlock(&yBlock, yDCPredictor);
-					// pred.reconstruct4DBlock(&cbBlock, cbDCPredictor);
-					// pred.reconstruct4DBlock(&crBlock, crDCPredictor);
-					// DSC end
                     YCbCr2RGB_BT601(rBlock, gBlock, bBlock, yBlock, cbBlock, crBlock, outputLF.mPGMScale);
-					//pred.printOneBlock(&rBlock, &gBlock, &bBlock);
                     if(par.isLenslet13x13 == 1) {
                         if(verticalView == 0) {
                             if(horizontalView == 0) {

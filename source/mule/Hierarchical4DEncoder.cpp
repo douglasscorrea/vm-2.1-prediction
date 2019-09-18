@@ -14,8 +14,9 @@ using namespace std;
 
 Hierarchical4DEncoder :: Hierarchical4DEncoder(void) {
 	// DSC begin
-	magnitudeFile.open("coeff_diffC.txt");
+	magnitudeFile.open("coeff_orig.txt");
 	counter = 0;
+	signalTotalEnergy = 0;
 	// DSC end
     mSuperiorBitPlane = 30;
 
@@ -158,7 +159,6 @@ double Hierarchical4DEncoder :: RdOptimizeHexadecaTree(int position_t, int posit
                         int coefficient = mSubbandLF.mPixel[position_t+index_t][position_s+index_s][position_v+index_v][position_u+index_u];
                         J0 = coefficient;
                         signalEnergy += J0*J0;
-						//printf("coeff: %d\n", coefficient);
                     }
                 }
             }
@@ -585,11 +585,14 @@ int Hierarchical4DEncoder :: OptimumBitplane(double lambda) {
 //    int numberOfCoefficientsEstimated = 0;
 	
 	// DSC begin
+	int magnitude;
     for(long int coefficient_index=0; coefficient_index < subbandSize; coefficient_index++) {
-            int magnitude = mSubbandLF.mPixelData[coefficient_index];
+            magnitude = mSubbandLF.mPixelData[coefficient_index];
 			magnitudeFile << magnitude << '\n';
+			signalTotalEnergy += magnitude*magnitude;
 			//counter++;
 	}
+	//printf("\t\tenergy: %lld\n", signalTotalEnergy);
 	// DSC end
 
     for(int bit_position = mSuperiorBitPlane; bit_position >= 0; bit_position--) {

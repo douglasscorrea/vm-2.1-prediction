@@ -5,7 +5,7 @@
 #include "TransformPartition.h"
 
 //DSC begin
-#include "Prediction.h"
+//#include "Prediction.h"
 #include <iostream>
 #include <fstream>
 
@@ -109,6 +109,7 @@ void EncoderParameters :: ReadConfigurationFile(char *parametersFileName) {
 void EncoderParameters :: DisplayConfiguration(void) {
 	// DSC begin
 	printf("Prediction = %s\n", Prediction);
+	// DSC end
     printf("Lambda = %f\n", Lambda);
     printf("transformLength_t = %d\n", transformLength_t);
     printf("transformLength_s = %d\n", transformLength_s);
@@ -237,9 +238,9 @@ int main(int argc, char **argv) {
     
     Block4D lfBlock, rBlock, gBlock, bBlock, yBlock, cbBlock, crBlock;
     Hierarchical4DEncoder hdt;
-    TransformPartition tp;
-
 	// DSC begin
+    //TransformPartition tp;
+
 	Block4D lfBlockResidue;
 	Block4D yOrigBlock, crOrigBlock, cbOrigBlock;
 	int predictionType = 2;
@@ -252,6 +253,7 @@ int main(int argc, char **argv) {
 	else {
 		predictionType = 2;
 	}
+	TransformPartition tp(predictionType);
 
 	Prediction pred(predictionType);
 	//ofstream predictionFile;
@@ -355,10 +357,7 @@ int main(int argc, char **argv) {
 					RGB2YCbCr_BT601(yOrigBlock, cbOrigBlock, crOrigBlock, rBlock, gBlock, bBlock, inputLF.mPGMScale);
 
                     for(int spectralComponent = 0; spectralComponent < 3; spectralComponent++) {
-						// DSC begin
-						/* commenting */
-                        //printf("\nProcessing spectral component %d\n", spectralComponent);
-						// DSC end
+                        //printf("\tProcessing spectral component %d\n", spectralComponent);
                         if(spectralComponent == 0)
                             lfBlock.CopySubblockFrom(yOrigBlock, 0, 0, 0, 0);
                         if(spectralComponent == 1)
@@ -387,7 +386,6 @@ int main(int argc, char **argv) {
 							pred.saveSamplesMule(&lfBlockResidue, &lfBlock, spectralComponent);
        	 				}
 						// DSC end
-								
 						tp.RDoptimizeTransform(lfBlockResidue, DCTarray, hdt, par.Lambda);
 
                         tp.EncodePartition(hdt, par.Lambda);

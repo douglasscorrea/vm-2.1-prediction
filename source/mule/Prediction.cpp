@@ -9,21 +9,26 @@ using namespace std;
 
 Prediction :: Prediction(int prediction) {
 	if(prediction == 0) {
+		firstPlaneCoefficients.open("firstPlaneCoeff_diffR.txt");
+		allCoefficients.open("allCoefficients_diffR.txt");
 		yResiduesFile.open("y_residues_diffR.txt");
 		cbResiduesFile.open("cb_residues_diffR.txt");
 		crResiduesFile.open("cr_residues_diffR.txt");
 	}
 	else if(prediction == 1) {
+		firstPlaneCoefficients.open("firstPlaneCoeff_diffC.txt");
+		allCoefficients.open("allCoefficients_diffC.txt");
 		yResiduesFile.open("y_residues_diffC.txt");
 		cbResiduesFile.open("cb_residues_diffC.txt");
 		crResiduesFile.open("cr_residues_diffC.txt");
 	}
 	else {
+		firstPlaneCoefficients.open("firstPlaneCoeff_MuLE.txt");
+		allCoefficients.open("allCoefficients_MuLE.txt");
 		yResiduesFile.open("y_samples_MuLE.txt");
 		cbResiduesFile.open("cb_samples_MuLE.txt");
 		crResiduesFile.open("cr_samples_MuLE.txt");
 	}
-	//predictionFile.open("average_predictor_wPGM.txt");
 	counter = 0;
 }
 
@@ -97,12 +102,7 @@ void Prediction :: saveSamplesMule(Block4D *residueBlock, Block4D *origBlock, in
 
 void Prediction :: differentialPredictionRaster(Block4D *residueBlock, Block4D *origBlock, int spectralComponent) {
 	int residuesSum = 0;
-	//int average = 0;
 
-	//average = simplePredictor(origBlock);
-	//printf("average: %d\n", average);
-	//predictionFile << average << '\n';
-	
 	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
 		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
 			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
@@ -158,7 +158,7 @@ void Prediction :: differentialPredictionCentral(Block4D *residueBlock, Block4D 
 					else
 						residueBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] = origBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn];
 				
-				if(spectralComponent == 0) {
+					if(spectralComponent == 0) {
 						yResiduesFile << residueBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] << '\n';
 					}
 					else if(spectralComponent == 1) {
@@ -223,7 +223,7 @@ void Prediction :: differentialPredictionRasterHalf(Block4D *residueBlock, Block
 	}
 }
 
-void Prediction :: recDifferentialPredictionRaster(Block4D *residueBlock, Block4D *reconstructedBlock, int average) {
+void Prediction :: recDifferentialPredictionRaster(Block4D *residueBlock, Block4D *reconstructedBlock) {
 	int residuesSum = 0;
 
 	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
@@ -237,10 +237,10 @@ void Prediction :: recDifferentialPredictionRaster(Block4D *residueBlock, Block4
 						}
 						reconstructedBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] =
 							residueBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] +
-							residueBlock->mPixel[verticalView][0][viewLine][viewColumn] + average + residuesSum;
+							residueBlock->mPixel[verticalView][0][viewLine][viewColumn] + residuesSum;
 					}
 					else {
-						reconstructedBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] = residueBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] + average;
+						reconstructedBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] = residueBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn];
 					}
 					//printf("[rec,res,sRes]: %d, %d, %d\n", reconstructedBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn], residueBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn], residuesSum);
 					residuesSum = 0;
@@ -1033,7 +1033,32 @@ void Prediction :: recHierarchicalDifferentialPrediction1Level(Block4D *recBlock
 void Prediction :: printOneBlock(Block4D *lfBlock) {
 	for(int viewLine = 0; viewLine < 15; viewLine += 1) {
 		for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-			printf("[lf]: %d\n", lfBlock->mPixel[3][3][viewLine][viewColumn]);
+			printf("[coeff]: %d\n", lfBlock->mPixel[3][3][viewLine][viewColumn]);
+		}
+	}
+}
+
+void Prediction :: printFirstPlaneCoefficients(Block4D *lfBlock) {
+	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
+		for(int viewLine = 0; viewLine < 15; viewLine += 1) {
+			for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
+				counter++;
+				firstPlaneCoefficients << lfBlock->mPixel[verticalView][0][viewLine][viewColumn] << '\n';
+				//printf("n: %d\n", verticalView*viewLine*viewColumn);
+			}
+		}
+	}
+	//printf("coeff number: %d\n", counter);
+}
+
+void Prediction :: printAllCoefficients(Block4D *lfBlock) {
+	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
+		for(int horizontalView = 1; horizontalView < 13; horizontalView += 1) {
+			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
+				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
+					allCoefficients << lfBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] << '\n';
+				}
+			}
 		}
 	}
 }
