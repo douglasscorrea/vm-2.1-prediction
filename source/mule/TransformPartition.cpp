@@ -59,8 +59,8 @@ void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTr
 	
 	// DSC begin
 	//printf("length: %d, %d, %d, %d\n", length[0], length[1], length[2], length[3]);
-	pred->printFirstPlaneCoefficients(&transformedBlock);
-	pred->printAllCoefficients(&transformedBlock);
+	//pred->printFirstPlaneCoefficients(&transformedBlock);
+	//pred->printAllCoefficients(&transformedBlock);
 	// DSC end
 
     mPartitionData.CopySubblockFrom(transformedBlock, 0, 0, 0, 0);

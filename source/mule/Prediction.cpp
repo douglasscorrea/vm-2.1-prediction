@@ -8,6 +8,8 @@
 using namespace std;
 
 Prediction :: Prediction(int prediction) {
+	predictionType = prediction;
+
 	if(prediction == 0) {
 		firstPlaneCoefficients.open("firstPlaneCoeff_diffR.txt");
 		allCoefficients.open("allCoefficients_diffR.txt");
@@ -30,6 +32,12 @@ Prediction :: Prediction(int prediction) {
 		crResiduesFile.open("cr_samples_MuLE.txt");
 	}
 	counter = 0;
+	totalSignalEnergyFirstPlane = 0;
+	totalSignalEnergyOtherPlanes = 0;
+	maxRefPlane = -9999999;
+	minRefPlane = 9999999;
+	maxOtherPlanes = -9999999;
+	minOtherPlanes = 9999999;
 }
 
 int Prediction :: simplePredictor(Block4D *origBlock) {
@@ -1038,27 +1046,85 @@ void Prediction :: printOneBlock(Block4D *lfBlock) {
 	}
 }
 
-void Prediction :: printFirstPlaneCoefficients(Block4D *lfBlock) {
+double Prediction :: calcReferencePlaneEnergy(Block4D *lfBlock) {
+	int coeff;
+
 	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
 		for(int viewLine = 0; viewLine < 15; viewLine += 1) {
 			for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-				counter++;
-				firstPlaneCoefficients << lfBlock->mPixel[verticalView][0][viewLine][viewColumn] << '\n';
-				//printf("n: %d\n", verticalView*viewLine*viewColumn);
-			}
-		}
-	}
-	//printf("coeff number: %d\n", counter);
-}
+				if(predictionType == 1) {
+					//printf("\tdiffC\n");
+					coeff = lfBlock->mPixel[verticalView][6][viewLine][viewColumn];
+				}
+				else {
+					coeff = lfBlock->mPixel[verticalView][6][viewLine][viewColumn];
+				}
 
-void Prediction :: printAllCoefficients(Block4D *lfBlock) {
-	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
-		for(int horizontalView = 1; horizontalView < 13; horizontalView += 1) {
-			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
-				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-					allCoefficients << lfBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] << '\n';
+				totalSignalEnergyFirstPlane += coeff*coeff;
+
+				if(coeff > maxRefPlane) {
+					maxRefPlane = coeff;
+				}
+				if(coeff < minRefPlane) {
+					minRefPlane = coeff;
 				}
 			}
 		}
 	}
+	return totalSignalEnergyFirstPlane;
+}
+
+double Prediction :: calcOtherPlanesEnergy(Block4D *lfBlock) {
+	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
+		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
+			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
+				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
+					if(predictionType == 1) {
+						//printf("\tdiffC\n");
+						if(horizontalView != 6) {
+							int coeff = lfBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn];
+							totalSignalEnergyOtherPlanes += coeff*coeff;
+
+							if(coeff > maxOtherPlanes) {
+								maxOtherPlanes = coeff;
+							}
+							if(coeff < minOtherPlanes) {
+								minOtherPlanes = coeff;
+							}
+						}
+					}
+					else {
+						if(horizontalView != 6) {
+							int coeff = lfBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn];
+							totalSignalEnergyOtherPlanes += coeff*coeff;
+
+							if(coeff > maxOtherPlanes) {
+								maxOtherPlanes = coeff;
+							}
+							if(coeff < minOtherPlanes) {
+								minOtherPlanes = coeff;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	return totalSignalEnergyOtherPlanes;
+}
+
+int Prediction :: getMaxRefPlane() {
+	return maxRefPlane;
+}
+
+int Prediction :: getMinRefPlane() {
+	return minRefPlane;
+}
+
+int Prediction :: getMaxOtherPlanes() {
+	return maxOtherPlanes;
+}
+
+int Prediction :: getMinOtherPlanes() {
+	return minOtherPlanes;
 }

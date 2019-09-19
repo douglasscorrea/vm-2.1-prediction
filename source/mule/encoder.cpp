@@ -240,7 +240,8 @@ int main(int argc, char **argv) {
     Hierarchical4DEncoder hdt;
 	// DSC begin
     //TransformPartition tp;
-
+	double energyRefPlane = 0;
+	double energyOtherPlanes = 0;
 	Block4D lfBlockResidue;
 	Block4D yOrigBlock, crOrigBlock, cbOrigBlock;
 	int predictionType = 2;
@@ -377,14 +378,19 @@ int main(int argc, char **argv) {
 						
 						// DSC begin
 						if(strcmp(par.Prediction, "diffR") == 0) {
+							printf("\tPrediction: %s\n", par.Prediction);
 							pred.differentialPredictionRaster(&lfBlockResidue, &lfBlock, spectralComponent);
        	 				}
-						else if (strcmp(par.Prediction, "diffC") == 0) {
+						else if(strcmp(par.Prediction, "diffC") == 0) {
+							printf("\tPrediction: %s\n", par.Prediction);
 							pred.differentialPredictionCentral(&lfBlockResidue, &lfBlock, spectralComponent);
        	 				}
-						else {
+						else if(strcmp(par.Prediction, "mule") == 0) {
+							printf("\tPrediction: %s\n", par.Prediction);
 							pred.saveSamplesMule(&lfBlockResidue, &lfBlock, spectralComponent);
        	 				}
+						energyRefPlane += pred.calcReferencePlaneEnergy(&lfBlockResidue);
+						energyOtherPlanes += pred.calcOtherPlanesEnergy(&lfBlockResidue);
 						// DSC end
 						tp.RDoptimizeTransform(lfBlockResidue, DCTarray, hdt, par.Lambda);
 
@@ -401,6 +407,14 @@ int main(int argc, char **argv) {
     inputLF.CloseLightField();
     
 	// DSC begin
+	printf("\nSUMMARY -------------------------------------------------\n");
+	printf("\tPrediction: %s\n", par.Prediction);
+	printf("\t\tEnegy reference plane: %.2lf\n", energyRefPlane);
+	printf("\t\tEnergy other planes: %.2lf\n", energyOtherPlanes);
+	printf("\t\tMax Reference plane: %d\n", pred.getMaxRefPlane());
+	printf("\t\tMin Reference plane: %d\n", pred.getMinRefPlane());
+	printf("\t\tMax other planes: %d\n", pred.getMaxOtherPlanes());
+	printf("\t\tMin other planes: %d\n", pred.getMinOtherPlanes());
 	//predictionFile.close();
 	// DSC end
     
