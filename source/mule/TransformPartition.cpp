@@ -23,8 +23,9 @@ TransformPartition :: ~TransformPartition(void) {
     if(mPartitionCode != NULL)
         delete [] mPartitionCode;
 }
-
-void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTransform &mt, Hierarchical4DEncoder &entropyCoder, double lambda) {
+// DSC begin
+//void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTransform &mt, Hierarchical4DEncoder &entropyCoder, double lambda) {
+void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTransform &mt, Hierarchical4DEncoder &entropyCoder, double lambda, Prediction *pred) {
 /*! Evaluates the Lagrangian cost of the optimum multiscale transform for the input block as well as the transformed block */   
     if(mPartitionCode != NULL)
         delete [] mPartitionCode;
@@ -59,8 +60,8 @@ void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTr
 	
 	// DSC begin
 	//printf("length: %d, %d, %d, %d\n", length[0], length[1], length[2], length[3]);
-	//pred->printFirstPlaneCoefficients(&transformedBlock);
-	//pred->printAllCoefficients(&transformedBlock);
+	pred->saveACCoeff(&transformedBlock);
+	pred->saveDCCoeff(&transformedBlock);
 	// DSC end
 
     mPartitionData.CopySubblockFrom(transformedBlock, 0, 0, 0, 0);
@@ -71,7 +72,7 @@ void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTr
 	// DSC begin
 	/* commenting */
 	//printf("\t\tmPartitionCode = %s\n", mPartitionCode);    
-	//printf("mInferiorBitPlane = %d\n", entropyCoder.mInferiorBitPlane);
+	printf("\tmInferiorBitPlane = %d\n", entropyCoder.mInferiorBitPlane);
 	// DSC end   
 }
 
@@ -95,7 +96,10 @@ double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4
     entropyCoder.mSubbandLF.CopySubblockFrom(block_0, 0, 0, 0, 0);
     double Energy;
     if(mEvaluateOptimumBitPlane == 1) {
-        entropyCoder.mInferiorBitPlane = entropyCoder.OptimumBitplane(lambda);
+        // DSC begin
+		entropyCoder.mInferiorBitPlane = entropyCoder.OptimumBitplane(lambda);
+		//entropyCoder.mInferiorBitPlane = 2;
+		// DSC end
         if(mUseSameBitPlane == 1) {
             mEvaluateOptimumBitPlane = 0;
         }

@@ -7,15 +7,22 @@ using namespace std;
 class Prediction 
 {
 public:
-	ofstream yResiduesFile, cbResiduesFile, crResiduesFile, firstPlaneCoefficients, allCoefficients;
+	ofstream yResiduesFile, cbResiduesFile, crResiduesFile, firstPlaneCoefficients, allCoefficients, DC_coeff, AC_coeff;
 	int predictionType, counter, maxRefPlane, minRefPlane, maxOtherPlanes, minOtherPlanes;
-	double totalSignalEnergyFirstPlane, totalSignalEnergyOtherPlanes;
+	double y_totalSignalEnergyFirstPlane, cb_totalSignalEnergyFirstPlane, cr_totalSignalEnergyFirstPlane;
+	double y_totalSignalEnergyOtherPlanes, cb_totalSignalEnergyOtherPlanes, cr_totalSignalEnergyOtherPlanes;
 
 	Prediction(int prediction);
 	int getMaxRefPlane();
 	int getMinRefPlane();
 	int getMaxOtherPlanes();
 	int getMinOtherPlanes();
+	double getYFirstPlaneEnergy();
+	double getCbFirstPlaneEnergy();
+	double getCrFirstPlaneEnergy();
+	double getYOtherPlanesEnergy();
+	double getCbOtherPlanesEnergy();
+	double getCrOtherPlanesEnergy();
 	int simplePredictor(Block4D *origBlock);
 	void reconstruct4DBlock(Block4D *residueBlock, int DCPredictor);
 	void fourRefsPredictor(Block4D *residueBlock, Block4D *origBlock, Block4D *ref0, Block4D *ref1, Block4D *ref2, Block4D *ref3);
@@ -32,6 +39,8 @@ public:
 	void recHierarchicalDifferentialPrediction1Level(Block4D *recBlock, Block4D *origBlock);
 	void saveSamplesMule(Block4D *residueBlock, Block4D *origBlock, int spectralComponent);
 	void printOneBlock(Block4D *lfBlock);
-	double calcReferencePlaneEnergy(Block4D *lfBlock);
-	double calcOtherPlanesEnergy(Block4D *lfBlock);
+	void calcReferencePlaneEnergy(Block4D *lfBlock, int spectralComponent);
+	void calcOtherPlanesEnergy(Block4D *lfBlock, int spectralComponent);
+	void saveDCCoeff(Block4D *lfBlock);
+	void saveACCoeff(Block4D *lfBlock);
 };

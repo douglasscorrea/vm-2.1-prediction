@@ -378,21 +378,22 @@ int main(int argc, char **argv) {
 						
 						// DSC begin
 						if(strcmp(par.Prediction, "diffR") == 0) {
-							printf("\tPrediction: %s\n", par.Prediction);
+							//printf("\tPrediction: %s\n", par.Prediction);
 							pred.differentialPredictionRaster(&lfBlockResidue, &lfBlock, spectralComponent);
        	 				}
 						else if(strcmp(par.Prediction, "diffC") == 0) {
-							printf("\tPrediction: %s\n", par.Prediction);
+							//printf("\tPrediction: %s\n", par.Prediction);
 							pred.differentialPredictionCentral(&lfBlockResidue, &lfBlock, spectralComponent);
        	 				}
 						else if(strcmp(par.Prediction, "mule") == 0) {
-							printf("\tPrediction: %s\n", par.Prediction);
+							//printf("\tPrediction: %s\n", par.Prediction);
 							pred.saveSamplesMule(&lfBlockResidue, &lfBlock, spectralComponent);
        	 				}
-						energyRefPlane += pred.calcReferencePlaneEnergy(&lfBlockResidue);
-						energyOtherPlanes += pred.calcOtherPlanesEnergy(&lfBlockResidue);
+
+						pred.calcReferencePlaneEnergy(&lfBlockResidue, spectralComponent);
+						pred.calcOtherPlanesEnergy(&lfBlockResidue, spectralComponent);
 						// DSC end
-						tp.RDoptimizeTransform(lfBlockResidue, DCTarray, hdt, par.Lambda);
+						tp.RDoptimizeTransform(lfBlockResidue, DCTarray, hdt, par.Lambda, &pred);
 
                         tp.EncodePartition(hdt, par.Lambda);
 
@@ -409,8 +410,12 @@ int main(int argc, char **argv) {
 	// DSC begin
 	printf("\nSUMMARY -------------------------------------------------\n");
 	printf("\tPrediction: %s\n", par.Prediction);
-	printf("\t\tEnegy reference plane: %.2lf\n", energyRefPlane);
-	printf("\t\tEnergy other planes: %.2lf\n", energyOtherPlanes);
+	printf("\t\tY energy reference plane: %.2lf\n", pred.getYFirstPlaneEnergy());
+	printf("\t\tCb energy reference plane: %.2lf\n",  pred.getCbFirstPlaneEnergy());
+	printf("\t\tCr energy reference plane: %.2lf\n",  pred.getCrFirstPlaneEnergy());
+	printf("\t\tY energy other planes: %.2lf\n", pred.getYOtherPlanesEnergy());
+	printf("\t\tCb energy other planes: %.2lf\n", pred.getCbOtherPlanesEnergy());
+	printf("\t\tCr energy other planes: %.2lf\n", pred.getCrOtherPlanesEnergy());
 	printf("\t\tMax Reference plane: %d\n", pred.getMaxRefPlane());
 	printf("\t\tMin Reference plane: %d\n", pred.getMinRefPlane());
 	printf("\t\tMax other planes: %d\n", pred.getMaxOtherPlanes());

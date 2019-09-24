@@ -2,7 +2,7 @@
   "type": "MuLE",
   "image_height": 434,
   "image_width": 626,
-  "number_of_rows": 13,
+  "number_of_rows": 5,
   "number_of_columns": 13,
   "is_lenslet13x13": true,
   "lambda": 22016,
@@ -17,7 +17,7 @@
         "horizontal": 31
       },
       "inter-view": {
-        "vertical": 13,
+        "vertical": 5,
         "horizontal": 13
       }
     },
