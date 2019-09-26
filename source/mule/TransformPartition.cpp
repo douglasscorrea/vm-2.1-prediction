@@ -25,7 +25,7 @@ TransformPartition :: ~TransformPartition(void) {
 }
 // DSC begin
 //void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTransform &mt, Hierarchical4DEncoder &entropyCoder, double lambda) {
-void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTransform &mt, Hierarchical4DEncoder &entropyCoder, double lambda, Prediction *pred) {
+void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTransform &mt, Hierarchical4DEncoder &entropyCoder, double lambda, Statistics *stats) {
 /*! Evaluates the Lagrangian cost of the optimum multiscale transform for the input block as well as the transformed block */   
     if(mPartitionCode != NULL)
         delete [] mPartitionCode;
@@ -60,8 +60,12 @@ void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTr
 	
 	// DSC begin
 	//printf("length: %d, %d, %d, %d\n", length[0], length[1], length[2], length[3]);
-	pred->saveACCoeff(&transformedBlock);
-	pred->saveDCCoeff(&transformedBlock);
+	stats->calcRefPlaneCoeffEnergy(&transformedBlock);
+	stats->calcOtherPlanesCoeffEnergy(&transformedBlock);
+	stats->calcSumRefPlaneCoeff(&transformedBlock);
+	stats->calcSumOtherPlanesCoeff(&transformedBlock);
+	stats->calcCoeffEnergy(&transformedBlock);
+	stats->calcSumCoeff(&transformedBlock);
 	// DSC end
 
     mPartitionData.CopySubblockFrom(transformedBlock, 0, 0, 0, 0);
@@ -72,7 +76,7 @@ void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTr
 	// DSC begin
 	/* commenting */
 	//printf("\t\tmPartitionCode = %s\n", mPartitionCode);    
-	printf("\tmInferiorBitPlane = %d\n", entropyCoder.mInferiorBitPlane);
+	//printf("\tmInferiorBitPlane = %d\n", entropyCoder.mInferiorBitPlane);
 	// DSC end   
 }
 
@@ -98,7 +102,7 @@ double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4
     if(mEvaluateOptimumBitPlane == 1) {
         // DSC begin
 		entropyCoder.mInferiorBitPlane = entropyCoder.OptimumBitplane(lambda);
-		//entropyCoder.mInferiorBitPlane = 2;
+		//entropyCoder.mInferiorBitPlane = 29;
 		// DSC end
         if(mUseSameBitPlane == 1) {
             mEvaluateOptimumBitPlane = 0;
@@ -122,7 +126,7 @@ double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4
     double JS = -1.0;
     Block4D transformedBlockS;
     transformedBlockS.SetDimension(length[0], length[1], length[2], length[3]);
-    
+
     if((length[3] >= 2*mt.mlength_u_min)&&(length[2] >= 2*mt.mlength_v_min)) {
         JS = 0.0;
         

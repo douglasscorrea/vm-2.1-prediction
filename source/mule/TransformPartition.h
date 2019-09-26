@@ -5,6 +5,7 @@
 
 // DSC begin
 #include "Prediction.h"
+#include "Statistics.h"
 // DSC end
 
 #ifndef TRANSFORMPARTITION_H
@@ -29,7 +30,7 @@ public:
 	// DSC end
     ~TransformPartition(void);
     // DSC begin
-	void RDoptimizeTransform(Block4D &inputBlock, MultiscaleTransform &mt, Hierarchical4DEncoder &entropyCoder, double lambda, Prediction *pred);
+	void RDoptimizeTransform(Block4D &inputBlock, MultiscaleTransform &mt, Hierarchical4DEncoder &entropyCoder, double lambda, Statistics *stats);
 	//void RDoptimizeTransform(Block4D &inputBlock, MultiscaleTransform &mt, Hierarchical4DEncoder &entropyCoder, double lambda);
 	// DSC end
     double RDoptimizeTransformStep(Block4D &inputBlock, Block4D &transformedBlock, int *position, int *length, MultiscaleTransform &mt, Hierarchical4DEncoder &entropyCoder, double lambda, char **partitionCode);

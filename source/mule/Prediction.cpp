@@ -29,8 +29,8 @@ Prediction :: Prediction(int prediction) {
 		//crResiduesFile.open("cr_residues_diffC.txt");
 	}
 	else {
-		DC_coeff.open("DC_coeff_MuLE.txt");
-		AC_coeff.open("AC_coeff_MuLE.txt");
+		DC_coeff.open("DC_coeff_mule.txt");
+		AC_coeff.open("AC_coeff_mule.txt");
 		//firstPlaneCoefficients.open("firstPlaneCoeff_MuLE.txt");
 		//allCoefficients.open("allCoefficients_MuLE.txt");
 		//yResiduesFile.open("y_samples_MuLE.txt");
@@ -97,21 +97,21 @@ void Prediction :: fourRefsPredictor(Block4D *residueBlock, Block4D *origBlock, 
 }           
 
 void Prediction :: saveSamplesMule(Block4D *residueBlock, Block4D *origBlock, int spectralComponent) {
-	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
-		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
-			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
-				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-					residueBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] = 
-							origBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn];
+	for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
+		for(int verticalView = 0; verticalView < 13; verticalView += 1) {
+			for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
+				for(int viewLine = 0; viewLine < 15; viewLine += 1) {
+					residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] = 
+							origBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine];
 
 					if(spectralComponent == 0) {
-						yResiduesFile << origBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] << '\n';
+						yResiduesFile << origBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] << '\n';
 					}
 					else if(spectralComponent == 1) {
-						cbResiduesFile << origBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] << '\n';
+						cbResiduesFile << origBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] << '\n';
 					}
 					else {
-						crResiduesFile << origBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] << '\n';
+						crResiduesFile << origBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] << '\n';
 					}
 				}
 			}
@@ -138,6 +138,7 @@ void Prediction :: differentialPredictionRaster(Block4D *residueBlock, Block4D *
 						residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] = 
 							origBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine];
 					}
+					//printf("%d - %d\n", residueBlock->mPixel[0][verticalView][viewColumn][viewLine], origBlock->mPixel[0][verticalView][viewColumn][viewLine]);
 
 					if(spectralComponent == 0) {
 						yResiduesFile << residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] << '\n';

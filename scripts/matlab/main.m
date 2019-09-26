@@ -1,5 +1,5 @@
-solution_list = {'DR'};
-lambda_list = {'322'};
+solution_list = {'diffC'};
+lambda_list = {'1055000'};
 ppm_list = {'000', '001' '002', '003', '004', '005', '006', '007', '008', '009', '010', '011', '012'};
 Y_PNSR_SUM = 0;
 YUV_PNSR_SUM = 0;
@@ -12,8 +12,8 @@ for i = 1:numel(solution_list)
     for j = 1:numel(lambda_list)
         for k = 1:numel(ppm_list)
             for l = 1:numel(ppm_list)
-                arq1 = ['/home/douglascorrea/light-field/dataset/Lenslet/Bikes/', ppm_list{k}, '_', ppm_list{l},'.ppm'];
-                arq2 = ['/home/douglascorrea/light-field/resultados_prediction/Bikes/decoding/', solution_list{i}, '_', lambda_list{j}, '_inv/', ppm_list{k}, '_', ppm_list{l},'.ppm'];
+                arq1 = ['/home/douglascorrea/light-field/dataset/Lenslet/Stone_Pillars_Outside/', ppm_list{k}, '_', ppm_list{l},'.ppm'];
+                arq2 = ['/home/douglascorrea/light-field/resultados_prediction/Stone_Pillars_Outside/decoding/', solution_list{i}, '_', lambda_list{j}, '/', ppm_list{k}, '_', ppm_list{l},'.ppm'];
                 disp(arq1);
                 disp(arq2);
                 im1=imread(arq1);

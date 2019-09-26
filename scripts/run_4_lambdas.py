@@ -1,7 +1,7 @@
 import os
 
 lf_dataset = ['Bikes', 'Danger_de_Mort', 'Fountain_Vincent2', 'Stone_Pillars_Outside']
-prediction_list = ['diffC', 'mule'] #diffC
+prediction_list = ['mule'] #diffC
 lambdas_Bikes = [322, 5800, 127000, 1250000]
 lambdas_Danger_de_Mort = [380, 8750, 140000, 1075800]
 lambdas_Fountain_Vincent = [349, 7500, 158000, 1580000]

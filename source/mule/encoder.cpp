@@ -6,6 +6,7 @@
 
 //DSC begin
 //#include "Prediction.h"
+//#include "Statistics.h"
 #include <iostream>
 #include <fstream>
 
@@ -257,6 +258,7 @@ int main(int argc, char **argv) {
 	TransformPartition tp(predictionType);
 
 	Prediction pred(predictionType);
+	Statistics stats(predictionType);
 	//ofstream predictionFile;
 	//predictionFile.open("predicted_values.txt");
 	// DSC end
@@ -311,7 +313,6 @@ int main(int argc, char **argv) {
     hdt.mNumberOfViewColumns = inputLF.mNumberOfViewColumns;
     hdt.mPGMScale = inputLF.mPGMScale;
     hdt.StartEncoder(par.outputFileName);
-
 	// for(int verticalView = 0; verticalView < inputLF.mNumberOfVerticalViews; verticalView += par.transformLength_t) {
 	// 	for(int horizontalView = 0; horizontalView < inputLF.mNumberOfHorizontalViews; horizontalView += par.transformLength_s) {
 	// 		for(int viewLine = 0; viewLine < 15; viewLine += par.transformLength_v) {
@@ -390,10 +391,23 @@ int main(int argc, char **argv) {
 							pred.saveSamplesMule(&lfBlockResidue, &lfBlock, spectralComponent);
        	 				}
 
-						pred.calcReferencePlaneEnergy(&lfBlockResidue, spectralComponent);
-						pred.calcOtherPlanesEnergy(&lfBlockResidue, spectralComponent);
+						if(spectralComponent == 0) {
+                            stats.calcSumYRefPlaneSamples(&lfBlockResidue);
+							stats.calcSumYOtherPlanesSamples(&lfBlockResidue);
+						}
+                        if(spectralComponent == 1) {
+                           stats.calcSumCbRefPlaneSamples(&lfBlockResidue);
+						   stats.calcSumCbOtherPlanesSamples(&lfBlockResidue);
+						}
+                        if(spectralComponent == 2) {
+							stats.calcSumCrRefPlaneSamples(&lfBlockResidue);
+                            stats.calcSumCrOtherPlanesSamples(&lfBlockResidue);
+						}
+
+						stats.calcReferencePlaneEnergy(&lfBlockResidue, spectralComponent);
+						stats.calcOtherPlanesEnergy(&lfBlockResidue, spectralComponent);
 						// DSC end
-						tp.RDoptimizeTransform(lfBlockResidue, DCTarray, hdt, par.Lambda, &pred);
+						tp.RDoptimizeTransform(lfBlockResidue, DCTarray, hdt, par.Lambda, &stats);
 
                         tp.EncodePartition(hdt, par.Lambda);
 
@@ -410,16 +424,40 @@ int main(int argc, char **argv) {
 	// DSC begin
 	printf("\nSUMMARY -------------------------------------------------\n");
 	printf("\tPrediction: %s\n", par.Prediction);
-	printf("\t\tY energy reference plane: %.2lf\n", pred.getYFirstPlaneEnergy());
-	printf("\t\tCb energy reference plane: %.2lf\n",  pred.getCbFirstPlaneEnergy());
-	printf("\t\tCr energy reference plane: %.2lf\n",  pred.getCrFirstPlaneEnergy());
-	printf("\t\tY energy other planes: %.2lf\n", pred.getYOtherPlanesEnergy());
-	printf("\t\tCb energy other planes: %.2lf\n", pred.getCbOtherPlanesEnergy());
-	printf("\t\tCr energy other planes: %.2lf\n", pred.getCrOtherPlanesEnergy());
-	printf("\t\tMax Reference plane: %d\n", pred.getMaxRefPlane());
-	printf("\t\tMin Reference plane: %d\n", pred.getMinRefPlane());
-	printf("\t\tMax other planes: %d\n", pred.getMaxOtherPlanes());
-	printf("\t\tMin other planes: %d\n", pred.getMinOtherPlanes());
+	printf("\t\tReference Plane -------------------------------------------------\n");
+	printf("\t\t\tY energy: %.2lf\n", stats.getYRefPlaneEnergy());
+	printf("\t\t\tCb energy: %.2lf\n", stats.getCbRefPlaneEnergy());
+	printf("\t\t\tCr energy: %.2lf\n", stats.getCrRefPlaneEnergy());
+	printf("\t\t\tY residues average: %.2lf\n", stats.getYRefPlaneSamplesAverage());
+	printf("\t\t\tCb residues average: %.2lf\n", stats.getCbRefPlaneSamplesAverage());
+	printf("\t\t\tCr residues average: %.2lf\n", stats.getCrRefPlaneSamplesAverage());
+	printf("\t\t\tY std: %.5lf\n", stats.calcStdYRefPlane());
+	printf("\t\t\tCb std: %.5lf\n", stats.calcStdCbRefPlane());
+	printf("\t\t\tCr std: %.5lf\n", stats.calcStdCrRefPlane());
+	printf("\t\t\tMax residues value: %d\n", stats.getMaxRefPlane());
+	printf("\t\t\tMin residues value: %d\n", stats.getMinRefPlane());
+	printf("\t\t\tEnergy Coefficients: %.2lf\n", stats.getEnergyRefPlaneCoeff());
+	printf("\t\t\tAverage Coefficients: %.2lf\n", stats.getAverageRefPlaneCoeff());
+	printf("\t\t\tStd Coefficients: %.2lf\n", stats.calcStdRefPlaneCoeff());
+	printf("\t\tOther Planes -------------------------------------------------\n");
+	printf("\t\t\tY energy: %.2lf\n", stats.getYOtherPlanesEnergy());
+	printf("\t\t\tCb energy: %.2lf\n", stats.getCbOtherPlanesEnergy());
+	printf("\t\t\tCr energy: %.2lf\n", stats.getCrOtherPlanesEnergy());
+	printf("\t\t\tY residues average: %.2lf\n", stats.getYOtherPlanesSamplesAverage());
+	printf("\t\t\tCb residues average: %.2lf\n", stats.getCbOtherPlanesSamplesAverage());
+	printf("\t\t\tCr residues average: %.2lf\n", stats.getCrOtherPlanesSamplesAverage());
+	printf("\t\t\tY std: %.5lf\n", stats.calcStdYOtherPlanes());
+	printf("\t\t\tCb std: %.5lf\n", stats.calcStdCbOtherPlanes());
+	printf("\t\t\tCr std: %.5lf\n", stats.calcStdCrOtherPlanes());
+	printf("\t\t\tMax residues value: %d\n", stats.getMaxOtherPlanes());
+	printf("\t\t\tMin residues value: %d\n", stats.getMinOtherPlanes());
+	printf("\t\t\tEnergy Coefficients: %.2lf\n", stats.getEnergyOtherPlanesCoeff());
+	printf("\t\t\tAverage Coefficients: %.2lf\n", stats.getAverageOtherPlanesCoeff());
+	printf("\t\t\tStd Coefficients: %.2lf\n", stats.calcStdOtherPlanesCoeff());
+	printf("\t\tCoefficients -------------------------------------------------\n");
+	printf("\t\t\tEnergy Coefficients: %.2lf\n", stats.getEnergyCoeff());
+	printf("\t\t\tAverage Coefficients: %.2lf\n", stats.getAverageCoeff());
+	printf("\t\t\tStd Coefficients: %.2lf\n", stats.calcStdCoeff());
 	//predictionFile.close();
 	// DSC end
     

@@ -619,6 +619,9 @@ int Hierarchical4DEncoder :: OptimumBitplane(double lambda) {
             }
         }
         J = distortion + lambda*(accumulatedRate + signalRate);
+		// DSC begin
+		//printf("[d, r]: %.0lf, %.0lf\n", distortion, lambda*(accumulatedRate + signalRate));
+		// DSC end
         //if((J < Jmin)||(bit_position == mSuperiorBitPlane)) {
         if((J <= Jmin)||(bit_position == mSuperiorBitPlane)) {
             Jmin = J;
