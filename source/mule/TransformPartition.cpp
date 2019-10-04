@@ -9,8 +9,9 @@ using namespace std;
 /*******************************************************************************/
 
 // DSC begin
-TransformPartition :: TransformPartition(int predType, int inferiorBitPlane, int evaluateOptimumBitPlane) {
+TransformPartition :: TransformPartition(int predType, int inferiorBitPlane, int evaluateOptimumBitPlane, int split) {
 	// DSC begin
+	mSplit = split;
 	mInferiorBitPlane = inferiorBitPlane;
 	mEvaluateOptimumBitPlane = evaluateOptimumBitPlane;
 	partition_code_file.open("partition_codes.txt");
@@ -117,7 +118,7 @@ double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4
     }
 	// DSC begin
 	else {
-		entropyCoder.mInferiorBitPlane = mInferiorBitPlane;
+		entropyCoder.mInferiorBitPlane = mInferiorBitPlane; 
 	}
 	// DSC end
     
@@ -312,93 +313,112 @@ double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4
 
     //choose the lower cost and returns the corresponding cost,  the partition code and the arithmetic coder model
     //find best J
-    int interview_split = 0;
-    int intraview_split = 0;
-	int no_split = 0;
-    //int no_split = 1;
-   
-    if(JV >= 0) {
-        if(JS >= 0) {
-            if(JV < JS) {
-                if(JV < J0) {
-                    interview_split = 1;
-                }
-                else {
-                    no_split = 1;                    
-                }
-            }
-            else {                
-                if(JS < J0) {
-                    intraview_split = 1;
-                }
-                else {
-                    no_split = 1;                    
-                }
-            }
-        }
-        else {
-            if(JV < J0) {
-                interview_split = 1;
-            }
-            else {
-                no_split = 1;
-            }            
-        }
-    }
-    else {
-        if(JS >= 0) {
-            if(JS < J0) {
-                intraview_split = 1;
-            }
-            else {
-                no_split = 1;
-            }
-        }
-        else {
-            no_split = 1;
-        }
-    }
-    double optimumJ;
-    //reallocates memory for the partitionCode string based on the current length and the length of the chosen one
-    //copies data from the chosen arithmetic coder model to the current model
-    char flagCode[2];
-    flagCode[1] = 0;
-    if(interview_split == 1) {
-        optimumJ = JV;
-        char *code = new char[2+strlen(*partitionCode)+strlen(partitionCodeV)];
-        strcpy(code, *partitionCode);
-        flagCode[0] = INTERVIEWSPLITFLAG;
-        strcat(code, flagCode);
-        strcat(code, partitionCodeV);
-        delete(*partitionCode);
-        *partitionCode = code;
-        entropyCoder.SetOptimizerProbabilisticModelState(coderModelState_v);
-        transformedBlock.CopySubblockFrom(transformedBlockV, 0, 0, 0, 0);
-    }
-    if(intraview_split == 1) {
-        optimumJ = JS;
-        char *code = new char[2+strlen(*partitionCode)+strlen(partitionCodeS)];
-        strcpy(code, *partitionCode);
-        flagCode[0] = INTRAVIEWSPLITFLAG;
-        strcat(code, flagCode);
-        strcat(code, partitionCodeS);
-        delete(*partitionCode);
-        *partitionCode = code;
-        entropyCoder.SetOptimizerProbabilisticModelState(coderModelState_s);
-        transformedBlock.CopySubblockFrom(transformedBlockS, 0, 0, 0, 0);
-    }
-    if(no_split == 1) {
-        optimumJ = J0;   
-        char *code = new char[2+strlen(*partitionCode)];
-        strcpy(code, *partitionCode);
-        flagCode[0] = NOSPLITFLAG;
-        strcat(code, flagCode);
-        delete(*partitionCode);
-        *partitionCode = code;
-        entropyCoder.SetOptimizerProbabilisticModelState(coderModelState_0);
-        //mPartitionData.CopySubblockFrom(block_0, 0, 0, 0, 0, position[0], position[1], position[2], position[3]);
-        transformedBlock.CopySubblockFrom(block_0, 0, 0, 0, 0);
-    }
+	// DSC begin
+	double optimumJ;
+	if(mSplit == 1) {
+		int interview_split = 0;
+		int intraview_split = 0;
+		int no_split = 0;
+		//int no_split = 1;
+	
+		if(JV >= 0) {
+			if(JS >= 0) {
+				if(JV < JS) {
+					if(JV < J0) {
+						interview_split = 1;
+					}
+					else {
+						no_split = 1;                    
+					}
+				}
+				else {                
+					if(JS < J0) {
+						intraview_split = 1;
+					}
+					else {
+						no_split = 1;                    
+					}
+				}
+			}
+			else {
+				if(JV < J0) {
+					interview_split = 1;
+				}
+				else {
+					no_split = 1;
+				}            
+			}
+		}
+		else {
+			if(JS >= 0) {
+				if(JS < J0) {
+					intraview_split = 1;
+				}
+				else {
+					no_split = 1;
+				}
+			}
+			else {
+				no_split = 1;
+			}
+		}
+		//reallocates memory for the partitionCode string based on the current length and the length of the chosen one
+		//copies data from the chosen arithmetic coder model to the current model
+		char flagCode[2];
+		flagCode[1] = 0;
+		if(interview_split == 1) {
+			optimumJ = JV;
+			char *code = new char[2+strlen(*partitionCode)+strlen(partitionCodeV)];
+			strcpy(code, *partitionCode);
+			flagCode[0] = INTERVIEWSPLITFLAG;
+			strcat(code, flagCode);
+			strcat(code, partitionCodeV);
+			delete(*partitionCode);
+			*partitionCode = code;
+			entropyCoder.SetOptimizerProbabilisticModelState(coderModelState_v);
+			transformedBlock.CopySubblockFrom(transformedBlockV, 0, 0, 0, 0);
+		}
+		if(intraview_split == 1) {
+			optimumJ = JS;
+			char *code = new char[2+strlen(*partitionCode)+strlen(partitionCodeS)];
+			strcpy(code, *partitionCode);
+			flagCode[0] = INTRAVIEWSPLITFLAG;
+			strcat(code, flagCode);
+			strcat(code, partitionCodeS);
+			delete(*partitionCode);
+			*partitionCode = code;
+			entropyCoder.SetOptimizerProbabilisticModelState(coderModelState_s);
+			transformedBlock.CopySubblockFrom(transformedBlockS, 0, 0, 0, 0);
+		}
+		if(no_split == 1) {
+			optimumJ = J0;   
+			char *code = new char[2+strlen(*partitionCode)];
+			strcpy(code, *partitionCode);
+			flagCode[0] = NOSPLITFLAG;
+			strcat(code, flagCode);
+			delete(*partitionCode);
+			*partitionCode = code;
+			entropyCoder.SetOptimizerProbabilisticModelState(coderModelState_0);
+			//mPartitionData.CopySubblockFrom(block_0, 0, 0, 0, 0, position[0], position[1], position[2], position[3]);
+			transformedBlock.CopySubblockFrom(block_0, 0, 0, 0, 0);
+		}
+	}
+	else {
+		//reallocates memory for the partitionCode string based on the current length and the length of the chosen one
+		//copies data from the chosen arithmetic coder model to the current model
+		char flagCode[2];
+		flagCode[1] = 0;
+		optimumJ = J0;   
+		char *code = new char[2+strlen(*partitionCode)];
+		strcpy(code, *partitionCode);
+		flagCode[0] = NOSPLITFLAG;
+		strcat(code, flagCode);
+		delete(*partitionCode);
+		*partitionCode = code;
+		entropyCoder.SetOptimizerProbabilisticModelState(coderModelState_0);
+		//mPartitionData.CopySubblockFrom(block_0, 0, 0, 0, 0, position[0], position[1], position[2], position[3]);
+		transformedBlock.CopySubblockFrom(block_0, 0, 0, 0, 0);
+	}
     //deletes temporary strings, blocks and models
     //block_0.SetDimension(0, 0, 0, 0);
    

@@ -27,7 +27,8 @@ public:
 	int mInferiorBitPlane;
 	ofstream partition_code_file;
     //TransformPartition(void);
-	TransformPartition(int predType, int inferiorBitPlane, int evaluateOptimumBitPlane);
+	int mSplit;
+	TransformPartition(int predType, int inferiorBitPlane, int evaluateOptimumBitPlane, int Split);
 	Prediction *pred;
     ~TransformPartition(void);
 	void RDoptimizeTransform(Block4D &inputBlock, MultiscaleTransform &mt, Hierarchical4DEncoder &entropyCoder, double lambda, Statistics *stats);

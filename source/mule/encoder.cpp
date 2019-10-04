@@ -30,6 +30,7 @@ public:
 	int SuperiorBitPlane;
 	int InferiorBitPlane;
 	int EvaluateOptimumBitPlane;
+	int Split;
 	// DSC end
     double Lambda;
     int transformLength_t;
@@ -116,6 +117,7 @@ void EncoderParameters :: DisplayConfiguration(void) {
 	printf("SuperiorBitPlane = %d\n", SuperiorBitPlane);
 	printf("InferiorBitPlane = %d\n", InferiorBitPlane);
 	printf("EvaluateOptimumBitPlane = %d\n", EvaluateOptimumBitPlane);
+	printf("Split = %d\n", Split);
 	// DSC end
     printf("Lambda = %f\n", Lambda);
     printf("transformLength_t = %d\n", transformLength_t);
@@ -186,6 +188,9 @@ int main(int argc, char **argv) {
     }
     for(int n = 0; n < argc; n++) {
 		// DSC begin
+		if(strcmp(argv[n], "-split") == 0) {
+			par.Split = atoi(argv[n+1]);
+        }
 		if(strcmp(argv[n], "-evaluateOptimumBitPlane") == 0) {
 			par.EvaluateOptimumBitPlane = atoi(argv[n+1]);
         }
@@ -272,7 +277,7 @@ int main(int argc, char **argv) {
 	else {
 		predictionType = 2;
 	}
-	TransformPartition tp(predictionType, par.InferiorBitPlane, par.EvaluateOptimumBitPlane);
+	TransformPartition tp(predictionType, par.InferiorBitPlane, par.EvaluateOptimumBitPlane, par.Split);
 
 	Prediction pred(predictionType);
 	Statistics stats(predictionType);
