@@ -1,15 +1,21 @@
 #include "TransformPartition.h"
 #include "Aritmetico.h"
 
+// DSC begin
+using namespace std;
+// DSC end
 /*******************************************************************************/
 /*                      TransformPartition class methods                    */
 /*******************************************************************************/
 
 // DSC begin
-TransformPartition :: TransformPartition(int predType) {
+TransformPartition :: TransformPartition(int predType, int inferiorBitPlane, int evaluateOptimumBitPlane) {
 	// DSC begin
+	mInferiorBitPlane = inferiorBitPlane;
+	mEvaluateOptimumBitPlane = evaluateOptimumBitPlane;
+	partition_code_file.open("partition_codes.txt");
 	pred = new Prediction(predType);
-	// DSC ned
+	// DSC endd
     mPartitionCode = NULL;
     mUseSameBitPlane = 1;
 }
@@ -18,7 +24,6 @@ TransformPartition :: TransformPartition(int predType) {
 //     mUseSameBitPlane = 1;
 // }
 // DSC end
-
 TransformPartition :: ~TransformPartition(void) {
     if(mPartitionCode != NULL)
         delete [] mPartitionCode;
@@ -31,7 +36,9 @@ void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTr
         delete [] mPartitionCode;
     mPartitionCode = new char [1];
     mPartitionCode[0] = 0;          //initializes the partition code string as the null string
-    mEvaluateOptimumBitPlane = 1;
+	// DSC begin
+    //mEvaluateOptimumBitPlane = 1;
+	// DSC end
     mPartitionData.SetDimension(inputBlock.mlength_t, inputBlock.mlength_s, inputBlock.mlength_v, inputBlock.mlength_u);
    
     double scaledLambda = mPartitionData.mlength_t*mPartitionData.mlength_s;
@@ -66,6 +73,8 @@ void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTr
 	stats->calcSumOtherPlanesCoeff(&transformedBlock);
 	stats->calcCoeffEnergy(&transformedBlock);
 	stats->calcSumCoeff(&transformedBlock);
+	stats->countCoefficients(&transformedBlock);
+	stats->countPartitioning(mPartitionCode);
 	// DSC end
 
     mPartitionData.CopySubblockFrom(transformedBlock, 0, 0, 0, 0);
@@ -75,7 +84,8 @@ void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTr
     entropyCoder.DeleteProbabilisticModelState(currentCoderModelState);
 	// DSC begin
 	/* commenting */
-	//printf("\t\tmPartitionCode = %s\n", mPartitionCode);    
+	printf("\t\tmPartitionCode = %s\n", mPartitionCode);    
+	partition_code_file << mPartitionCode << '\n';
 	//printf("\tmInferiorBitPlane = %d\n", entropyCoder.mInferiorBitPlane);
 	// DSC end   
 }
@@ -100,14 +110,16 @@ double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4
     entropyCoder.mSubbandLF.CopySubblockFrom(block_0, 0, 0, 0, 0);
     double Energy;
     if(mEvaluateOptimumBitPlane == 1) {
-        // DSC begin
 		entropyCoder.mInferiorBitPlane = entropyCoder.OptimumBitplane(lambda);
-		//entropyCoder.mInferiorBitPlane = 29;
-		// DSC end
         if(mUseSameBitPlane == 1) {
             mEvaluateOptimumBitPlane = 0;
         }
     }
+	// DSC begin
+	else {
+		entropyCoder.mInferiorBitPlane = mInferiorBitPlane;
+	}
+	// DSC end
     
     //call RdOptimizeHexadecaTree method from entropyCoder to evaluate J0
     if(entropyCoder.mSegmentationTreeCodeBuffer != NULL)
@@ -302,7 +314,8 @@ double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4
     //find best J
     int interview_split = 0;
     int intraview_split = 0;
-    int no_split = 0;
+	int no_split = 0;
+    //int no_split = 1;
    
     if(JV >= 0) {
         if(JS >= 0) {

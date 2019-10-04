@@ -175,6 +175,8 @@ int main(int argc, char **argv) {
 		int prediction = 2;
 	}
 	Prediction pred(prediction);
+	// ifstream DCPredictorFile;
+	// DCPredictorFile.open("DC_predictors.txt");
 	// DSC end
 
     lfBlock.SetDimension(transformLength_t,transformLength_s,transformLength_v,transformLength_u);
@@ -256,12 +258,16 @@ int main(int argc, char **argv) {
 						if(strcmp(par.Prediction, "diffR") == 0) {
 							pred.recDifferentialPredictionRaster(&lfBlock, &lfRecBlock);
        	 				}
-						else if (strcmp(par.Prediction, "diffC") == 0) {
+						else if(strcmp(par.Prediction, "diffC") == 0) {
 							pred.recDifferentialPredictionCentral(&lfBlock, &lfRecBlock);
        	 				}
-						else {
+						else if(strcmp(par.Prediction, "diffC") == 0){
 							lfRecBlock = lfBlock;
        	 				}
+						else if(strcmp(par.Prediction, "diffRDC") == 0) {
+							printf("DiffDC\n");
+							pred.recDifferentialPredictionRasterDCRefPlane(&lfBlock, &lfRecBlock);
+						}
 						// DSC end
 
                         lfRecBlock = lfRecBlock + (outputLF.mPGMScale+1)/2;

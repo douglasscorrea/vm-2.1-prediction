@@ -7,6 +7,7 @@ using namespace std;
 class Prediction 
 {
 public:
+	ifstream DCPredictorFile;
 	ofstream yResiduesFile, cbResiduesFile, crResiduesFile, firstPlaneCoefficients, allCoefficients, DC_coeff, AC_coeff;
 	int predictionType, counter, maxRefPlane, minRefPlane, maxOtherPlanes, minOtherPlanes;
 	double y_totalSignalEnergyFirstPlane, cb_totalSignalEnergyFirstPlane, cr_totalSignalEnergyFirstPlane;
@@ -43,4 +44,9 @@ public:
 	void calcOtherPlanesEnergy(Block4D *lfBlock, int spectralComponent);
 	void saveDCCoeff(Block4D *lfBlock);
 	void saveACCoeff(Block4D *lfBlock);
+
+	void differentialPredictionRasterDCRefPlane(Block4D *residueBlock, Block4D *origBlock, int spectralComponent);
+	int DCPredictorRefPlaneRaster(Block4D *origBlock, int verticalView);
+	void recDifferentialPredictionRasterDCRefPlane(Block4D *residueBlock, Block4D *reconstructedBlock);
+
 };

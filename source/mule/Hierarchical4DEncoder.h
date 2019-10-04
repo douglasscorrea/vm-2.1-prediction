@@ -46,7 +46,10 @@ public:
     int mPreSegmentation;
     char *mSegmentationTreeCodeBuffer;
     long int mSegmentationTreeCodeBufferSize;
-    Hierarchical4DEncoder(void);
+	// DSC begin
+    //Hierarchical4DEncoder(void);
+	Hierarchical4DEncoder(int superiorBitPlane);
+	// DSC end
     ~Hierarchical4DEncoder(void);
     void LoadToSubBand4D(const Block4D &B, int sbb_t, int sbb_s, int sbb_v, int sbb_u);
     void StartEncoder(char *outputFile);

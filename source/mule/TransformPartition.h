@@ -24,12 +24,12 @@ public:
     int mUseSameBitPlane;               /*!< Forces to use the same minimum bitplane for all subblocks */
     Block4D mPartitionData;             /*!< DCT of all subblocks of the partition */
 	// DSC begin
+	int mInferiorBitPlane;
+	ofstream partition_code_file;
     //TransformPartition(void);
-	TransformPartition(int predType);
+	TransformPartition(int predType, int inferiorBitPlane, int evaluateOptimumBitPlane);
 	Prediction *pred;
-	// DSC end
     ~TransformPartition(void);
-    // DSC begin
 	void RDoptimizeTransform(Block4D &inputBlock, MultiscaleTransform &mt, Hierarchical4DEncoder &entropyCoder, double lambda, Statistics *stats);
 	//void RDoptimizeTransform(Block4D &inputBlock, MultiscaleTransform &mt, Hierarchical4DEncoder &entropyCoder, double lambda);
 	// DSC end

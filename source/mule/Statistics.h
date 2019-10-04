@@ -10,6 +10,8 @@ public:
 	ofstream yResiduesFile, cbResiduesFile, crResiduesFile, refPlaneCoefficients, allCoefficients, DC_coeff, AC_coeff;
 	int predictionType, maxRefPlane, minRefPlane, maxOtherPlanes, minOtherPlanes;
 	int yCounterRP, cbCounterRP, crCounterRP, yCounterOP, cbCounterOP, crCounterOP, counterOPCoeffs, counterRPCoeffs, counterAllCoeffs;
+	int partitioningCounter;
+	double zeroCoefficientsCounter, totalCoefficientsCounter;
 	int *yRefPlaneSamples;
 	int *cbRefPlaneSamples;
 	int *crRefPlaneSamples;
@@ -19,6 +21,7 @@ public:
 	int *refPlaneCoeff;
 	int *otherPlanesCoeff;
 	int *AllCoeffs;
+	int maxCoeff, minCoeff;
 
 	double y_totalSignalEnergyRefPlane, cb_totalSignalEnergyRefPlane, cr_totalSignalEnergyRefPlane;
 	double y_totalSignalEnergyOtherPlanes, cb_totalSignalEnergyOtherPlanes, cr_totalSignalEnergyOtherPlanes;
@@ -42,10 +45,17 @@ public:
 	void calcSumYOtherPlanesSamples(Block4D *lfBlock);
 	void calcSumCbOtherPlanesSamples(Block4D *lfBlock);
 	void calcSumCrOtherPlanesSamples(Block4D *lfBlock);
+	void countCoefficients(Block4D *transformedBlock);
+	void countPartitioning(char *partitionCode);
 	int getMaxRefPlane();
 	int getMinRefPlane();
 	int getMaxOtherPlanes();
 	int getMinOtherPlanes();
+	int getMaxCoeff();
+	int getMinCoeff();
+	int getPartitioningCounter();
+	double getZeroCoefficients();
+	double getTotalCoefficients();
 	double getYRefPlaneEnergy();
 	double getCbRefPlaneEnergy();
 	double getCrRefPlaneEnergy();

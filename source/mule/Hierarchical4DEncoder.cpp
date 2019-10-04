@@ -12,8 +12,18 @@ using namespace std;
 /*                        Hierachical4DEncoder class methods                   */
 /*******************************************************************************/
 
-Hierarchical4DEncoder :: Hierarchical4DEncoder(void) {
-    mSuperiorBitPlane = 30;
+// DSC begin
+// Hierarchical4DEncoder :: Hierarchical4DEncoder(void) {
+//     mSuperiorBitPlane = 30;
+
+//     mInferiorBitPlane = 0;
+//     mPreSegmentation = 1;
+//     mSegmentationTreeCodeBuffer = NULL;
+//     mSegmentationTreeCodeBufferSize = 0;
+    
+// }
+Hierarchical4DEncoder :: Hierarchical4DEncoder(int superiorBitPlane) {
+    mSuperiorBitPlane = superiorBitPlane;
 
     mInferiorBitPlane = 0;
     mPreSegmentation = 1;
