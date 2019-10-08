@@ -623,7 +623,9 @@ int Hierarchical4DEncoder :: OptimumBitplane(double lambda) {
                 quantizedMagnitude += (1 << bit_position)/2;
             } 
             double magnitude_error = magnitude - quantizedMagnitude;
+			//printf("[mag_error, mag, qMag]: %.0lf, %d, %d\n", magnitude_error, magnitude, quantizedMagnitude);
             distortion += magnitude_error*magnitude_error;
+			//printf("[distortion]: %.0lf\n", distortion);
             if(magnitude >= (1 << bit_position)) {
                 coefficientsDistortion += magnitude_error*magnitude_error;
             }

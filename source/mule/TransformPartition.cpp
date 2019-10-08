@@ -87,7 +87,7 @@ void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTr
 	/* commenting */
 	printf("\t\tmPartitionCode = %s\n", mPartitionCode);    
 	partition_code_file << mPartitionCode << '\n';
-	//printf("\tmInferiorBitPlane = %d\n", entropyCoder.mInferiorBitPlane);
+	printf("\t\tmInferiorBitPlane = %d\n", entropyCoder.mInferiorBitPlane);
 	// DSC end   
 }
 
@@ -110,12 +110,13 @@ double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4
     entropyCoder.mSubbandLF.SetDimension(block_0.mlength_t, block_0.mlength_s, block_0.mlength_v, block_0.mlength_u);
     entropyCoder.mSubbandLF.CopySubblockFrom(block_0, 0, 0, 0, 0);
     double Energy;
-    if(mEvaluateOptimumBitPlane == 1) {
-		entropyCoder.mInferiorBitPlane = entropyCoder.OptimumBitplane(lambda);
-        if(mUseSameBitPlane == 1) {
-            mEvaluateOptimumBitPlane = 0;
-        }
-    }
+	//printf("EOBP: %d\n", mEvaluateOptimumBitPlane);
+	if(mEvaluateOptimumBitPlane == 1) {
+			entropyCoder.mInferiorBitPlane = entropyCoder.OptimumBitplane(lambda);
+			// if(mUseSameBitPlane == 1) {
+			// 	mEvaluateOptimumBitPlane = 0;
+			// }
+		}
 	// DSC begin
 	else {
 		entropyCoder.mInferiorBitPlane = mInferiorBitPlane; 

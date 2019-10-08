@@ -126,21 +126,7 @@ void Prediction :: differentialPredictionRaster(Block4D *residueBlock, Block4D *
 		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
 			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
 				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-					// horizontal, vertical, coluna, linha
-					// if(horizontalView == 0 && verticalView == 2)
-					// 	printf("%d\n", origBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine]);
-					if(horizontalView == 0 && verticalView == 0)
-						residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] = 0;
-					else if(horizontalView == 0 && verticalView == 1) {
-						residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] = 0;
-					}
-					else if(horizontalView == 1 && verticalView == 0) {
-						residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] = 0;
-					}
-					else if(horizontalView == 12 && verticalView == 0) {
-						residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] = 0;
-					}
-					else if(horizontalView > 0) {
+					if(horizontalView > 0) {
 						residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] =
 								origBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] - 
 								(origBlock->mPixel[horizontalView-1][verticalView][viewColumn][viewLine]);
@@ -261,14 +247,13 @@ void Prediction :: recDifferentialPredictionRaster(Block4D *residueBlock, Block4
 		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
 			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
 				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-					//printf("Ve: %d\n", residueBlock->mPixel[verticalView][0][viewLine][viewColumn]);=
 					if(horizontalView > 0) {
 						for(int i = 1; i < horizontalView; i++) {
 							residuesSum += residueBlock->mPixel[i][verticalView][viewColumn][viewLine];
 						}
 						reconstructedBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] =
 							residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] +
-							residueBlock->mPixel[0][verticalView][viewColumn][viewLine] + residuesSum;
+							reconstructedBlock->mPixel[0][verticalView][viewColumn][viewLine] + residuesSum;
 					}
 					else {
 						reconstructedBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] = residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine];
