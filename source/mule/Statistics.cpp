@@ -11,7 +11,7 @@
 using namespace std;
 
 #define refPlaneSamples 3562650;
-#define otherPlanesSamples 42751800;
+#define otherPlanesSamples 46314450;
 
 Statistics :: Statistics(int prediction) {
 	predictionType = prediction;
@@ -19,29 +19,29 @@ Statistics :: Statistics(int prediction) {
 	yRefPlaneSamples = new int[3562650];
 	cbRefPlaneSamples = new int[3562650];
 	crRefPlaneSamples = new int[3562650];
-	yOtherPlanesSamples = new int[42751800];
-	cbOtherPlanesSamples = new int[42751800];
-	crOtherPlanesSamples = new int[42751800];
-	refPlaneCoeff = new int[3562650];;
-	otherPlanesCoeff =  new int[42751800];
-	AllCoeffs = new int[3562650+42751800];
+	yOtherPlanesSamples = new int[46314450];
+	cbOtherPlanesSamples = new int[46314450];
+	crOtherPlanesSamples = new int[46314450];
+	//refPlaneCoeff = new int[3562650];;
+	//otherPlanesCoeff =  new int[46314450];
+	//AllCoeffs = new int[3562650+46314450];
 
 	partitioningCounter = 0;
 	zeroCoefficientsCounter = 0;
 	totalCoefficientsCounter = 0;
-	counterAllCoeffs = 0;
+	//counterAllCoeffs = 0;
 	yCounterRP = 0;
 	cbCounterRP = 0;
 	crCounterRP = 0;
 	yCounterOP = 0;
 	cbCounterOP = 0;
 	crCounterOP = 0;
-	counterOPCoeffs = 0;
-	counterRPCoeffs = 0;
-	energyRefPlaneCoeff = 0;
-	energyOtherPlanesCoeff = 0;
-	sumRefPlaneCoeff = 0;
-	sumOtherPlanesCoeff = 0;
+	//counterOPCoeffs = 0;
+	//counterRPCoeffs = 0;
+	//energyRefPlaneCoeff = 0;
+	//energyOtherPlanesCoeff = 0;
+	//sumRefPlaneCoeff = 0;
+	//sumOtherPlanesCoeff = 0;
 	coeffEnergy = 0;
 	sumCoeff = 0;
 	y_totalSignalEnergyRefPlane = 0;
@@ -50,9 +50,9 @@ Statistics :: Statistics(int prediction) {
 	y_totalSignalEnergyOtherPlanes = 0;
 	cb_totalSignalEnergyOtherPlanes = 0;
 	cr_totalSignalEnergyOtherPlanes = 0;
-	y_samplesSum = 0;
-	cb_samplesSum = 0;
-	cr_samplesSum = 0;
+	// y_samplesSum = 0;
+	// cb_samplesSum = 0;
+	// cr_samplesSum = 0;
 	y_refPlaneSamplesSum = 0;
 	cb_refPlaneSamplesSum = 0;
 	cr_refPlaneSamplesSum = 0;
@@ -293,7 +293,6 @@ void Statistics :: calcSumYOtherPlanesSamples(Block4D *lfBlock) {
 				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
 					y_otherPlanesSamplesSum += lfBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine];
 					
-					//printf("r: %d\n", lfBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine]);
 					yOtherPlanesSamples[yCounterOP] = lfBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine];
 					yCounterOP++;
 				}
@@ -338,6 +337,7 @@ double Statistics :: calcStdYRefPlane() {
 
 	for(int i = 0; i < 3562650; i++) {
 		stdDev += pow(yRefPlaneSamples[i] - average, 2);
+		//printf("yRP:  %lf\n", yRefPlaneSamples[i] - average);
 	}
 
 	return sqrt(stdDev/3562650);
@@ -367,122 +367,121 @@ double Statistics :: calcStdCrRefPlane() {
 
 double Statistics :: calcStdYOtherPlanes() {
 	double stdDev = 0;
-	double average = (double)y_otherPlanesSamplesSum/42751800;
+	double average = (double)y_otherPlanesSamplesSum/46314450;
 
-	for(int i = 0; i < 42681600; i++) {
+	for(int i = 0; i < 46314450; i++) {
 		stdDev += pow(yOtherPlanesSamples[i] - average, 2);
-		//if(yOtherPlanesSamples[i] > 1024 || yOtherPlanesSamples[i] < 1024)
-			//printf("ri: %d\n", yOtherPlanesSamples[i]);
 	}
 
-	return sqrt(stdDev/42751800);
+	//printf("y_std_op: %.2lf\n", stdDev);
+	
+	return sqrt(stdDev/46314450);
 }
 
 double Statistics :: calcStdCbOtherPlanes() {
 	double stdDev = 0;
-	double average = (double)cb_otherPlanesSamplesSum/42751800;
+	double average = (double)cb_otherPlanesSamplesSum/46314450;
 
-	for(int i = 0; i < 42681600; i++) {
+	for(int i = 0; i < 46314450; i++) {
 		stdDev += pow(cbOtherPlanesSamples[i] - average, 2);
 	}
-	
-	return sqrt(stdDev/42751800);
+	return sqrt(stdDev/46314450);
 }
 
 double Statistics :: calcStdCrOtherPlanes() {
 	double stdDev = 0;
-	double average = (double)cr_otherPlanesSamplesSum/42751800;
+	double average = (double)cr_otherPlanesSamplesSum/46314450;
 
-	for(int i = 0; i < 42681600; i++) {
+	for(int i = 0; i < 46314450; i++) {
 		stdDev += pow(crOtherPlanesSamples[i] - average, 2);
 	}
 	
-	return sqrt(stdDev/42751800);
+	return sqrt(stdDev/46314450);
 }
 
-void Statistics :: calcRefPlaneCoeffEnergy(Block4D *transformedBlock) {
-	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
-		for(int viewLine = 0; viewLine < 15; viewLine += 1) {
-			for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-				int coeff = transformedBlock->mPixel[0][verticalView][viewColumn][viewLine];
+// void Statistics :: calcRefPlaneCoeffEnergy(Block4D *transformedBlock) {
+// 	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
+// 		for(int viewLine = 0; viewLine < 15; viewLine += 1) {
+// 			for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
+// 				int coeff = transformedBlock->mPixel[0][verticalView][viewColumn][viewLine];
 
-				energyRefPlaneCoeff += coeff*coeff;
-			}
-		}
-	}
-}
+// 				energyRefPlaneCoeff += coeff*coeff;
+// 			}
+// 		}
+// 	}
+// }
 
-void Statistics :: calcOtherPlanesCoeffEnergy(Block4D *transformedBlock) {
-	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
-		for(int horizontalView = 1; horizontalView < 13; horizontalView += 1) {
-			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
-				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-					int coeff = transformedBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine];
+// void Statistics :: calcOtherPlanesCoeffEnergy(Block4D *transformedBlock) {
+// 	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
+// 		for(int horizontalView = 1; horizontalView < 13; horizontalView += 1) {
+// 			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
+// 				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
+// 					int coeff = transformedBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine];
 					
-					energyOtherPlanesCoeff += coeff*coeff;
-				}
-			}
-		}
-	}
-}
+// 					energyOtherPlanesCoeff += coeff*coeff;
+// 				}
+// 			}
+// 		}
+// 	}
+// }
 
-void Statistics :: calcSumRefPlaneCoeff(Block4D *transformedBlock) {
-	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
-		for(int viewLine = 0; viewLine < 15; viewLine += 1) {
-			for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-				int coeff = transformedBlock->mPixel[0][verticalView][viewColumn][viewLine];
-				refPlaneCoeff[counterRPCoeffs] = transformedBlock->mPixel[0][verticalView][viewColumn][viewLine];
-				counterRPCoeffs++;
-				sumRefPlaneCoeff += coeff;
-			}
-		}
-	}
-}
+// void Statistics :: calcSumRefPlaneCoeff(Block4D *transformedBlock) {
+// 	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
+// 		for(int viewLine = 0; viewLine < 15; viewLine += 1) {
+// 			for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
+// 				int coeff = transformedBlock->mPixel[0][verticalView][viewColumn][viewLine];
+// 				//refPlaneCoeff[counterRPCoeffs] = transformedBlock->mPixel[0][verticalView][viewColumn][viewLine];
+// 				//counterRPCoeffs++;
+// 				//sumRefPlaneCoeff += coeff;
+// 			}
+// 		}
+// 	}
+// }
 
-void Statistics :: calcSumOtherPlanesCoeff(Block4D *transformedBlock) {
-	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
-		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
-			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
-				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-					int coeff = transformedBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine];
-					otherPlanesCoeff[counterOPCoeffs] = transformedBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine];
-					counterOPCoeffs++;
-					sumOtherPlanesCoeff += coeff;
-				}
-			}
-		}
-	}
-}
+// void Statistics :: calcSumOtherPlanesCoeff(Block4D *transformedBlock) {
+// 	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
+// 		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
+// 			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
+// 				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
+// 					int coeff = transformedBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine];
+// 					//otherPlanesCoeff[counterOPCoeffs] = transformedBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine];
+// 					counterOPCoeffs++;
+// 					sumOtherPlanesCoeff += coeff;
+// 				}
+// 			}
+// 		}
+// 	}
+// }
 
-double Statistics :: calcStdRefPlaneCoeff() {
-	double stdDev = 0;
-	double average = (double)sumRefPlaneCoeff/3562650;
+// double Statistics :: calcStdRefPlaneCoeff() {
+// 	double stdDev = 0;
+// 	double average = (double)sumRefPlaneCoeff/3562650;
 
-	for(int i = 0; i < 3562650; i++) {
-		stdDev += pow(refPlaneCoeff[i] - average, 2);
-	}
+// 	for(int i = 0; i < 3562650; i++) {
+// 		stdDev += pow(refPlaneCoeff[i] - average, 2);
+// 	}
 	
-	return sqrt(stdDev/3562650);
-}
+// 	return sqrt(stdDev/3562650);
+// }
 
-double Statistics :: calcStdOtherPlanesCoeff() {
-	double stdDev = 0;
-	double average = (double)sumOtherPlanesCoeff/3562650;
+// double Statistics :: calcStdOtherPlanesCoeff() {
+// 	double stdDev = 0;
+// 	double average = (double)sumOtherPlanesCoeff/46314450;
 
-	for(int i = 0; i < 3562650; i++) {
-		stdDev += pow(otherPlanesCoeff[i] - average, 2);
-	}
+// 	for(int i = 0; i < 46314450; i++) {
+// 		stdDev += pow(otherPlanesCoeff[i] - average, 2);
+// 	}
 	
-	return sqrt(stdDev/3562650);
-}
+// 	return sqrt(stdDev/46314450);
+// }
 
-double Statistics :: getEnergyRefPlaneCoeff() {
-	return energyRefPlaneCoeff;
-}
+// double Statistics :: getEnergyRefPlaneCoeff() {
+// 	return energyRefPlaneCoeff;
+// }
 
-double Statistics :: getEnergyOtherPlanesCoeff() {
-	return energyOtherPlanesCoeff;
-}
+// double Statistics :: getEnergyOtherPlanesCoeff() {
+// 	return energyOtherPlanesCoeff;
+// }
 
 void Statistics :: calcSumCoeff(Block4D *transformedBlock) {
 for(int verticalView = 0; verticalView < 13; verticalView += 1) {
@@ -490,8 +489,8 @@ for(int verticalView = 0; verticalView < 13; verticalView += 1) {
 			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
 				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
 					int coeff = transformedBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine];
-					AllCoeffs[counterOPCoeffs] = transformedBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine];
-					counterAllCoeffs++;
+					//AllCoeffs[counterOPCoeffs] = transformedBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine];
+					//counterAllCoeffs++;
 					sumCoeff += coeff;
 
 					if(coeff > maxCoeff)
@@ -526,16 +525,16 @@ double Statistics :: getEnergyCoeff() {
 	return coeffEnergy;
 }
 
-double Statistics :: calcStdCoeff() {
-	double stdDev = 0;
-	double average = (double)sumCoeff/3562650;
+// double Statistics :: calcStdCoeff() {
+// 	double stdDev = 0;
+// 	double average = (double)sumCoeff/3562650;
 
-	for(int i = 0; i < 3562650; i++) {
-		stdDev += pow(AllCoeffs[i] - average, 2);
-	}
+// 	for(int i = 0; i < 3562650; i++) {
+// 		stdDev += pow(AllCoeffs[i] - average, 2);
+// 	}
 	
-	return sqrt(stdDev/3562650);
-}
+// 	return sqrt(stdDev/3562650);
+// }
 
 void Statistics :: countCoefficients(Block4D *transformedBlock) {
 	for(int verticalView = 0; verticalView < 13; verticalView += 1) {

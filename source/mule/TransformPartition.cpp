@@ -68,10 +68,10 @@ void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTr
 	
 	// DSC begin
 	//printf("length: %d, %d, %d, %d\n", length[0], length[1], length[2], length[3]);
-	stats->calcRefPlaneCoeffEnergy(&transformedBlock);
-	stats->calcOtherPlanesCoeffEnergy(&transformedBlock);
-	stats->calcSumRefPlaneCoeff(&transformedBlock);
-	stats->calcSumOtherPlanesCoeff(&transformedBlock);
+	//stats->calcRefPlaneCoeffEnergy(&transformedBlock);
+	//stats->calcOtherPlanesCoeffEnergy(&transformedBlock);
+	//stats->calcSumRefPlaneCoeff(&transformedBlock);
+	//stats->calcSumOtherPlanesCoeff(&transformedBlock);
 	stats->calcCoeffEnergy(&transformedBlock);
 	stats->calcSumCoeff(&transformedBlock);
 	stats->countCoefficients(&transformedBlock);
@@ -85,9 +85,9 @@ void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTr
     entropyCoder.DeleteProbabilisticModelState(currentCoderModelState);
 	// DSC begin
 	/* commenting */
-	printf("\t\tmPartitionCode = %s\n", mPartitionCode);    
+	//printf("\t\tmPartitionCode = %s\n", mPartitionCode);    
 	partition_code_file << mPartitionCode << '\n';
-	printf("\t\tmInferiorBitPlane = %d\n", entropyCoder.mInferiorBitPlane);
+	//printf("\t\tmInferiorBitPlane = %d\n", entropyCoder.mInferiorBitPlane);
 	// DSC end   
 }
 
@@ -112,15 +112,15 @@ double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4
     double Energy;
 	//printf("EOBP: %d\n", mEvaluateOptimumBitPlane);
 	if(mEvaluateOptimumBitPlane == 1) {
-			entropyCoder.mInferiorBitPlane = entropyCoder.OptimumBitplane(lambda);
-			// if(mUseSameBitPlane == 1) {
-			// 	mEvaluateOptimumBitPlane = 0;
-			// }
+		entropyCoder.mInferiorBitPlane = entropyCoder.OptimumBitplane(lambda);
+		if(mUseSameBitPlane == 1) {
+			mEvaluateOptimumBitPlane = 0;
 		}
-	// DSC begin
-	else {
-		entropyCoder.mInferiorBitPlane = mInferiorBitPlane; 
 	}
+	// DSC begin
+	// else {
+	// 	entropyCoder.mInferiorBitPlane = mInferiorBitPlane; 
+	// }
 	// DSC end
     
     //call RdOptimizeHexadecaTree method from entropyCoder to evaluate J0

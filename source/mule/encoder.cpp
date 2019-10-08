@@ -458,7 +458,7 @@ int main(int argc, char **argv) {
 	//printf("\tLambda: %.0lf\n", par.Lambda);
 	printf("\t\tALL PLANES ---------------------------------------------------\n");
 	printf("\t\t\tNumber of partitions: %d\n", stats.getPartitioningCounter());
-	printf("\t\t\tPercentage of partitioned blocks: %.2f\n%", ((float)stats.getPartitioningCounter()/(42.0*29.0*3.0))*100);
+	printf("\t\t\tPercentage of partitioned blocks: %.2f\n%%", ((float)stats.getPartitioningCounter()/(42.0*29.0*3.0))*100);
 	printf("\t\tREFERENCE PLANE RESIDUES -------------------------------------\n");
 	printf("\t\t\tY energy: %.2lf\n", stats.getYRefPlaneEnergy());
 	printf("\t\t\tCb energy: %.2lf\n", stats.getCbRefPlaneEnergy());
@@ -471,9 +471,6 @@ int main(int argc, char **argv) {
 	printf("\t\t\tCr standard deviation: %.5lf\n", stats.calcStdCrRefPlane());
 	printf("\t\t\tMax value: %d\n", stats.getMaxRefPlane());
 	printf("\t\t\tMin value: %d\n", stats.getMinRefPlane());
-	// printf("\t\t\tEnergy Coefficients: %.2lf\n", stats.getEnergyRefPlaneCoeff());
-	// printf("\t\t\tAverage Coefficients: %.2lf\n", stats.getAverageRefPlaneCoeff());
-	// printf("\t\t\tStd Coefficients: %.2lf\n", stats.calcStdRefPlaneCoeff());
 	printf("\t\tOTHER PLANES RESIDUES -----------------------------------------\n");
 	printf("\t\t\tY energy: %.2lf\n", stats.getYOtherPlanesEnergy());
 	printf("\t\t\tCb energy: %.2lf\n", stats.getCbOtherPlanesEnergy());
@@ -486,13 +483,10 @@ int main(int argc, char **argv) {
 	printf("\t\t\tCr standard deviation: %.5lf\n", stats.calcStdCrOtherPlanes());
 	printf("\t\t\tMax value: %d\n", stats.getMaxOtherPlanes());
 	printf("\t\t\tMin value: %d\n", stats.getMinOtherPlanes());
-	// printf("\t\t\tEnergy Coefficients: %.2lf\n", stats.getEnergyOtherPlanesCoeff());
-	// printf("\t\t\tAverage Coefficients: %.2lf\n", stats.getAverageOtherPlanesCoeff());
-	// printf("\t\t\tStd Coefficients: %.2lf\n", stats.calcStdOtherPlanesCoeff());
 	printf("\t\tCOEFFICIENTS --------------------------------------------------\n");
 	printf("\t\t\tEnergy: %.2lf\n", stats.getEnergyCoeff());
-	printf("\t\t\tAverage: %.2lf\n", stats.getAverageCoeff());
-	printf("\t\t\tStandard deviation: %.2lf\n", stats.calcStdCoeff());
+	//printf("\t\t\tAverage: %.2lf\n", stats.getAverageCoeff());
+	//printf("\t\t\tStandard deviation: %.2lf\n", stats.calcStdCoeff());
 	//printf("\t\t\tZero coefficients: %.5lf\n", (stats.getZeroCoefficients()/stats.getTotalCoefficients())*100);
 	printf("\t\t\tZero coefficients: %.0lf\n", stats.getZeroCoefficients());
 	printf("\t\t\tAll coefficients: %.0lf\n", stats.getTotalCoefficients());
