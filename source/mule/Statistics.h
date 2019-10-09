@@ -22,6 +22,8 @@ public:
 	int *otherPlanesCoeff;
 	int *AllCoeffs;
 	int maxCoeff, minCoeff;
+	static const int refPlaneTotalSamples = 3562650;
+	static const int otherPlanesTotalSamples = 46314450;
 
 	double y_totalSignalEnergyRefPlane, cb_totalSignalEnergyRefPlane, cr_totalSignalEnergyRefPlane;
 	double y_totalSignalEnergyOtherPlanes, cb_totalSignalEnergyOtherPlanes, cr_totalSignalEnergyOtherPlanes;

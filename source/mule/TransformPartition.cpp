@@ -67,11 +67,6 @@ void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTr
     mLagrangianCost = RDoptimizeTransformStep(inputBlock, transformedBlock, position, length, mt, entropyCoder, scaledLambda, &mPartitionCode);
 	
 	// DSC begin
-	//printf("length: %d, %d, %d, %d\n", length[0], length[1], length[2], length[3]);
-	//stats->calcRefPlaneCoeffEnergy(&transformedBlock);
-	//stats->calcOtherPlanesCoeffEnergy(&transformedBlock);
-	//stats->calcSumRefPlaneCoeff(&transformedBlock);
-	//stats->calcSumOtherPlanesCoeff(&transformedBlock);
 	stats->calcCoeffEnergy(&transformedBlock);
 	stats->calcSumCoeff(&transformedBlock);
 	stats->countCoefficients(&transformedBlock);
@@ -113,14 +108,14 @@ double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4
 	//printf("EOBP: %d\n", mEvaluateOptimumBitPlane);
 	if(mEvaluateOptimumBitPlane == 1) {
 		entropyCoder.mInferiorBitPlane = entropyCoder.OptimumBitplane(lambda);
-		// if(mUseSameBitPlane == 1) {
-		// 	mEvaluateOptimumBitPlane = 0;
-		// }
+		if(mUseSameBitPlane == 1) {
+			mEvaluateOptimumBitPlane = 0;
+		}
 	}
 	// DSC begin
-	else {
-		entropyCoder.mInferiorBitPlane = mInferiorBitPlane; 
-	}
+	// else {
+	// 	entropyCoder.mInferiorBitPlane = mInferiorBitPlane; 
+	// }
 	// DSC end
     
     //call RdOptimizeHexadecaTree method from entropyCoder to evaluate J0
