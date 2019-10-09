@@ -7,7 +7,6 @@ using namespace std;
 class Statistics 
 {
 public:
-	ofstream yResiduesFile, cbResiduesFile, crResiduesFile, refPlaneCoefficients, allCoefficients, DC_coeff, AC_coeff;
 	int predictionType, maxRefPlane, minRefPlane, maxOtherPlanes, minOtherPlanes;
 	int yCounterRP, cbCounterRP, crCounterRP, yCounterOP, cbCounterOP, crCounterOP, counterOPCoeffs, counterRPCoeffs, counterAllCoeffs;
 	int partitioningCounter;

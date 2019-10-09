@@ -105,17 +105,14 @@ double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4
     entropyCoder.mSubbandLF.SetDimension(block_0.mlength_t, block_0.mlength_s, block_0.mlength_v, block_0.mlength_u);
     entropyCoder.mSubbandLF.CopySubblockFrom(block_0, 0, 0, 0, 0);
     double Energy;
-	//printf("EOBP: %d\n", mEvaluateOptimumBitPlane);
+	//DSC begin
 	// if(mEvaluateOptimumBitPlane == 1) {
 	// 	entropyCoder.mInferiorBitPlane = entropyCoder.OptimumBitplane(lambda);
 	// 	if(mUseSameBitPlane == 1) {
 	// 		mEvaluateOptimumBitPlane = 0;
 	// 	}
 	// }
-	// DSC begin
-	// else {
-	// 	entropyCoder.mInferiorBitPlane = mInferiorBitPlane; 
-	// }
+	
 	if(mEvaluateOptimumBitPlane == 0) {
 		entropyCoder.mInferiorBitPlane = mInferiorBitPlane;
 	}

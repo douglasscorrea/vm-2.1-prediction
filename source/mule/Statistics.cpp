@@ -10,20 +10,16 @@
 
 using namespace std;
 
-#define refPlaneSamples 3562650;
-#define otherPlanesSamples 46314450;
-
 Statistics :: Statistics(int prediction) {
 	predictionType = prediction;
 
-	yRefPlaneSamples = new int[3562650];
-	cbRefPlaneSamples = new int[3562650];
-	crRefPlaneSamples = new int[3562650];
+	yRefPlaneSamples = new int[refPlaneTotalSamples];
+	cbRefPlaneSamples = new int[refPlaneTotalSamples];
+	crRefPlaneSamples = new int[refPlaneTotalSamples];
 	yOtherPlanesSamples = new int[otherPlanesTotalSamples];
 	cbOtherPlanesSamples = new int[otherPlanesTotalSamples];
 	crOtherPlanesSamples = new int[otherPlanesTotalSamples];
 
-	otherPlanesTotalSamples;
 	partitioningCounter = 0;
 	zeroCoefficientsCounter = 0;
 	totalCoefficientsCounter = 0;
@@ -105,15 +101,15 @@ double Statistics :: getCrRefPlaneSamplesAverage() {
 }
 
 double Statistics :: getYOtherPlanesSamplesAverage() {
-	return y_otherPlanesSamplesSum/otherPlanesSamples;
+	return y_otherPlanesSamplesSum/otherPlanesTotalSamples;
 }
 
 double Statistics :: getCbOtherPlanesSamplesAverage() {
-	return cb_otherPlanesSamplesSum/otherPlanesSamples;
+	return cb_otherPlanesSamplesSum/otherPlanesTotalSamples;
 }
 
 double Statistics :: getCrOtherPlanesSamplesAverage() {
-	return cr_otherPlanesSamplesSum/otherPlanesSamples;
+	return cr_otherPlanesSamplesSum/otherPlanesTotalSamples;
 }
 
 double Statistics :: getAverageRefPlaneCoeff() {
@@ -121,7 +117,7 @@ double Statistics :: getAverageRefPlaneCoeff() {
 }
 
 double Statistics :: getAverageOtherPlanesCoeff() {
-	return sumOtherPlanesCoeff/otherPlanesSamples;
+	return sumOtherPlanesCoeff/otherPlanesTotalSamples;
 }
 
 double Statistics :: getYRefPlaneEnergy() {
@@ -241,23 +237,23 @@ void Statistics :: calcOtherPlanesEnergy(Block4D *lfBlock, int spectralComponent
 	}
 }
 
-void Statistics :: saveDCCoeff(Block4D *lfBlock) {
-	DC_coeff << lfBlock->mPixel[0][0][0][0] << '\n';
-}
+// void Statistics :: saveDCCoeff(Block4D *lfBlock) {
+// 	DC_coeff << lfBlock->mPixel[0][0][0][0] << '\n';
+// }
 
-void Statistics :: saveACCoeff(Block4D *lfBlock) {
-	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
-		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
-			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
-				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-					if(horizontalView > 0 && verticalView > 0) {
-						AC_coeff << lfBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] << '\n';
-					}
-				}
-			}
-		}
-	}
-}
+// void Statistics :: saveACCoeff(Block4D *lfBlock) {
+// 	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
+// 		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
+// 			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
+// 				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
+// 					if(horizontalView > 0 && verticalView > 0) {
+// 						AC_coeff << lfBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] << '\n';
+// 					}
+// 				}
+// 			}
+// 		}
+// 	}
+// }
 
 void Statistics :: calcSumYRefPlaneSamples(Block4D *lfBlock) {
 	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
