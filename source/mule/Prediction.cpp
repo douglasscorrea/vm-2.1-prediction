@@ -10,18 +10,6 @@ using namespace std;
 Prediction :: Prediction(int prediction) {
 	predictionType = prediction;
 	DCPredictorFile.open("DC_predictors.txt");
-
-	counter = 0;
-	y_totalSignalEnergyFirstPlane = 0;
-	cb_totalSignalEnergyFirstPlane = 0;
-	cr_totalSignalEnergyFirstPlane = 0;
-	y_totalSignalEnergyOtherPlanes = 0;
-	cb_totalSignalEnergyOtherPlanes = 0;
-	cr_totalSignalEnergyOtherPlanes = 0;
-	maxRefPlane = -9999999;
-	minRefPlane = 9999999;
-	maxOtherPlanes = -9999999;
-	minOtherPlanes = 9999999;
 }
 
 int Prediction :: simplePredictor(Block4D *origBlock) {
@@ -33,8 +21,8 @@ void Prediction :: calculateResidue(Block4D *residueBlock, Block4D *origBlock, i
 		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
 			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
 				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-					residueBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] = 
-						origBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] - DCPredictor;
+					residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] = 
+						origBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] - DCPredictor;
 				}
 			}
 		}
@@ -46,7 +34,7 @@ void Prediction :: reconstruct4DBlock(Block4D *residueBlock, int DCPredictor) {
 		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
 			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
 				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-					residueBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] += DCPredictor;
+					residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] += DCPredictor;
 				}
 			}
 		}
@@ -58,11 +46,11 @@ void Prediction :: fourRefsPredictor(Block4D *residueBlock, Block4D *origBlock, 
 		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
 			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
 				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-					residueBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] =
-						(0.05*ref0->mPixel[verticalView][horizontalView][viewLine][viewColumn] +
-						0.50*ref1->mPixel[verticalView][horizontalView][viewLine][viewColumn] +
-						0.15*ref2->mPixel[verticalView][horizontalView][viewLine][viewColumn] +
-						0.30*ref3->mPixel[verticalView][horizontalView][viewLine][viewColumn]);
+					residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] =
+						(0.05*ref0->mPixel[horizontalView][verticalView][viewColumn][viewLine] +
+						0.50*ref1->mPixel[horizontalView][verticalView][viewColumn][viewLine] +
+						0.15*ref2->mPixel[horizontalView][verticalView][viewColumn][viewLine] +
+						0.30*ref3->mPixel[horizontalView][verticalView][viewColumn][viewLine]);
 				}
 			}
 		}
@@ -70,10 +58,10 @@ void Prediction :: fourRefsPredictor(Block4D *residueBlock, Block4D *origBlock, 
 }           
 
 void Prediction :: saveSamplesMule(Block4D *residueBlock, Block4D *origBlock, int spectralComponent) {
-	for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
-		for(int verticalView = 0; verticalView < 13; verticalView += 1) {
-			for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-				for(int viewLine = 0; viewLine < 15; viewLine += 1) {
+	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
+		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
+			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
+				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
 					residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] = 
 							origBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine];
 				}
@@ -102,6 +90,44 @@ void Prediction :: differentialPredictionRaster(Block4D *residueBlock, Block4D *
 	}
 }
 
+void Prediction :: recDifferentialPredictionRaster(Block4D *residueBlock, Block4D *reconstructedBlock) {
+	int residuesSum = 0;
+
+	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
+		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
+			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
+				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
+					if(horizontalView > 0) {
+						for(int i = 1; i < horizontalView; i++) {
+							residuesSum += residueBlock->mPixel[i][verticalView][viewColumn][viewLine];
+						}
+						reconstructedBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] =
+							residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] +
+							reconstructedBlock->mPixel[0][verticalView][viewColumn][viewLine] + residuesSum;
+					}
+					else {
+						reconstructedBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] = residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine];
+					}
+					//printf("[rec,res,sRes]: %d, %d, %d\n", reconstructedBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn], residueBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn], residuesSum);
+					residuesSum = 0;
+				}
+			}
+		}
+	}
+}
+
+int Prediction :: DCPredictorRefPlaneRaster(Block4D *origBlock, int verticalView) {
+	int sumRefPlane = 0;
+
+	for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
+		for(int viewLine = 0; viewLine < 15; viewLine += 1) {
+			sumRefPlane += origBlock->mPixel[0][verticalView][viewColumn][viewLine];
+		}
+	}
+
+	return sumRefPlane/(15*15);
+}
+
 void Prediction :: differentialPredictionRasterDCRefPlane(Block4D *residueBlock, Block4D *origBlock, int spectralComponent) {
 	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
 		int DCPredictorRefPlane = DCPredictorRefPlaneRaster(origBlock, verticalView);
@@ -117,6 +143,34 @@ void Prediction :: differentialPredictionRasterDCRefPlane(Block4D *residueBlock,
 						residueBlock->mPixel[0][verticalView][viewColumn][viewLine] = 
 							origBlock->mPixel[0][verticalView][viewColumn][viewLine] - DCPredictorRefPlane;
 					}
+				}
+			}
+		}
+	}
+}
+
+void Prediction :: recDifferentialPredictionRasterDCRefPlane(Block4D *residueBlock, Block4D *reconstructedBlock) {
+	int residuesSum = 0;
+
+	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
+		int DCPredictor;
+		DCPredictorFile >> DCPredictor;
+		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
+			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
+				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
+					if(horizontalView > 0) {
+						for(int i = 1; i < horizontalView; i++) {
+							residuesSum += residueBlock->mPixel[i][verticalView][viewColumn][viewLine];
+						}
+						reconstructedBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] =
+							residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] +
+							reconstructedBlock->mPixel[0][verticalView][viewColumn][viewLine] + residuesSum;
+					}
+					else {
+						reconstructedBlock->mPixel[0][verticalView][viewColumn][viewLine] = DCPredictor + residueBlock->mPixel[0][verticalView][viewColumn][viewLine];
+						//printf("[%d, %d]: %d, %d\n", horizontalView, verticalView, DCPredictor + residueBlock->mPixel[0][verticalView][viewColumn][viewLine], DCPredictor);
+					}
+					residuesSum = 0;
 				}
 			}
 		}
@@ -165,54 +219,6 @@ void Prediction :: differentialPredictionCentral(Block4D *residueBlock, Block4D 
 	}
 }
 
-void Prediction :: differentialPredictionRasterHalf(Block4D *residueBlock, Block4D *origBlock) {
-	int residuesSum = 0;
-
-	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
-		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
-			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
-				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-					if((horizontalView % 2) != 0) {
-						residueBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] =
-								origBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] - 
-								origBlock->mPixel[verticalView][horizontalView-1][viewLine][viewColumn];
-					}
-					else {
-						residueBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] = origBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn];
-					}
-					residuesSum = 0;
-				}
-			}
-		}
-	}
-}
-
-void Prediction :: recDifferentialPredictionRaster(Block4D *residueBlock, Block4D *reconstructedBlock) {
-	int residuesSum = 0;
-
-	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
-		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
-			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
-				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-					if(horizontalView > 0) {
-						for(int i = 1; i < horizontalView; i++) {
-							residuesSum += residueBlock->mPixel[i][verticalView][viewColumn][viewLine];
-						}
-						reconstructedBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] =
-							residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] +
-							reconstructedBlock->mPixel[0][verticalView][viewColumn][viewLine] + residuesSum;
-					}
-					else {
-						reconstructedBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] = residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine];
-					}
-					//printf("[rec,res,sRes]: %d, %d, %d\n", reconstructedBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn], residueBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn], residuesSum);
-					residuesSum = 0;
-				}
-			}
-		}
-	}
-}
-
 void Prediction :: recDifferentialPredictionCentral(Block4D *recBlock, Block4D *origBlock) {
 	int residuesSum = 0;
 
@@ -253,6 +259,28 @@ void Prediction :: recDifferentialPredictionCentral(Block4D *recBlock, Block4D *
 						recBlock->mPixel[6][verticalView][viewColumn][viewLine] + residuesSum;
 					// if(horizontalView == 6)
 					// 	printf("origL: %d - %d - %d\n", origBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn], recBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn], residuesSum);
+					residuesSum = 0;
+				}
+			}
+		}
+	}
+}
+
+void Prediction :: differentialPredictionRasterHalf(Block4D *residueBlock, Block4D *origBlock) {
+	int residuesSum = 0;
+
+	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
+		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
+			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
+				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
+					if((horizontalView % 2) != 0) {
+						residueBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] =
+								origBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] - 
+								origBlock->mPixel[verticalView][horizontalView-1][viewLine][viewColumn];
+					}
+					else {
+						residueBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] = origBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn];
+					}
 					residuesSum = 0;
 				}
 			}
@@ -989,193 +1017,6 @@ void Prediction :: recHierarchicalDifferentialPrediction1Level(Block4D *recBlock
 			origBlock->mPixel[12][11][viewLine][viewColumn] = recBlock->mPixel[12][11][viewLine][viewColumn] + recBlock->mPixel[6][6][viewLine][viewColumn] + recBlock->mPixel[11][11][viewLine][viewColumn]*1.0;
 			origBlock->mPixel[12][12][viewLine][viewColumn] = recBlock->mPixel[12][12][viewLine][viewColumn] + recBlock->mPixel[6][6][viewLine][viewColumn] + recBlock->mPixel[11][11][viewLine][viewColumn]*1.0;
 
-		}
-	}
-}
-
-void Prediction :: printOneBlock(Block4D *lfBlock) {
-	for(int viewLine = 0; viewLine < 15; viewLine += 1) {
-		for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-			printf("[coeff]: %d\n", lfBlock->mPixel[3][3][viewLine][viewColumn]);
-		}
-	}
-}
-
-void Prediction :: calcReferencePlaneEnergy(Block4D *lfBlock, int spectralComponent) {
-	int coeff;
-
-	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
-		for(int viewLine = 0; viewLine < 15; viewLine += 1) {
-			for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-				if(predictionType == 1) {
-					//printf("\tdiffC\n");
-					coeff = lfBlock->mPixel[verticalView][6][viewLine][viewColumn];
-				}
-				else {
-					coeff = lfBlock->mPixel[verticalView][0][viewLine][viewColumn];
-				}
-				if(spectralComponent == 0)
-					y_totalSignalEnergyFirstPlane += coeff*coeff;
-				if(spectralComponent == 1)
-					cb_totalSignalEnergyFirstPlane += coeff*coeff;
-				if(spectralComponent == 2)
-					cr_totalSignalEnergyFirstPlane += coeff*coeff;
-
-				if(coeff > maxRefPlane) {
-					maxRefPlane = coeff;
-				}
-				if(coeff < minRefPlane) {
-					minRefPlane = coeff;
-				}
-			}
-		}
-	}
-}
-
-void Prediction :: calcOtherPlanesEnergy(Block4D *lfBlock, int spectralComponent) {
-	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
-		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
-			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
-				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-					if(predictionType == 1) {
-						//printf("\tdiffC\n");
-						if(horizontalView != 6) {
-							int coeff = lfBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn];
-							
-							if(spectralComponent == 0)
-								y_totalSignalEnergyOtherPlanes += coeff*coeff;
-							if(spectralComponent == 1)
-								cb_totalSignalEnergyOtherPlanes += coeff*coeff;
-							if(spectralComponent == 2)
-								cr_totalSignalEnergyOtherPlanes += coeff*coeff;
-
-							if(coeff > maxOtherPlanes) {
-								maxOtherPlanes = coeff;
-							}
-							if(coeff < minOtherPlanes) {
-								minOtherPlanes = coeff;
-							}
-						}
-					}
-					else {
-						if(horizontalView != 0) {
-							int coeff = lfBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn];
-							
-							if(spectralComponent == 0)
-								y_totalSignalEnergyOtherPlanes += coeff*coeff;
-							if(spectralComponent == 1)
-								cb_totalSignalEnergyOtherPlanes += coeff*coeff;
-							if(spectralComponent == 2)
-								cr_totalSignalEnergyOtherPlanes += coeff*coeff;
-
-							if(coeff > maxOtherPlanes) {
-								maxOtherPlanes = coeff;
-							}
-							if(coeff < minOtherPlanes) {
-								minOtherPlanes = coeff;
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-// void Prediction :: saveDCCoeff(Block4D *lfBlock) {
-// 	DC_coeff << lfBlock->mPixel[0][0][0][0] << '\n';
-// }
-
-// void Prediction :: saveACCoeff(Block4D *lfBlock) {
-// 	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
-// 		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
-// 			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
-// 				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-// 					if(horizontalView > 0 && verticalView > 0) {
-// 						AC_coeff << lfBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] << '\n';
-// 					}
-// 				}
-// 			}
-// 		}
-// 	}
-// }
-
-int Prediction :: getMaxRefPlane() {
-	return maxRefPlane;
-}
-
-int Prediction :: getMinRefPlane() {
-	return minRefPlane;
-}
-
-int Prediction :: getMaxOtherPlanes() {
-	return maxOtherPlanes;
-}
-
-int Prediction :: getMinOtherPlanes() {
-	return minOtherPlanes;
-}
-
-double Prediction :: getYFirstPlaneEnergy() {
-	return y_totalSignalEnergyFirstPlane;
-}
-
-double Prediction :: getCbFirstPlaneEnergy() {
-	return cb_totalSignalEnergyFirstPlane;
-}
-
-double Prediction :: getCrFirstPlaneEnergy() {
-	return cr_totalSignalEnergyFirstPlane;
-}
-
-double Prediction :: getYOtherPlanesEnergy() {
-	return y_totalSignalEnergyOtherPlanes;
-}
-
-double Prediction :: getCbOtherPlanesEnergy() {
-	return cb_totalSignalEnergyOtherPlanes;
-}
-
-double Prediction :: getCrOtherPlanesEnergy() {
-	return cr_totalSignalEnergyOtherPlanes;
-}
-
-int Prediction :: DCPredictorRefPlaneRaster(Block4D *origBlock, int verticalView) {
-	int sumRefPlane = 0;
-
-	for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-		for(int viewLine = 0; viewLine < 15; viewLine += 1) {
-			sumRefPlane += origBlock->mPixel[0][verticalView][viewColumn][viewLine];
-		}
-	}
-
-	return sumRefPlane/(15*15);
-}
-
-void Prediction :: recDifferentialPredictionRasterDCRefPlane(Block4D *residueBlock, Block4D *reconstructedBlock) {
-	int residuesSum = 0;
-
-	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
-		int DCPredictor;
-		DCPredictorFile >> DCPredictor;
-		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
-			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
-				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-					if(horizontalView > 0) {
-						for(int i = 1; i < horizontalView; i++) {
-							residuesSum += residueBlock->mPixel[i][verticalView][viewColumn][viewLine];
-						}
-						reconstructedBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] =
-							residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] +
-							reconstructedBlock->mPixel[0][verticalView][viewColumn][viewLine] + residuesSum;
-					}
-					else {
-						reconstructedBlock->mPixel[0][verticalView][viewColumn][viewLine] = DCPredictor + residueBlock->mPixel[0][verticalView][viewColumn][viewLine];
-						//printf("[%d, %d]: %d, %d\n", horizontalView, verticalView, DCPredictor + residueBlock->mPixel[0][verticalView][viewColumn][viewLine], DCPredictor);
-					}
-					residuesSum = 0;
-				}
-			}
 		}
 	}
 }
