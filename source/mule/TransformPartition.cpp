@@ -106,16 +106,23 @@ double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4
     entropyCoder.mSubbandLF.CopySubblockFrom(block_0, 0, 0, 0, 0);
     double Energy;
 	//printf("EOBP: %d\n", mEvaluateOptimumBitPlane);
-	if(mEvaluateOptimumBitPlane == 1) {
-		entropyCoder.mInferiorBitPlane = entropyCoder.OptimumBitplane(lambda);
-		if(mUseSameBitPlane == 1) {
-			mEvaluateOptimumBitPlane = 0;
-		}
-	}
+	// if(mEvaluateOptimumBitPlane == 1) {
+	// 	entropyCoder.mInferiorBitPlane = entropyCoder.OptimumBitplane(lambda);
+	// 	if(mUseSameBitPlane == 1) {
+	// 		mEvaluateOptimumBitPlane = 0;
+	// 	}
+	// }
 	// DSC begin
 	// else {
 	// 	entropyCoder.mInferiorBitPlane = mInferiorBitPlane; 
 	// }
+	if(mEvaluateOptimumBitPlane == 0) {
+		entropyCoder.mInferiorBitPlane = mInferiorBitPlane;
+	}
+	else if(mUseSameBitPlane == 1) {
+		entropyCoder.mInferiorBitPlane = entropyCoder.OptimumBitplane(lambda);
+		mUseSameBitPlane = 0;
+	}
 	// DSC end
     
     //call RdOptimizeHexadecaTree method from entropyCoder to evaluate J0

@@ -150,7 +150,11 @@ int main(int argc, char **argv) {
     
     //Set default parameters
 	// DSC begin
-	strcpy(par.Prediction, "None");
+	strcpy(par.Prediction, "mule");
+	par.EvaluateOptimumBitPlane = 1;
+	par.Split = 1;
+	par.SuperiorBitPlane = 30;
+	par.InferiorBitPlane = 0;
 	// DSC end
     par.Lambda = 1024;
     par.transformLength_t=13;
