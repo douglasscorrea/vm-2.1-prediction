@@ -8,7 +8,6 @@ class Prediction
 {
 public:
 	ifstream DCPredictorFile;
-	ofstream yResiduesFile, cbResiduesFile, crResiduesFile, firstPlaneCoefficients, allCoefficients, DC_coeff, AC_coeff;
 	int predictionType, counter, maxRefPlane, minRefPlane, maxOtherPlanes, minOtherPlanes;
 	double y_totalSignalEnergyFirstPlane, cb_totalSignalEnergyFirstPlane, cr_totalSignalEnergyFirstPlane;
 	double y_totalSignalEnergyOtherPlanes, cb_totalSignalEnergyOtherPlanes, cr_totalSignalEnergyOtherPlanes;

@@ -118,9 +118,9 @@ double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4
 		}
 	}
 	// DSC begin
-	// else {
-	// 	entropyCoder.mInferiorBitPlane = mInferiorBitPlane; 
-	// }
+	else {
+		entropyCoder.mInferiorBitPlane = mInferiorBitPlane; 
+	}
 	// DSC end
     
     //call RdOptimizeHexadecaTree method from entropyCoder to evaluate J0

@@ -22,9 +22,6 @@ Statistics :: Statistics(int prediction) {
 	yOtherPlanesSamples = new int[46314450];
 	cbOtherPlanesSamples = new int[46314450];
 	crOtherPlanesSamples = new int[46314450];
-	//refPlaneCoeff = new int[3562650];;
-	//otherPlanesCoeff =  new int[46314450];
-	//AllCoeffs = new int[3562650+46314450];
 
 	partitioningCounter = 0;
 	zeroCoefficientsCounter = 0;
@@ -68,6 +65,42 @@ Statistics :: Statistics(int prediction) {
 	minCoeff = INT_MAX;
 }
 
+int Statistics :: getPartitioningCounter() {
+	return partitioningCounter;
+}
+
+int Statistics :: getMaxCoeff() {
+	return maxCoeff;
+}
+
+int Statistics :: getMinCoeff() {
+	return minCoeff;
+}
+
+int Statistics :: getMaxRefPlane() {
+	return maxRefPlane;
+}
+
+int Statistics :: getMinRefPlane() {
+	return minRefPlane;
+}
+
+int Statistics :: getMaxOtherPlanes() {
+	return maxOtherPlanes;
+}
+
+int Statistics :: getMinOtherPlanes() {
+	return minOtherPlanes;
+}
+
+double Statistics :: getZeroCoefficients() {
+	return zeroCoefficientsCounter;
+}
+
+double Statistics :: getTotalCoefficients() {
+	return totalCoefficientsCounter;
+}
+
 double Statistics :: getYRefPlaneSamplesAverage() {
 	return y_refPlaneSamplesSum/refPlaneSamples;
 }
@@ -98,6 +131,38 @@ double Statistics :: getAverageRefPlaneCoeff() {
 
 double Statistics :: getAverageOtherPlanesCoeff() {
 	return sumOtherPlanesCoeff/otherPlanesSamples;
+}
+
+double Statistics :: getYRefPlaneEnergy() {
+	return y_totalSignalEnergyRefPlane;
+}
+
+double Statistics :: getCbRefPlaneEnergy() {
+	return cb_totalSignalEnergyRefPlane;
+}
+
+double Statistics :: getCrRefPlaneEnergy() {
+	return cr_totalSignalEnergyRefPlane;
+}
+
+double Statistics :: getYOtherPlanesEnergy() {
+	return y_totalSignalEnergyOtherPlanes;
+}
+
+double Statistics :: getCbOtherPlanesEnergy() {
+	return cb_totalSignalEnergyOtherPlanes;
+}
+
+double Statistics :: getCrOtherPlanesEnergy() {
+	return cr_totalSignalEnergyOtherPlanes;
+}
+
+double Statistics :: getAverageCoeff() {
+	return sumCoeff/(3562650+42751800);
+}
+
+double Statistics :: getEnergyCoeff() {
+	return coeffEnergy;
 }
 
 void Statistics :: printOneBlock(Block4D *lfBlock) {
@@ -207,46 +272,6 @@ void Statistics :: saveACCoeff(Block4D *lfBlock) {
 	}
 }
 
-int Statistics :: getMaxRefPlane() {
-	return maxRefPlane;
-}
-
-int Statistics :: getMinRefPlane() {
-	return minRefPlane;
-}
-
-int Statistics :: getMaxOtherPlanes() {
-	return maxOtherPlanes;
-}
-
-int Statistics :: getMinOtherPlanes() {
-	return minOtherPlanes;
-}
-
-double Statistics :: getYRefPlaneEnergy() {
-	return y_totalSignalEnergyRefPlane;
-}
-
-double Statistics :: getCbRefPlaneEnergy() {
-	return cb_totalSignalEnergyRefPlane;
-}
-
-double Statistics :: getCrRefPlaneEnergy() {
-	return cr_totalSignalEnergyRefPlane;
-}
-
-double Statistics :: getYOtherPlanesEnergy() {
-	return y_totalSignalEnergyOtherPlanes;
-}
-
-double Statistics :: getCbOtherPlanesEnergy() {
-	return cb_totalSignalEnergyOtherPlanes;
-}
-
-double Statistics :: getCrOtherPlanesEnergy() {
-	return cr_totalSignalEnergyOtherPlanes;
-}
-
 void Statistics :: calcSumYRefPlaneSamples(Block4D *lfBlock) {
 	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
 		for(int viewLine = 0; viewLine < 15; viewLine += 1) {
@@ -288,7 +313,7 @@ void Statistics :: calcSumCrRefPlaneSamples(Block4D *lfBlock) {
 
 void Statistics :: calcSumYOtherPlanesSamples(Block4D *lfBlock) {
 	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
-		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
+		for(int horizontalView = 1; horizontalView < 13; horizontalView += 1) {
 			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
 				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
 					y_otherPlanesSamplesSum += lfBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine];
@@ -303,7 +328,7 @@ void Statistics :: calcSumYOtherPlanesSamples(Block4D *lfBlock) {
 
 void Statistics :: calcSumCbOtherPlanesSamples(Block4D *lfBlock) {
 for(int verticalView = 0; verticalView < 13; verticalView += 1) {
-		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
+		for(int horizontalView = 1; horizontalView < 13; horizontalView += 1) {
 			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
 				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
 					cb_otherPlanesSamplesSum += lfBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine];
@@ -318,7 +343,7 @@ for(int verticalView = 0; verticalView < 13; verticalView += 1) {
 
 void Statistics :: calcSumCrOtherPlanesSamples(Block4D *lfBlock) {
 	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
-		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
+		for(int horizontalView = 1; horizontalView < 13; horizontalView += 1) {
 			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
 				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
 					cr_otherPlanesSamplesSum += lfBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine];
@@ -517,14 +542,6 @@ void Statistics :: calcCoeffEnergy(Block4D *transformedBlock) {
 	}
 }
 
-double Statistics :: getAverageCoeff() {
-	return sumCoeff/(3562650+42751800);
-}
-
-double Statistics :: getEnergyCoeff() {
-	return coeffEnergy;
-}
-
 // double Statistics :: calcStdCoeff() {
 // 	double stdDev = 0;
 // 	double average = (double)sumCoeff/3562650;
@@ -555,29 +572,8 @@ void Statistics :: countCoefficients(Block4D *transformedBlock) {
 	}
 }
 
-double Statistics :: getZeroCoefficients() {
-	return zeroCoefficientsCounter;
-}
-
-double Statistics :: getTotalCoefficients() {
-	return totalCoefficientsCounter;
-}
-
 void Statistics :: countPartitioning(char *partitionCode) {
 	if(strcmp(partitionCode, "T") != 0) {
 		partitioningCounter++;
-		//printf("Partition Code: %s\n", partitionCode);
 	}
-}
-
-int Statistics :: getPartitioningCounter() {
-	return partitioningCounter;
-}
-
-int Statistics :: getMaxCoeff() {
-	return maxCoeff;
-}
-
-int Statistics :: getMinCoeff() {
-	return minCoeff;
 }

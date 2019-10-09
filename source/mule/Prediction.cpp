@@ -10,33 +10,6 @@ using namespace std;
 Prediction :: Prediction(int prediction) {
 	predictionType = prediction;
 	DCPredictorFile.open("DC_predictors.txt");
-	if(prediction == 0) {
-		//DC_coeff.open("DC_coeff_diffR.txt");
-		//AC_coeff.open("AC_coeff_diffR.txt");
-		//firstPlaneCoefficients.open("firstPlaneCoeff_diffR.txt");
-		//allCoefficients.open("allCoefficients_diffR.txt");
-		//yResiduesFile.open("y_residues_diffR.txt");
-		//cbResiduesFile.open("cb_residues_diffR.txt");
-		//crResiduesFile.open("cr_residues_diffR.txt");
-	}
-	else if(prediction == 1) {
-		//DC_coeff.open("DC_coeff_diffC.txt");
-		//AC_coeff.open("AC_coeff_diffC.txt");
-		//firstPlaneCoefficients.open("firstPlaneCoeff_diffC.txt");
-		//allCoefficients.open("allCoefficients_diffC.txt");
-		//yResiduesFile.open("y_residues_diffC.txt");
-		//cbResiduesFile.open("cb_residues_diffC.txt");
-		//crResiduesFile.open("cr_residues_diffC.txt");
-	}
-	else {
-		//DC_coeff.open("DC_coeff_mule.txt");
-		//AC_coeff.open("AC_coeff_mule.txt");
-		//firstPlaneCoefficients.open("firstPlaneCoeff_MuLE.txt");
-		//allCoefficients.open("allCoefficients_MuLE.txt");
-		//yResiduesFile.open("y_samples_MuLE.txt");
-		//cbResiduesFile.open("cb_samples_MuLE.txt");
-		//crResiduesFile.open("cr_samples_MuLE.txt");
-	}
 
 	counter = 0;
 	y_totalSignalEnergyFirstPlane = 0;
@@ -103,16 +76,6 @@ void Prediction :: saveSamplesMule(Block4D *residueBlock, Block4D *origBlock, in
 				for(int viewLine = 0; viewLine < 15; viewLine += 1) {
 					residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] = 
 							origBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine];
-
-					if(spectralComponent == 0) {
-						yResiduesFile << origBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] << '\n';
-					}
-					else if(spectralComponent == 1) {
-						cbResiduesFile << origBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] << '\n';
-					}
-					else {
-						crResiduesFile << origBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] << '\n';
-					}
 				}
 			}
 		}
@@ -120,8 +83,6 @@ void Prediction :: saveSamplesMule(Block4D *residueBlock, Block4D *origBlock, in
 }
 
 void Prediction :: differentialPredictionRaster(Block4D *residueBlock, Block4D *origBlock, int spectralComponent) {
-	int residuesSum = 0;
-
 	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
 		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
 			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
@@ -131,25 +92,31 @@ void Prediction :: differentialPredictionRaster(Block4D *residueBlock, Block4D *
 								origBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] - 
 								(origBlock->mPixel[horizontalView-1][verticalView][viewColumn][viewLine]);
 					}
-					else if(horizontalView == 0) {
+					else {
 						residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] = 
 							origBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine];
 					}
-					
-					// if(residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] > 1024 || residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] < -1024)
-					// 	printf("r: %d\n", residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine]);
+				}
+			}
+		}
+	}
+}
 
-					if(spectralComponent == 0) {
-						yResiduesFile << residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] << '\n';
-					}
-					else if(spectralComponent == 1) {
-						cbResiduesFile << residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] << '\n';
+void Prediction :: differentialPredictionRasterDCRefPlane(Block4D *residueBlock, Block4D *origBlock, int spectralComponent) {
+	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
+		int DCPredictorRefPlane = DCPredictorRefPlaneRaster(origBlock, verticalView);
+		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
+			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
+				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
+					if(horizontalView > 0) {
+						residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] =
+								origBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] - 
+								(origBlock->mPixel[horizontalView-1][verticalView][viewColumn][viewLine]);
 					}
 					else {
-						crResiduesFile << residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] << '\n';
+						residueBlock->mPixel[0][verticalView][viewColumn][viewLine] = 
+							origBlock->mPixel[0][verticalView][viewColumn][viewLine] - DCPredictorRefPlane;
 					}
-
-					residuesSum = 0;
 				}
 			}
 		}
@@ -174,16 +141,6 @@ void Prediction :: differentialPredictionCentral(Block4D *residueBlock, Block4D 
 					}
 					else
 						residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] = origBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine];
-				
-					if(spectralComponent == 0) {
-						yResiduesFile << residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] << '\n';
-					}
-					else if(spectralComponent == 1) {
-						cbResiduesFile << residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] << '\n';
-					}
-					else {
-						crResiduesFile << residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] << '\n';
-					}
 				}
 			}
 		}
@@ -202,16 +159,6 @@ void Prediction :: differentialPredictionCentral(Block4D *residueBlock, Block4D 
 							origBlock->mPixel[horizontalView+1][verticalView][viewColumn][viewLine];	
 					
 					residuesSum = 0;
-
-					if(spectralComponent == 0) {
-						yResiduesFile << residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] << '\n';
-					}
-					else if(spectralComponent == 1) {
-						cbResiduesFile << residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] << '\n';
-					}
-					else {
-						crResiduesFile << residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] << '\n';
-					}
 				}
 			}
 		}
@@ -1135,23 +1082,23 @@ void Prediction :: calcOtherPlanesEnergy(Block4D *lfBlock, int spectralComponent
 	}
 }
 
-void Prediction :: saveDCCoeff(Block4D *lfBlock) {
-	DC_coeff << lfBlock->mPixel[0][0][0][0] << '\n';
-}
+// void Prediction :: saveDCCoeff(Block4D *lfBlock) {
+// 	DC_coeff << lfBlock->mPixel[0][0][0][0] << '\n';
+// }
 
-void Prediction :: saveACCoeff(Block4D *lfBlock) {
-	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
-		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
-			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
-				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-					if(horizontalView > 0 && verticalView > 0) {
-						AC_coeff << lfBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] << '\n';
-					}
-				}
-			}
-		}
-	}
-}
+// void Prediction :: saveACCoeff(Block4D *lfBlock) {
+// 	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
+// 		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
+// 			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
+// 				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
+// 					if(horizontalView > 0 && verticalView > 0) {
+// 						AC_coeff << lfBlock->mPixel[verticalView][horizontalView][viewLine][viewColumn] << '\n';
+// 					}
+// 				}
+// 			}
+// 		}
+// 	}
+// }
 
 int Prediction :: getMaxRefPlane() {
 	return maxRefPlane;
@@ -1191,38 +1138,6 @@ double Prediction :: getCbOtherPlanesEnergy() {
 
 double Prediction :: getCrOtherPlanesEnergy() {
 	return cr_totalSignalEnergyOtherPlanes;
-}
-
-void Prediction :: differentialPredictionRasterDCRefPlane(Block4D *residueBlock, Block4D *origBlock, int spectralComponent) {
-	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
-		int DCPredictorRefPlane = DCPredictorRefPlaneRaster(origBlock, verticalView);
-		//printf("DC: %d\n", DCPredictorRefPlane);
-		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
-			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
-				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-					if(horizontalView > 0) {
-						residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] =
-								origBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] - 
-								(origBlock->mPixel[horizontalView-1][verticalView][viewColumn][viewLine]);
-					}
-					else {
-						residueBlock->mPixel[0][verticalView][viewColumn][viewLine] = 
-							origBlock->mPixel[0][verticalView][viewColumn][viewLine] - DCPredictorRefPlane;
-					}
-
-					if(spectralComponent == 0) {
-						yResiduesFile << residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] << '\n';
-					}
-					else if(spectralComponent == 1) {
-						cbResiduesFile << residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] << '\n';
-					}
-					else {
-						crResiduesFile << residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] << '\n';
-					}
-				}
-			}
-		}
-	}
 }
 
 int Prediction :: DCPredictorRefPlaneRaster(Block4D *origBlock, int verticalView) {

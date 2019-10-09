@@ -335,10 +335,6 @@ int main(int argc, char **argv) {
     hdt.mNumberOfViewColumns = inputLF.mNumberOfViewColumns;
     hdt.mPGMScale = inputLF.mPGMScale;
     hdt.StartEncoder(par.outputFileName);
-	// for(int verticalView = 0; verticalView < inputLF.mNumberOfVerticalViews; verticalView += par.transformLength_t) {
-	// 	for(int horizontalView = 0; horizontalView < inputLF.mNumberOfHorizontalViews; horizontalView += par.transformLength_s) {
-	// 		for(int viewLine = 0; viewLine < 15; viewLine += par.transformLength_v) {
-	// 			for(int viewColumn = 0; viewColumn < 15; viewColumn += par.transformLength_u) {
     for(int verticalView = 0; verticalView < inputLF.mNumberOfVerticalViews; verticalView += par.transformLength_t) {
         for(int horizontalView = 0; horizontalView < inputLF.mNumberOfHorizontalViews; horizontalView += par.transformLength_s) {
             for(int viewLine = 0; viewLine < inputLF.mNumberOfViewLines; viewLine += par.transformLength_v) {
@@ -417,7 +413,6 @@ int main(int argc, char **argv) {
 								
 								for(int vView = 0; vView < 13; vView++) {
 									int DCPredictor = pred.DCPredictorRefPlaneRaster(&lfBlock, vView);
-									//printf("%d\n", DCPredictor);
 									DCPredictorFile << DCPredictor << '\n';
 								}
 						}
@@ -458,36 +453,33 @@ int main(int argc, char **argv) {
 	//printf("\tLambda: %.0lf\n", par.Lambda);
 	printf("\t\tALL PLANES ---------------------------------------------------\n");
 	printf("\t\t\tNumber of partitions: %d\n", stats.getPartitioningCounter());
-	printf("\t\t\tPercentage of partitioned blocks: %.2f\n%%", ((float)stats.getPartitioningCounter()/(42.0*29.0*3.0))*100);
+	printf("\t\t\tPercentage of partitioned blocks: %.2f%%\n", ((float)stats.getPartitioningCounter()/(42.0*29.0*3.0))*100);
 	printf("\t\tREFERENCE PLANE RESIDUES -------------------------------------\n");
-	printf("\t\t\tY energy: %.2lf\n", stats.getYRefPlaneEnergy());
-	printf("\t\t\tCb energy: %.2lf\n", stats.getCbRefPlaneEnergy());
-	printf("\t\t\tCr energy: %.2lf\n", stats.getCrRefPlaneEnergy());
+	printf("\t\t\tY energy: %.0lf\n", stats.getYRefPlaneEnergy());
+	printf("\t\t\tCb energy: %.0lf\n", stats.getCbRefPlaneEnergy());
+	printf("\t\t\tCr energy: %.0lf\n", stats.getCrRefPlaneEnergy());
 	printf("\t\t\tY average: %.2lf\n", stats.getYRefPlaneSamplesAverage());
 	printf("\t\t\tCb average: %.2lf\n", stats.getCbRefPlaneSamplesAverage());
 	printf("\t\t\tCr average: %.2lf\n", stats.getCrRefPlaneSamplesAverage());
-	printf("\t\t\tY standard deviation: %.5lf\n", stats.calcStdYRefPlane());
-	printf("\t\t\tCb standard deviation: %.5lf\n", stats.calcStdCbRefPlane());
-	printf("\t\t\tCr standard deviation: %.5lf\n", stats.calcStdCrRefPlane());
+	printf("\t\t\tY standard deviation: %.2lf\n", stats.calcStdYRefPlane());
+	printf("\t\t\tCb standard deviation: %.2lf\n", stats.calcStdCbRefPlane());
+	printf("\t\t\tCr standard deviation: %.2lf\n", stats.calcStdCrRefPlane());
 	printf("\t\t\tMax value: %d\n", stats.getMaxRefPlane());
 	printf("\t\t\tMin value: %d\n", stats.getMinRefPlane());
 	printf("\t\tOTHER PLANES RESIDUES -----------------------------------------\n");
-	printf("\t\t\tY energy: %.2lf\n", stats.getYOtherPlanesEnergy());
-	printf("\t\t\tCb energy: %.2lf\n", stats.getCbOtherPlanesEnergy());
-	printf("\t\t\tCr energy: %.2lf\n", stats.getCrOtherPlanesEnergy());
+	printf("\t\t\tY energy: %.0lf\n", stats.getYOtherPlanesEnergy());
+	printf("\t\t\tCb energy: %.0lf\n", stats.getCbOtherPlanesEnergy());
+	printf("\t\t\tCr energy: %.0lf\n", stats.getCrOtherPlanesEnergy());
 	printf("\t\t\tY average: %.2lf\n", stats.getYOtherPlanesSamplesAverage());
 	printf("\t\t\tCb average: %.2lf\n", stats.getCbOtherPlanesSamplesAverage());
 	printf("\t\t\tCr average: %.2lf\n", stats.getCrOtherPlanesSamplesAverage());
-	printf("\t\t\tY standard deviation: %.5lf\n", stats.calcStdYOtherPlanes());
-	printf("\t\t\tCb standard deviation: %.5lf\n", stats.calcStdCbOtherPlanes());
-	printf("\t\t\tCr standard deviation: %.5lf\n", stats.calcStdCrOtherPlanes());
+	printf("\t\t\tY standard deviation: %.2lf\n", stats.calcStdYOtherPlanes());
+	printf("\t\t\tCb standard deviation: %.2lf\n", stats.calcStdCbOtherPlanes());
+	printf("\t\t\tCr standard deviation: %.2lf\n", stats.calcStdCrOtherPlanes());
 	printf("\t\t\tMax value: %d\n", stats.getMaxOtherPlanes());
 	printf("\t\t\tMin value: %d\n", stats.getMinOtherPlanes());
 	printf("\t\tCOEFFICIENTS --------------------------------------------------\n");
 	printf("\t\t\tEnergy: %.2lf\n", stats.getEnergyCoeff());
-	//printf("\t\t\tAverage: %.2lf\n", stats.getAverageCoeff());
-	//printf("\t\t\tStandard deviation: %.2lf\n", stats.calcStdCoeff());
-	//printf("\t\t\tZero coefficients: %.5lf\n", (stats.getZeroCoefficients()/stats.getTotalCoefficients())*100);
 	printf("\t\t\tZero coefficients: %.0lf\n", stats.getZeroCoefficients());
 	printf("\t\t\tAll coefficients: %.0lf\n", stats.getTotalCoefficients());
 	printf("\t\t\tMax coefficient: %d\n", stats.getMaxCoeff());
