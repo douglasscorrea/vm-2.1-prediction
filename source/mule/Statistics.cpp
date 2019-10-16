@@ -20,6 +20,8 @@ Statistics :: Statistics(int prediction) {
 	cbOtherPlanesSamples = new int[otherPlanesTotalSamples];
 	crOtherPlanesSamples = new int[otherPlanesTotalSamples];
 
+	counterBcDecrease = 0;
+	counterSplitHexaDecaTree = 0;
 	partitioningCounter = 0;
 	zeroCoefficientsCounter = 0;
 	totalCoefficientsCounter = 0;
@@ -78,6 +80,14 @@ int Statistics :: getMaxOtherPlanes() {
 
 int Statistics :: getMinOtherPlanes() {
 	return minOtherPlanes;
+}
+
+int Statistics :: getBcDecreaseCounter() {
+	return counterBcDecrease;
+}
+
+int Statistics :: getSplitHexaDecaTreeCounter() {
+	return counterSplitHexaDecaTree;
 }
 
 double Statistics :: getZeroCoefficients() {
@@ -146,6 +156,14 @@ double Statistics :: getCrOtherPlanesEnergy() {
 
 double Statistics :: getEnergyCoeff() {
 	return coeffEnergy;
+}
+
+void Statistics :: incSplitHexaDecaTree() {
+	counterSplitHexaDecaTree++;
+}
+
+void Statistics :: incBcDecrease() {
+	counterBcDecrease++;
 }
 
 void Statistics :: printOneBlock(Block4D *lfBlock) {

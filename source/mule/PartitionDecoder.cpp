@@ -36,7 +36,7 @@ void PartitionDecoder :: DecodePartition(Hierarchical4DDecoder &entropyDecoder, 
 
     mPartitionCodeIndex = 0;
     entropyDecoder.mInferiorBitPlane = entropyDecoder.mEntropyDecoder.decode_symbol(2);
-
+	//printf("mInferiorBitPlane: %d\n", entropyDecoder.mInferiorBitPlane);
     DecodePartitionStep(position, length, entropyDecoder, mt);
         
 }

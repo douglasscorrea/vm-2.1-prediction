@@ -8,6 +8,7 @@ split = sys.argv[4]
 evaluateOptimumBitPlane = sys.argv[5]
 superiorBitPlane = sys.argv[6]
 inferiorBitPlane = sys.argv[7]
+performRDO = sys.argv[8]
 
 cmd1 = 'make all -j 6 && '
 cmd2 = 'time ./mule-encoder-bin '
@@ -19,9 +20,10 @@ cmd7 = '-prediction ' + prediction + ' '
 cmd8 = '-split ' + split + ' '
 cmd9 = '-evaluateOptimumBitPlane ' + evaluateOptimumBitPlane + ' '
 cmd10 = '-superiorBitPlane ' + superiorBitPlane + ' '
-cmd11 = '-inferiorBitPlane ' + inferiorBitPlane
+cmd11 = '-inferiorBitPlane ' + inferiorBitPlane + ' '
+cmd12 = '-performRDO ' + performRDO
 
-print(cmd1 + cmd2 + cmd3 + cmd4 + cmd5 + cmd6 + cmd7 + cmd8 + cmd9 + cmd10 + cmd11)
-os.system(cmd1 + cmd2 + cmd3 + cmd4 + cmd5 + cmd6 + cmd7 + cmd8 + cmd9 + cmd10 + cmd11)
+print(cmd1 + cmd2 + cmd3 + cmd4 + cmd5 + cmd6 + cmd7 + cmd8 + cmd9 + cmd10 + cmd11 + cmd12)
+os.system(cmd1 + cmd2 + cmd3 + cmd4 + cmd5 + cmd6 + cmd7 + cmd8 + cmd9 + cmd10 + cmd11 + cmd12)
 
 

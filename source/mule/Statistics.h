@@ -21,6 +21,8 @@ public:
 	int *otherPlanesCoeff;
 	int *AllCoeffs;
 	int maxCoeff, minCoeff;
+	int counterBcDecrease, counterSplitHexaDecaTree;
+
 	static const int refPlaneTotalSamples = 3562650;
 	static const int otherPlanesTotalSamples = 46314450;
 
@@ -48,6 +50,10 @@ public:
 	void calcSumCrOtherPlanesSamples(Block4D *lfBlock);
 	void countCoefficients(Block4D *transformedBlock);
 	void countPartitioning(char *partitionCode);
+	void incSplitHexaDecaTree();
+	void incBcDecrease();
+	int getBcDecreaseCounter();
+	int getSplitHexaDecaTreeCounter();
 	int getMaxRefPlane();
 	int getMinRefPlane();
 	int getMaxOtherPlanes();

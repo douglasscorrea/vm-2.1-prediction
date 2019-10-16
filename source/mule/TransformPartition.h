@@ -5,7 +5,7 @@
 
 // DSC begin
 #include "Prediction.h"
-#include "Statistics.h"
+//#include "Statistics.h"
 // DSC end
 
 #ifndef TRANSFORMPARTITION_H
@@ -23,6 +23,7 @@ public:
     int mEvaluateOptimumBitPlane;       /*!< Toggles the optimum bit plane evaluation procedure on and off */
     int mUseSameBitPlane;               /*!< Forces to use the same minimum bitplane for all subblocks */
     Block4D mPartitionData;             /*!< DCT of all subblocks of the partition */
+	
 	// DSC begin
 	int mInferiorBitPlane;
 	ofstream partition_code_file;
@@ -33,10 +34,14 @@ public:
     ~TransformPartition(void);
 	void RDoptimizeTransform(Block4D &inputBlock, MultiscaleTransform &mt, Hierarchical4DEncoder &entropyCoder, double lambda, Statistics *stats);
 	//void RDoptimizeTransform(Block4D &inputBlock, MultiscaleTransform &mt, Hierarchical4DEncoder &entropyCoder, double lambda);
+	void EncodePartition(Hierarchical4DEncoder &entropyCoder, double lambda, Statistics *stats);
+	//void EncodePartition(Hierarchical4DEncoder &entropyCoder, double lambda);
+	void EncodePartitionStep(int *position, int *length, Hierarchical4DEncoder &entropyCoder, double lambda, Statistics *stats);
+	//void EncodePartitionStep(int *position, int *length, Hierarchical4DEncoder &entropyCoder, double lambda);
+	double RDoptimizeTransformStep(Block4D &inputBlock, Block4D &transformedBlock, int *position, int *length, MultiscaleTransform &mt, Hierarchical4DEncoder &entropyCoder, double lambda, char **partitionCode, Statistics *stats);
+	//double RDoptimizeTransformStep(Block4D &inputBlock, Block4D &transformedBlock, int *position, int *length, MultiscaleTransform &mt, Hierarchical4DEncoder &entropyCoder, double lambda, char **partitionCode);
 	// DSC end
-    double RDoptimizeTransformStep(Block4D &inputBlock, Block4D &transformedBlock, int *position, int *length, MultiscaleTransform &mt, Hierarchical4DEncoder &entropyCoder, double lambda, char **partitionCode);
-    void EncodePartition(Hierarchical4DEncoder &entropyCoder, double lambda);
-    void EncodePartitionStep(int *position, int *length, Hierarchical4DEncoder &entropyCoder, double lambda);
+
     void EncodePartitionString(Hierarchical4DEncoder &entropyCoder);
 };
 

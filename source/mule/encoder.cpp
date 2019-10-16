@@ -31,6 +31,7 @@ public:
 	int InferiorBitPlane;
 	int EvaluateOptimumBitPlane;
 	int Split;
+	int PerformRDO;
 	// DSC end
     double Lambda;
     int transformLength_t;
@@ -118,6 +119,7 @@ void EncoderParameters :: DisplayConfiguration(void) {
 	printf("InferiorBitPlane = %d\n", InferiorBitPlane);
 	printf("EvaluateOptimumBitPlane = %d\n", EvaluateOptimumBitPlane);
 	printf("Split = %d\n", Split);
+	printf("Perform RDO: %d\n", PerformRDO);
 	// DSC end
     printf("Lambda = %f\n", Lambda);
     printf("transformLength_t = %d\n", transformLength_t);
@@ -155,6 +157,7 @@ int main(int argc, char **argv) {
 	par.Split = 1;
 	par.SuperiorBitPlane = 30;
 	par.InferiorBitPlane = 0;
+	par.PerformRDO = 1;
 	// DSC end
     par.Lambda = 1024;
     par.transformLength_t=13;
@@ -206,6 +209,9 @@ int main(int argc, char **argv) {
         }
 		if(strcmp(argv[n], "-prediction") == 0) {
 			strcpy(par.Prediction, argv[n+1]);
+        }
+		if(strcmp(argv[n], "-performRDO") == 0) {
+			par.PerformRDO = atoi(argv[n+1]);
         }
 		// DSC end
         if(strcmp(argv[n], "-lambda") == 0) {
@@ -265,7 +271,7 @@ int main(int argc, char **argv) {
     Block4D lfBlock, rBlock, gBlock, bBlock, yBlock, cbBlock, crBlock;
 	// DSC begin
 	//Hierarchical4DEncoder hdt;
-	Hierarchical4DEncoder hdt(par.SuperiorBitPlane);
+	Hierarchical4DEncoder hdt(par.SuperiorBitPlane, par.PerformRDO);
     //TransformPartition tp;
 	double energyRefPlane = 0;
 	double energyOtherPlanes = 0;
@@ -439,7 +445,7 @@ int main(int argc, char **argv) {
 						// DSC end
 						tp.RDoptimizeTransform(lfBlockResidue, DCTarray, hdt, par.Lambda, &stats);
 
-                        tp.EncodePartition(hdt, par.Lambda);
+                        tp.EncodePartition(hdt, par.Lambda, &stats);
 
 		    		}            
                 }
@@ -488,6 +494,9 @@ int main(int argc, char **argv) {
 	printf("\t\t\tAll coefficients: %.0lf\n", stats.getTotalCoefficients());
 	printf("\t\t\tMax coefficient: %d\n", stats.getMaxCoeff());
 	printf("\t\t\tMin coefficient: %d\n", stats.getMinCoeff());
+	printf("\t\tHEXADECA TREE --------------------------------------------------\n");
+	printf("\t\t\tNumber of Bc decrease: %d\n", stats.getBcDecreaseCounter());
+	printf("\t\t\tNumber of Splits: %d\n", stats.getSplitHexaDecaTreeCounter());
 	//predictionFile.close();
 	// DSC end
     

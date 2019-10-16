@@ -672,7 +672,6 @@ void ArithmeticCoder :: load_model(int m, PModel &source_model)
     }
     
     for(n = 0; n <= model[m].no_of_char; n++) {
-    
         model[m].index_to_char[n] = source_model.index_to_char[n];
         model[m].char_to_index[n] = source_model.char_to_index[n];
         model[m].freq[n] = source_model.freq[n];

@@ -8,6 +8,7 @@
 using namespace std;
 
 Prediction :: Prediction(int prediction) {
+	counter = 0;
 	predictionType = prediction;
 	DCPredictorFile.open("DC_predictors.txt");
 }
@@ -155,6 +156,8 @@ void Prediction :: recDifferentialPredictionRasterDCRefPlane(Block4D *residueBlo
 	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
 		int DCPredictor;
 		DCPredictorFile >> DCPredictor;
+		printf("[counter, pred]: %d, %d\n", counter, DCPredictor);
+		counter++;
 		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
 			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
 				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {

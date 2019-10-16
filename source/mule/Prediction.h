@@ -8,7 +8,7 @@ class Prediction
 {
 public:
 	ifstream DCPredictorFile;
-	int predictionType;
+	int predictionType, counter;
 
 	Prediction(int prediction);
 	int simplePredictor(Block4D *origBlock);

@@ -22,8 +22,9 @@ using namespace std;
 //     mSegmentationTreeCodeBufferSize = 0;
     
 // }
-Hierarchical4DEncoder :: Hierarchical4DEncoder(int superiorBitPlane) {
+Hierarchical4DEncoder :: Hierarchical4DEncoder(int superiorBitPlane, int performRDO) {
     mSuperiorBitPlane = superiorBitPlane;
+	mPerformRDO = performRDO;
 
     mInferiorBitPlane = 0;
     mPreSegmentation = 1;
@@ -135,19 +136,19 @@ void Hierarchical4DEncoder :: RestartProbabilisticModel(void) {
     }
 }
 
-void Hierarchical4DEncoder :: EncodeSubblock(double lambda) {
+void Hierarchical4DEncoder :: EncodeSubblock(double lambda, Statistics *stats) {
     
     int flagSearchIndex = 0;
     double Energy;
     
     strcpy(mSegmentationTreeCodeBuffer,"");
-    RdOptimizeHexadecaTree(0, 0, 0, 0, mSubbandLF.mlength_t, mSubbandLF.mlength_s, mSubbandLF.mlength_v, mSubbandLF.mlength_u, lambda, mSuperiorBitPlane, &mSegmentationTreeCodeBuffer, Energy);
+    RdOptimizeHexadecaTree(0, 0, 0, 0, mSubbandLF.mlength_t, mSubbandLF.mlength_s, mSubbandLF.mlength_v, mSubbandLF.mlength_u, lambda, mSuperiorBitPlane, &mSegmentationTreeCodeBuffer, Energy, stats);
   
     flagSearchIndex = 0;
     RdEncodeHexadecatree(0, 0, 0, 0, mSubbandLF.mlength_t, mSubbandLF.mlength_s, mSubbandLF.mlength_v, mSubbandLF.mlength_u, mSuperiorBitPlane, flagSearchIndex);
 }
 
-double Hierarchical4DEncoder :: RdOptimizeHexadecaTree(int position_t, int position_s, int position_v, int position_u, int length_t, int length_s, int length_v, int length_u, double lambda, int bitplane, char **codeString, double &signalEnergy) {
+double Hierarchical4DEncoder :: RdOptimizeHexadecaTree(int position_t, int position_s, int position_v, int position_u, int length_t, int length_s, int length_v, int length_u, double lambda, int bitplane, char **codeString, double &signalEnergy, Statistics *stats) {
 
     double J0, J1;
     double SignalEnergySum;
@@ -155,7 +156,7 @@ double Hierarchical4DEncoder :: RdOptimizeHexadecaTree(int position_t, int posit
     PModel currentCoefficientsArithmeticModelState[33];
     
     if(bitplane < mInferiorBitPlane) {
-      
+      	//printf("END\n");
         signalEnergy = 0;
         for(int index_t = 0; index_t < length_t; index_t++) {
             for(int index_s = 0; index_s < length_s; index_s++) {
@@ -172,8 +173,8 @@ double Hierarchical4DEncoder :: RdOptimizeHexadecaTree(int position_t, int posit
     }
     
     if(length_t*length_s*length_v*length_u == 1) {
+		//printf("size 1\n");
         //evaluate the cost to encode coefficient
-       
         int magnitude = mSubbandLF.mPixel[position_t][position_s][position_v][position_u];
         int signal = 0;
         if(magnitude < 0) {
@@ -211,7 +212,7 @@ double Hierarchical4DEncoder :: RdOptimizeHexadecaTree(int position_t, int posit
         
         J = J*J + lambda*(accumulatedRate);
         *codeString[0] = 0;
-
+		//printf("s1-J: %.0lf, %.0lf\n", J, lambda*(accumulatedRate));
         return(J);
     }
    
@@ -230,11 +231,8 @@ double Hierarchical4DEncoder :: RdOptimizeHexadecaTree(int position_t, int posit
     int Threshold = 1 << bitplane;
     
     for(int index_t = position_t; index_t < position_t+length_t; index_t++) {
-        
-        for(int index_s = position_s; index_s < position_s+length_s; index_s++) {
-            
-            for(int index_v = position_v; index_v < position_v+length_v; index_v++) {
-                
+        for(int index_s = position_s; index_s < position_s+length_s; index_s++) {           
+            for(int index_v = position_v; index_v < position_v+length_v; index_v++) {               
                 for(int index_u = position_u; index_u < position_u+length_u; index_u++) {
                     
                     if((index_t < mSubbandLF.mlength_t)&&(index_s < mSubbandLF.mlength_s)&&(index_v < mSubbandLF.mlength_v)&&(index_u < mSubbandLF.mlength_u)) {
@@ -260,17 +258,20 @@ double Hierarchical4DEncoder :: RdOptimizeHexadecaTree(int position_t, int posit
     
     
     //evaluate the cost J0 to encode this subblock
-     if(Significance == 0) {
-        
-        J0 = RdOptimizeHexadecaTree(position_t, position_s, position_v, position_u, length_t, length_s, length_v, length_u, lambda, bitplane-1, &codeString_0, SignalEnergySum);
+    if(Significance == 0) {
+		// DSC begin
+		stats->incBcDecrease();
+        //printf("Bc decrease\n");
+		// DSC end
+        J0 = RdOptimizeHexadecaTree(position_t, position_s, position_v, position_u, length_t, length_s, length_v, length_u, lambda, bitplane-1, &codeString_0, SignalEnergySum, stats);
         
     }
     else {
-         
+        //printf("divide light field\n");
         SignalEnergySum = 0;
         double Energy;
         J0 = 0;
-
+		
         int half_length_t = (length_t > 1) ? length_t/2 : 1;
         int half_length_s = (length_s > 1) ? length_s/2 : 1;
         int half_length_v = (length_v > 1) ? length_v/2 : 1;
@@ -280,8 +281,11 @@ double Hierarchical4DEncoder :: RdOptimizeHexadecaTree(int position_t, int posit
         int number_of_subdivisions_s = (length_s > 1) ? 2 : 1;
         int number_of_subdivisions_v = (length_v > 1) ? 2 : 1;
         int number_of_subdivisions_u = (length_u > 1) ? 2 : 1;
-        
-        
+
+		// DSC begin
+		stats->incSplitHexaDecaTree();
+        // DSC end
+
         for(int index_t = 0; index_t < number_of_subdivisions_t; index_t++) {
             
             for(int index_s = 0; index_s < number_of_subdivisions_s; index_s++) {
@@ -303,14 +307,14 @@ double Hierarchical4DEncoder :: RdOptimizeHexadecaTree(int position_t, int posit
                         char *codeString_1 = new char [2];
                             
                         strcpy(codeString_1, "");
-                        J0 += RdOptimizeHexadecaTree(new_position_t, new_position_s, new_position_v, new_position_u, new_length_t, new_length_s, new_length_v, new_length_u, lambda, bitplane, &codeString_1, Energy);
+                        J0 += RdOptimizeHexadecaTree(new_position_t, new_position_s, new_position_v, new_position_u, new_length_t, new_length_s, new_length_v, new_length_u, lambda, bitplane, &codeString_1, Energy, stats);
                         char *tempString = new char[strlen(codeString_0)+strlen(codeString_1)+2];
                         strcpy(tempString, codeString_0);
                         strcat(tempString, codeString_1);
                         delete [] codeString_0;
                         delete [] codeString_1;
                         codeString_0 = tempString;
-                            
+						//printf("energy: %.0lf\n", Energy);
                         SignalEnergySum += Energy;
                     }
                     
@@ -318,54 +322,71 @@ double Hierarchical4DEncoder :: RdOptimizeHexadecaTree(int position_t, int posit
                 
             }
             
-        }
-            
-        
-              
+        }       
+             
     }    
     
     //evaluate the cost J1 to skip this subblock
     J1 = SignalEnergySum + lambda*mEntropyCoder.rate(2, mFindBestTreeFlagsArithmeticModelIndex+bitplane);
     J0 += lambda*mEntropyCoder.rate(Significance, mFindBestTreeFlagsArithmeticModelIndex+bitplane);
+	//printf("[SES, J1, J0]: %.0lf, %.0lf, %.0lf, %.0lf, %.0lf\n", SignalEnergySum, J1, J0, lambda*mEntropyCoder.rate(2, mFindBestTreeFlagsArithmeticModelIndex+bitplane));
     
-    //Choose the lowest cost
-    //if((J0 <= J1)||((bitplane == mInferiorBitPlane)&&(Significance == 0))) {
-    if((J0 < J1)||((bitplane == mInferiorBitPlane)&&(Significance == 0))) {
-    //if(1 == 1) {
-        char *tempString = new char[strlen(*codeString)+strlen(codeString_0)+3];
-        strcpy(tempString, *codeString);
-        delete [] *codeString;
-        *codeString = tempString;
-        
-        if(Significance == 1) {
-            strcat(*codeString, "1");         
-        }
-        else {
-            strcat(*codeString, "0");
-        }
-        strcat(*codeString, codeString_0);
-        if(bitplane > BITPLANE_BYPASS_FLAGS) 
-            mEntropyCoder.update_model(Significance, mFindBestTreeFlagsArithmeticModelIndex+bitplane);
-    }
-    else {
-        char *tempString = new char[strlen(*codeString)+3];
-        strcpy(tempString, *codeString);
-        delete [] *codeString;
-        *codeString = tempString;
-        strcat(*codeString, "2");
-        J0 = J1;
-        
-        for(int bit_position = bitplane; bit_position >= 0; bit_position--) {
+	//Choose the lowest cost
+	// DSC begin
+	if(mPerformRDO == 1) {
+		if((J0 < J1)||((bitplane == mInferiorBitPlane)&&(Significance == 0))) {
+			char *tempString = new char[strlen(*codeString)+strlen(codeString_0)+3];
+			strcpy(tempString, *codeString);
+			delete [] *codeString;
+			*codeString = tempString;
+			
+			if(Significance == 1) {
+				strcat(*codeString, "1");         
+			}
+			else {
+				strcat(*codeString, "0");
+			}
+			strcat(*codeString, codeString_0);
+			if(bitplane > BITPLANE_BYPASS_FLAGS)   
+				mEntropyCoder.update_model(Significance, mFindBestTreeFlagsArithmeticModelIndex+bitplane);
+		}
+		else {
+			char *tempString = new char[strlen(*codeString)+3];
+			strcpy(tempString, *codeString);
+			delete [] *codeString;
+			*codeString = tempString;
+			strcat(*codeString, "2");
+			J0 = J1;
+			
+			for(int bit_position = bitplane; bit_position >= 0; bit_position--) {
 
-            mEntropyCoder.load_model(bit_position+mFindBestTreeArithmeticModelIndex, currentCoefficientsArithmeticModelState[bit_position]);   
-            mEntropyCoder.load_model(bit_position+mFindBestTreeFlagsArithmeticModelIndex, currentFlagsArithmeticModelState[bit_position]);   
+				mEntropyCoder.load_model(bit_position+mFindBestTreeArithmeticModelIndex, currentCoefficientsArithmeticModelState[bit_position]);   
+				mEntropyCoder.load_model(bit_position+mFindBestTreeFlagsArithmeticModelIndex, currentFlagsArithmeticModelState[bit_position]);   
 
-        }
-        
-        if(bitplane > BITPLANE_BYPASS_FLAGS) 
-            mEntropyCoder.update_model(2, mFindBestTreeFlagsArithmeticModelIndex+bitplane);
-    }
-  
+			}
+			
+			if(bitplane > BITPLANE_BYPASS_FLAGS) 
+				mEntropyCoder.update_model(2, mFindBestTreeFlagsArithmeticModelIndex+bitplane);
+		}
+	}
+	else {
+		char *tempString = new char[strlen(*codeString)+strlen(codeString_0)+3];
+		strcpy(tempString, *codeString);
+		delete [] *codeString;
+		*codeString = tempString;
+		
+		if(Significance == 1) {
+			strcat(*codeString, "1");         
+		}
+		else {
+			strcat(*codeString, "0");
+		}
+		strcat(*codeString, codeString_0);
+		if(bitplane > BITPLANE_BYPASS_FLAGS)   
+			mEntropyCoder.update_model(Significance, mFindBestTreeFlagsArithmeticModelIndex+bitplane);
+	}
+	// DSC end
+
     delete [] codeString_0;
     
     signalEnergy = SignalEnergySum;
@@ -391,7 +412,7 @@ void Hierarchical4DEncoder :: RdEncodeHexadecatree(int position_t, int position_
     }
     
     if(mSegmentationTreeCodeBuffer[flagIndex] == '0') {
-        
+
         EncodeTernaryFlag(0, mFlagsArithmeticModelIndex+2*bitplane, bitplane > BITPLANE_BYPASS_FLAGS);
     
         flagIndex++;
@@ -401,7 +422,7 @@ void Hierarchical4DEncoder :: RdEncodeHexadecatree(int position_t, int position_
     }
     
     if(mSegmentationTreeCodeBuffer[flagIndex] == '2') {
-        
+
         EncodeTernaryFlag(2, mFlagsArithmeticModelIndex+2*bitplane, bitplane > BITPLANE_BYPASS_FLAGS);
     
         flagIndex++;
@@ -471,7 +492,6 @@ void Hierarchical4DEncoder :: RdEncodeCoefficient(int coefficient, int bitplane,
     
     //if(magnitude >= (1 << mInferiorBitPlane)) 
     for(int bit_position = bitplane; bit_position >= mInferiorBitPlane; bit_position--) {
-
         int bit = (magnitude >> (bit_position))&01;
         mEntropyCoder.encode_symbol(bit, bit_position+1+mSymbolsArithmeticModelIndex);
         if(bit_position > BITPLANE_BYPASS) 

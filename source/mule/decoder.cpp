@@ -261,11 +261,10 @@ int main(int argc, char **argv) {
 						else if(strcmp(par.Prediction, "diffC") == 0) {
 							pred.recDifferentialPredictionCentral(&lfBlock, &lfRecBlock);
        	 				}
-						else if(strcmp(par.Prediction, "diffC") == 0){
+						else if(strcmp(par.Prediction, "mule") == 0){
 							lfRecBlock = lfBlock;
        	 				}
 						else if(strcmp(par.Prediction, "diffRDC") == 0) {
-							printf("DiffDC\n");
 							pred.recDifferentialPredictionRasterDCRefPlane(&lfBlock, &lfRecBlock);
 						}
 						// DSC end

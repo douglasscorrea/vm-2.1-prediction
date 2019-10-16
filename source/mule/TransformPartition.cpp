@@ -64,7 +64,7 @@ void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTr
     
     Block4D transformedBlock;
     transformedBlock.SetDimension(length[0], length[1], length[2], length[3]);
-    mLagrangianCost = RDoptimizeTransformStep(inputBlock, transformedBlock, position, length, mt, entropyCoder, scaledLambda, &mPartitionCode);
+    mLagrangianCost = RDoptimizeTransformStep(inputBlock, transformedBlock, position, length, mt, entropyCoder, scaledLambda, &mPartitionCode, stats);
 	
 	// DSC begin
 	stats->calcCoeffEnergy(&transformedBlock);
@@ -86,7 +86,7 @@ void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTr
 	// DSC end   
 }
 
-double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4D &transformedBlock, int *position, int *length, MultiscaleTransform &mt, Hierarchical4DEncoder &entropyCoder, double lambda, char **partitionCode) {
+double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4D &transformedBlock, int *position, int *length, MultiscaleTransform &mt, Hierarchical4DEncoder &entropyCoder, double lambda, char **partitionCode, Statistics *stats) {
 /*! returns the Lagrangian cost of one step of the optimization of the multiscale transform for the input block as well as the transformed block */   
  
     //J0 = cost of full transform
@@ -127,7 +127,7 @@ double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4
         delete [] entropyCoder.mSegmentationTreeCodeBuffer;
     entropyCoder.mSegmentationTreeCodeBuffer = new char [2];
     strcpy(entropyCoder.mSegmentationTreeCodeBuffer,"");
-    double J0 = entropyCoder.RdOptimizeHexadecaTree(0, 0, 0, 0, entropyCoder.mSubbandLF.mlength_t, entropyCoder.mSubbandLF.mlength_s, entropyCoder.mSubbandLF.mlength_v, entropyCoder.mSubbandLF.mlength_u, lambda, entropyCoder.mSuperiorBitPlane, &entropyCoder.mSegmentationTreeCodeBuffer, Energy);
+    double J0 = entropyCoder.RdOptimizeHexadecaTree(0, 0, 0, 0, entropyCoder.mSubbandLF.mlength_t, entropyCoder.mSubbandLF.mlength_s, entropyCoder.mSubbandLF.mlength_v, entropyCoder.mSubbandLF.mlength_u, lambda, entropyCoder.mSuperiorBitPlane, &entropyCoder.mSegmentationTreeCodeBuffer, Energy, stats);
 
     //saves the resulting entropyCoder arithmetic model to model_0
     PModel *coderModelState_0;
@@ -170,7 +170,7 @@ double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4
         Block4D transformedBlockS00;
         transformedBlockS00.SetDimension(new_length[0], new_length[1], new_length[2], new_length[3]);
         
-        JS += RDoptimizeTransformStep(inputBlock, transformedBlockS00, new_position, new_length, mt, entropyCoder, lambda, &partitionCodeS00);
+        JS += RDoptimizeTransformStep(inputBlock, transformedBlockS00, new_position, new_length, mt, entropyCoder, lambda, &partitionCodeS00, stats);
 
         new_position[3] = position[3] + length[3]/2;
         new_length[3] = length[3] - length[3]/2;
@@ -178,7 +178,7 @@ double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4
         Block4D transformedBlockS01;
         transformedBlockS01.SetDimension(new_length[0], new_length[1], new_length[2], new_length[3]);
         
-        JS += RDoptimizeTransformStep(inputBlock, transformedBlockS01, new_position, new_length, mt, entropyCoder, lambda, &partitionCodeS01);
+        JS += RDoptimizeTransformStep(inputBlock, transformedBlockS01, new_position, new_length, mt, entropyCoder, lambda, &partitionCodeS01, stats);
 
         new_position[2] = position[2] + length[2]/2;
         new_length[2] = length[2] - length[2]/2;
@@ -186,7 +186,7 @@ double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4
         Block4D transformedBlockS11;
         transformedBlockS11.SetDimension(new_length[0], new_length[1], new_length[2], new_length[3]);
         
-        JS += RDoptimizeTransformStep(inputBlock, transformedBlockS11, new_position, new_length, mt, entropyCoder, lambda, &partitionCodeS11);
+        JS += RDoptimizeTransformStep(inputBlock, transformedBlockS11, new_position, new_length, mt, entropyCoder, lambda, &partitionCodeS11, stats);
         
         new_position[3] = position[3];
         new_length[3] = length[3]/2;
@@ -194,7 +194,7 @@ double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4
         Block4D transformedBlockS10;
         transformedBlockS10.SetDimension(new_length[0], new_length[1], new_length[2], new_length[3]);
         
-        JS += RDoptimizeTransformStep(inputBlock, transformedBlockS10, new_position, new_length, mt, entropyCoder, lambda, &partitionCodeS10);
+        JS += RDoptimizeTransformStep(inputBlock, transformedBlockS10, new_position, new_length, mt, entropyCoder, lambda, &partitionCodeS10, stats);
               
         partitionCodeS = new char [2+strlen(partitionCodeS00)+strlen(partitionCodeS01)+strlen(partitionCodeS10)+strlen(partitionCodeS11)];
         strcpy(partitionCodeS, partitionCodeS00);
@@ -258,7 +258,7 @@ double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4
         Block4D transformedBlockV00;
         transformedBlockV00.SetDimension(new_length[0], new_length[1], new_length[2], new_length[3]);
         
-        JV += RDoptimizeTransformStep(inputBlock, transformedBlockV00, new_position, new_length, mt, entropyCoder, lambda, &partitionCodeV00);
+        JV += RDoptimizeTransformStep(inputBlock, transformedBlockV00, new_position, new_length, mt, entropyCoder, lambda, &partitionCodeV00, stats);
 
         new_position[1] = position[1] + length[1]/2;
         new_length[1] = length[1] - length[1]/2;
@@ -266,7 +266,7 @@ double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4
         Block4D transformedBlockV01;
         transformedBlockV01.SetDimension(new_length[0], new_length[1], new_length[2], new_length[3]);
         
-        JV += RDoptimizeTransformStep(inputBlock, transformedBlockV01, new_position, new_length, mt, entropyCoder, lambda, &partitionCodeV01);
+        JV += RDoptimizeTransformStep(inputBlock, transformedBlockV01, new_position, new_length, mt, entropyCoder, lambda, &partitionCodeV01, stats);
 
         new_position[0] = position[0] + length[0]/2;
         new_length[0] = length[0] - length[0]/2;
@@ -274,7 +274,7 @@ double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4
         Block4D transformedBlockV11;
         transformedBlockV11.SetDimension(new_length[0], new_length[1], new_length[2], new_length[3]);
         
-        JV += RDoptimizeTransformStep(inputBlock, transformedBlockV11, new_position, new_length, mt, entropyCoder, lambda, &partitionCodeV11);
+        JV += RDoptimizeTransformStep(inputBlock, transformedBlockV11, new_position, new_length, mt, entropyCoder, lambda, &partitionCodeV11, stats);
         
         new_position[1] = position[1];
         new_length[1] = length[1]/2;
@@ -282,7 +282,7 @@ double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4
         Block4D transformedBlockV10;
         transformedBlockV10.SetDimension(new_length[0], new_length[1], new_length[2], new_length[3]);
         
-        JV += RDoptimizeTransformStep(inputBlock, transformedBlockV10, new_position, new_length, mt, entropyCoder, lambda, &partitionCodeV10);
+        JV += RDoptimizeTransformStep(inputBlock, transformedBlockV10, new_position, new_length, mt, entropyCoder, lambda, &partitionCodeV10, stats);
         
         partitionCodeV = new char [2+strlen(partitionCodeV00)+strlen(partitionCodeV01)+strlen(partitionCodeV10)+strlen(partitionCodeV11)];
         strcpy(partitionCodeV, partitionCodeV00);
@@ -443,7 +443,7 @@ double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4
     
 }
     
-void TransformPartition :: EncodePartition(Hierarchical4DEncoder &entropyCoder, double lambda) {
+void TransformPartition :: EncodePartition(Hierarchical4DEncoder &entropyCoder, double lambda, Statistics *stats) {
     
     double scaledLambda = mPartitionData.mlength_t*mPartitionData.mlength_s;
     scaledLambda *= lambda*mPartitionData.mlength_v*mPartitionData.mlength_u;
@@ -466,11 +466,11 @@ void TransformPartition :: EncodePartition(Hierarchical4DEncoder &entropyCoder, 
     
     entropyCoder.mEntropyCoder.encode_symbol(entropyCoder.mInferiorBitPlane, 2);
 
-    EncodePartitionStep(position, length, entropyCoder, scaledLambda);
+    EncodePartitionStep(position, length, entropyCoder, scaledLambda, stats);
         
 }
 
-void TransformPartition :: EncodePartitionStep(int *position, int *length, Hierarchical4DEncoder &entropyCoder, double lambda) {
+void TransformPartition :: EncodePartitionStep(int *position, int *length, Hierarchical4DEncoder &entropyCoder, double lambda, Statistics *stats) {
     
     if(mPartitionCode[mPartitionCodeIndex] == NOSPLITFLAG) {
       
@@ -478,7 +478,7 @@ void TransformPartition :: EncodePartitionStep(int *position, int *length, Hiera
         
         entropyCoder.mSubbandLF.SetDimension(length[0], length[1], length[2], length[3]);
         entropyCoder.mSubbandLF.CopySubblockFrom(mPartitionData, position[0], position[1], position[2], position[3]);
-        entropyCoder.EncodeSubblock(lambda);
+        entropyCoder.EncodeSubblock(lambda, stats);
         
         return;
     }
@@ -499,22 +499,22 @@ void TransformPartition :: EncodePartitionStep(int *position, int *length, Hiera
         new_length[3] = length[3]/2;
         
         //Encode four spatial subblocks 
-        EncodePartitionStep(new_position, new_length, entropyCoder, lambda);
+        EncodePartitionStep(new_position, new_length, entropyCoder, lambda, stats);
 
         new_position[3] = position[3] + length[3]/2;
         new_length[3] = length[3] - length[3]/2;
         
-        EncodePartitionStep(new_position, new_length, entropyCoder, lambda);
+        EncodePartitionStep(new_position, new_length, entropyCoder, lambda, stats);
 
         new_position[2] = position[2] + length[2]/2;
         new_length[2] = length[2] - length[2]/2;
         
-        EncodePartitionStep(new_position, new_length, entropyCoder, lambda);
+        EncodePartitionStep(new_position, new_length, entropyCoder, lambda, stats);
         
         new_position[3] = position[3];
         new_length[3] = length[3]/2;
         
-        EncodePartitionStep(new_position, new_length, entropyCoder, lambda);
+        EncodePartitionStep(new_position, new_length, entropyCoder, lambda, stats);
         return;
     }
     if(mPartitionCode[mPartitionCodeIndex] == INTERVIEWSPLITFLAG) {
@@ -534,23 +534,23 @@ void TransformPartition :: EncodePartitionStep(int *position, int *length, Hiera
         new_length[3] = length[3];
         
         //Encode four view subblocks 
-        EncodePartitionStep(new_position, new_length, entropyCoder, lambda);
+        EncodePartitionStep(new_position, new_length, entropyCoder, lambda, stats);
         //optimize partition for Block_V returning JV, the transformed Block_V, partitionCode_S and arithmetic_model_S
 
         new_position[1] = position[1] + length[1]/2;
         new_length[1] = length[1] - length[1]/2;
         
-        EncodePartitionStep(new_position, new_length, entropyCoder, lambda);
+        EncodePartitionStep(new_position, new_length, entropyCoder, lambda, stats);
 
         new_position[0] = position[0] + length[0]/2;
         new_length[0] = length[0] - length[0]/2;
         
-        EncodePartitionStep(new_position, new_length, entropyCoder, lambda);
+        EncodePartitionStep(new_position, new_length, entropyCoder, lambda, stats);
         
         new_position[1] = position[1];
         new_length[1] = length[1]/2;
         
-        EncodePartitionStep(new_position, new_length, entropyCoder, lambda);
+        EncodePartitionStep(new_position, new_length, entropyCoder, lambda, stats);
         return;
     }
 }
