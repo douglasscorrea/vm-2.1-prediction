@@ -122,7 +122,12 @@ int Prediction :: DCPredictorRefPlaneRaster(Block4D *origBlock, int verticalView
 
 	for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
 		for(int viewLine = 0; viewLine < 15; viewLine += 1) {
-			sumRefPlane += origBlock->mPixel[0][verticalView][viewColumn][viewLine];
+			if(predictionType == 3) {
+				sumRefPlane += origBlock->mPixel[0][verticalView][viewColumn][viewLine];
+			}
+			if(predictionType == 4) {
+				sumRefPlane += origBlock->mPixel[6][verticalView][viewColumn][viewLine];
+			}
 		}
 	}
 
@@ -184,10 +189,10 @@ void Prediction :: differentialPredictionCentral(Block4D *residueBlock, Block4D 
 	int residuesSum = 0;
 
 	/* RIGHT PREDICTION */
-	for(int horizontalView = 6; horizontalView < 13; horizontalView += 1) {
-		for(int verticalView = 0; verticalView < 13; verticalView += 1) {
-			for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-				for(int viewLine = 0; viewLine < 15; viewLine += 1) {
+	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
+		for(int horizontalView = 6; horizontalView < 13; horizontalView += 1) {
+			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
+				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
 					if(horizontalView != 6) {
 						// for(int i = 7; i < horizontalView; i++) {
 						// 	residuesSum += residueBlock->mPixel[verticalView][i][viewLine][viewColumn];
@@ -204,13 +209,10 @@ void Prediction :: differentialPredictionCentral(Block4D *residueBlock, Block4D 
 	}
 
 	/* LEFT PREDICTION */
-	for(int horizontalView = 5; horizontalView >=0; horizontalView -= 1) {
-		for(int verticalView = 0; verticalView < 13; verticalView += 1) {
-			for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
-				for(int viewLine = 0; viewLine < 15; viewLine += 1) {
-					// for(int i = 5; i > horizontalView; i--) {
-					// 	residuesSum += residueBlock->mPixel[verticalView][i][viewLine][viewColumn];
-					// }
+	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
+		for(int horizontalView = 5; horizontalView >= 0; horizontalView -= 1) {
+			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
+				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
 					residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] =
 							origBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] - 
 							origBlock->mPixel[horizontalView+1][verticalView][viewColumn][viewLine];	
@@ -268,6 +270,96 @@ void Prediction :: recDifferentialPredictionCentral(Block4D *recBlock, Block4D *
 		}
 	}
 }
+
+void Prediction :: differentialPredictionCentralDCRefPlane(Block4D *residueBlock, Block4D *origBlock, int spectralComponent) {
+	int residuesSum = 0;
+
+	/* RIGHT PREDICTION */
+	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
+		int DCPredictorRefPlane = DCPredictorRefPlaneRaster(origBlock, verticalView);
+		for(int horizontalView = 6; horizontalView < 13; horizontalView += 1) {
+			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
+				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
+					if(horizontalView != 6) {
+						residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] =
+								origBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] - 
+								origBlock->mPixel[horizontalView-1][verticalView][viewColumn][viewLine];	
+					}
+					else
+						residueBlock->mPixel[6][verticalView][viewColumn][viewLine] = 
+							origBlock->mPixel[6][verticalView][viewColumn][viewLine] - DCPredictorRefPlane;
+				}
+			}
+		}
+	}
+
+	/* LEFT PREDICTION */
+	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
+		for(int horizontalView = 5; horizontalView >= 0; horizontalView -= 1) {
+			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
+				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
+					residueBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] =
+							origBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] - 
+							origBlock->mPixel[horizontalView+1][verticalView][viewColumn][viewLine];	
+					
+					residuesSum = 0;
+				}
+			}
+		}
+	}
+}
+
+void Prediction :: recDifferentialPredictionCentralDCRefPlane(Block4D *recBlock, Block4D *origBlock) {
+	int residuesSum = 0;
+
+	/* RIGHT PREDICTION */
+	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
+		int DCPredictor;
+		DCPredictorFile >> DCPredictor;
+		//printf("DCpred: %d\n", DCPredictor);
+		for(int horizontalView = 6; horizontalView < 13; horizontalView += 1) {
+			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
+				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
+					if(horizontalView != 6) {
+						for(int i = 7; i < horizontalView; i++) {
+							residuesSum += recBlock->mPixel[i][verticalView][viewColumn][viewLine];
+						}
+
+						origBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] =
+							recBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] +
+							origBlock->mPixel[6][verticalView][viewColumn][viewLine] + residuesSum;
+
+						residuesSum = 0;
+					}
+					else {
+						origBlock->mPixel[6][verticalView][viewColumn][viewLine] = 
+							recBlock->mPixel[6][verticalView][viewColumn][viewLine] + DCPredictor;
+					}	
+				}
+			}
+		}
+	}
+
+	/* LEFT PREDICTION */
+	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
+		for(int horizontalView = 5; horizontalView >= 0; horizontalView -= 1) {
+			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
+				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
+					for(int i = 5; i > horizontalView; i--) {
+						residuesSum += recBlock->mPixel[i][verticalView][viewColumn][viewLine];
+					}
+
+					origBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] =
+						recBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine] +
+						origBlock->mPixel[6][verticalView][viewColumn][viewLine] + residuesSum;
+					
+					residuesSum = 0;
+				}
+			}
+		}
+	}
+}
+
 
 void Prediction :: differentialPredictionRasterHalf(Block4D *residueBlock, Block4D *origBlock) {
 	int residuesSum = 0;

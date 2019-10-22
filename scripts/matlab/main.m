@@ -1,5 +1,5 @@
 solution_list = {'diffRDC'};
-lambda_list = {'322_0_30_0'};
+lambda_list = {'322_1_30_8'};
 ppm_list = {'000', '001' '002', '003', '004', '005', '006', '007', '008', '009', '010', '011', '012'};
 Y_PNSR_SUM = 0;
 YUV_PNSR_SUM = 0;
@@ -13,8 +13,8 @@ counter_Y_SSIM = 0;
 
 for i = 1:numel(solution_list)
     for j = 1:numel(lambda_list)
-        for k = 1:numel(ppm_list)
-            for l = 1:numel(ppm_list)
+        for l = 1:numel(ppm_list)
+            for k = 1:numel(ppm_list)
                 arq1 = ['/home/douglascorrea/light-field/dataset/Lenslet/Bikes/', ppm_list{k}, '_', ppm_list{l},'.ppm'];
                 arq2 = ['/home/douglascorrea/light-field/resultados_prediction/Bikes/decoding/bitplanes/', solution_list{i}, '_', lambda_list{j}, '/', ppm_list{k}, '_', ppm_list{l},'.ppm'];
                 disp(arq1);
@@ -37,7 +37,7 @@ for i = 1:numel(solution_list)
                     counter_YUV_PSNR = counter_YUV_PSNR + 1;
                     YUV_PNSR_SUM = YUV_PNSR_SUM + YUV_PSNR;
                 end;
-                if(Y_SSIM < 70)
+                if(Y_SSIM < 1)
                     counter_Y_SSIM = counter_Y_SSIM + 1;
                     Y_SSIM_SUM = Y_SSIM_SUM + Y_SSIM;
                 end;             

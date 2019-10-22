@@ -267,6 +267,9 @@ int main(int argc, char **argv) {
 						else if(strcmp(par.Prediction, "diffRDC") == 0) {
 							pred.recDifferentialPredictionRasterDCRefPlane(&lfBlock, &lfRecBlock);
 						}
+						else if(strcmp(par.Prediction, "diffCDC") == 0) {
+							pred.recDifferentialPredictionCentralDCRefPlane(&lfBlock, &lfRecBlock);
+						}
 						// DSC end
 
                         lfRecBlock = lfRecBlock + (outputLF.mPGMScale+1)/2;

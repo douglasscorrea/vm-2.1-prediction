@@ -284,8 +284,14 @@ int main(int argc, char **argv) {
 	else if (strcmp(par.Prediction, "diffC") == 0) {
 		predictionType = 1;
 	}
-	else {
+	else if (strcmp(par.Prediction, "mule") == 0) {
 		predictionType = 2;
+	}
+	else if (strcmp(par.Prediction, "diffRDC") == 0) {
+		predictionType = 3;
+	}
+	else if (strcmp(par.Prediction, "diffCDC") == 0) {
+		predictionType = 4;
 	}
 	TransformPartition tp(predictionType, par.InferiorBitPlane, par.EvaluateOptimumBitPlane, par.Split);
 
@@ -426,6 +432,15 @@ int main(int argc, char **argv) {
 									DCPredictorFile << DCPredictor << '\n';
 								}
 						}
+						else if(strcmp(par.Prediction, "diffCDC") == 0) {
+								printf("diffCDC\n");
+								pred.differentialPredictionCentralDCRefPlane(&lfBlockResidue, &lfBlock, spectralComponent);
+								
+								for(int vView = 0; vView < 13; vView++) {
+									int DCPredictor = pred.DCPredictorRefPlaneRaster(&lfBlock, vView);
+									DCPredictorFile << DCPredictor << '\n';
+								}
+						}
 
 						if(spectralComponent == 0) {
                             stats.calcSumYRefPlaneSamples(&lfBlockResidue);
@@ -458,13 +473,13 @@ int main(int argc, char **argv) {
     inputLF.CloseLightField();
     
 	// DSC begin
-	printf("\nSUMMARY --------------------------------------------------------\n");
+	printf("\nSUMMARY ----------------------------------------------------------------------\n");
 	printf("\tPrediction: %s\n", par.Prediction);
 	//printf("\tLambda: %.0lf\n", par.Lambda);
-	printf("\t\tALL PLANES ---------------------------------------------------\n");
-	printf("\t\t\tNumber of partitions: %d\n", stats.getPartitioningCounter());
+	printf("\t\tALL PLANES ----------------------------------------------------\n");
+	printf("\t\t\tNumber of partitionings: %d\n", stats.getPartitioningCounter());
 	printf("\t\t\tPercentage of partitioned blocks: %.2f%%\n", ((float)stats.getPartitioningCounter()/(42.0*29.0*3.0))*100);
-	printf("\t\tREFERENCE PLANE RESIDUES -------------------------------------\n");
+	printf("\t\tREFERENCE PLANE RESIDUES --------------------------------------\n");
 	printf("\t\t\tY energy: %.0lf\n", stats.getYRefPlaneEnergy());
 	printf("\t\t\tCb energy: %.0lf\n", stats.getCbRefPlaneEnergy());
 	printf("\t\t\tCr energy: %.0lf\n", stats.getCrRefPlaneEnergy());

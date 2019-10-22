@@ -23,6 +23,8 @@ public:
 	void recDifferentialPredictionRasterDCRefPlane(Block4D *residueBlock, Block4D *reconstructedBlock);
 	void differentialPredictionCentral(Block4D *residueBlock, Block4D *origBlock, int spectralComponent);
 	void recDifferentialPredictionCentral(Block4D *recBlock, Block4D *origBlock);
+	void differentialPredictionCentralDCRefPlane(Block4D *residueBlock, Block4D *origBlock, int spectralComponent);
+	void recDifferentialPredictionCentralDCRefPlane(Block4D *recBlock, Block4D *origBlock);
 	void differentialPredictionRasterHalf(Block4D *residueBlock, Block4D *origBlock);
 	void recDifferentialPredictionRasterHalf(Block4D *recBlock, Block4D *origBlock);
 	void hierarchicalDifferentialPrediction(Block4D *residueBlock, Block4D *origBlock);
