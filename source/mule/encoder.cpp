@@ -433,7 +433,6 @@ int main(int argc, char **argv) {
 								}
 						}
 						else if(strcmp(par.Prediction, "diffCDC") == 0) {
-								printf("diffCDC\n");
 								pred.differentialPredictionCentralDCRefPlane(&lfBlockResidue, &lfBlock, spectralComponent);
 								
 								for(int vView = 0; vView < 13; vView++) {
@@ -509,6 +508,8 @@ int main(int argc, char **argv) {
 	printf("\t\t\tAll coefficients: %.0lf\n", stats.getTotalCoefficients());
 	printf("\t\t\tMax coefficient: %d\n", stats.getMaxCoeff());
 	printf("\t\t\tMin coefficient: %d\n", stats.getMinCoeff());
+	printf("\t\t\tCoefficients per BitPlane:\n");
+	stats.getCoeffsPerBitPlane();
 	printf("\t\tHEXADECA TREE --------------------------------------------------\n");
 	printf("\t\t\tNumber of Bc decrease: %d\n", stats.getBcDecreaseCounter());
 	printf("\t\t\tNumber of Splits: %d\n", stats.getSplitHexaDecaTreeCounter());

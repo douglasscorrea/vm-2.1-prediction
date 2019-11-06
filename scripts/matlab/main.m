@@ -1,4 +1,4 @@
-solution_list = {'diffRDC'};
+solution_list = {'diffCDC'};
 lambda_list = {'322_1_30_8'};
 ppm_list = {'000', '001' '002', '003', '004', '005', '006', '007', '008', '009', '010', '011', '012'};
 Y_PNSR_SUM = 0;

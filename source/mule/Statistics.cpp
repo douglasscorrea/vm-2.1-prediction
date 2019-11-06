@@ -174,6 +174,47 @@ void Statistics :: printOneBlock(Block4D *lfBlock) {
 	}
 }
 
+void Statistics :: calcCoeffsPerBitPlane(Block4D *lfBlock) {
+	int quantizedCoeff;
+	int bitplane = 0;
+
+	for(int verticalView = 0; verticalView < 13; verticalView += 1) {
+		for(int horizontalView = 0; horizontalView < 13; horizontalView += 1) {
+			for(int viewLine = 0; viewLine < 15; viewLine += 1) {
+				for(int viewColumn = 0; viewColumn < 15; viewColumn += 1) {
+					bitplane = 0;
+					quantizedCoeff = 1;
+					int coeff = lfBlock->mPixel[horizontalView][verticalView][viewColumn][viewLine];
+					
+					if(coeff < 0) {
+						coeff = -coeff;
+					}
+
+
+					if(coeff == 0) {
+						coeffsPerBitPlanes[0]++;
+					}
+					else {
+						while(quantizedCoeff > 0) {
+							bitplane++;
+							quantizedCoeff = coeff >> bitplane;
+							//printf("qMag: %d\n", quantizedCoeff);
+						}
+
+						coeffsPerBitPlanes[bitplane]++;
+					}
+				}
+			}
+		}
+	}
+}
+
+void Statistics :: getCoeffsPerBitPlane() {
+	for(int i = 0; i < 31; i++) {
+		printf("\t\t\t\tBitplane %d: %d\n", i, coeffsPerBitPlanes[i]);
+	}
+}
+
 void Statistics :: calcReferencePlaneEnergy(Block4D *lfBlock, int spectralComponent) {
 	int samples;
 

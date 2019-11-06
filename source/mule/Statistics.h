@@ -22,6 +22,7 @@ public:
 	int *AllCoeffs;
 	int maxCoeff, minCoeff;
 	int counterBcDecrease, counterSplitHexaDecaTree;
+	int coeffsPerBitPlanes[31] = {0};
 
 	static const int refPlaneTotalSamples = 3562650;
 	static const int otherPlanesTotalSamples = 46314450;
@@ -52,6 +53,8 @@ public:
 	void countPartitioning(char *partitionCode);
 	void incSplitHexaDecaTree();
 	void incBcDecrease();
+	void calcCoeffsPerBitPlane(Block4D *lfBlock);
+	void getCoeffsPerBitPlane();
 	int getBcDecreaseCounter();
 	int getSplitHexaDecaTreeCounter();
 	int getMaxRefPlane();

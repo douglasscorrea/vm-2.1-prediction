@@ -1,7 +1,7 @@
 import os
 import sys
 
-prediction_list = ['diffR', 'mule', 'diffRDC']
+prediction_list = ['diffC', 'mule', 'diffRDC', 'diffR']
 split_flags = ['0', '1']
 #superior_bitplanes = ['0', '2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '22', '24', '26', '28']
 superior_bitplanes = ['30']
@@ -17,7 +17,7 @@ for prediction in prediction_list:
 				cmd4 = '-cf /home/douglascorrea/GitHub/vm-2.1-prediction/MULE_CFGs/Bikes/I01_Bikes_22016.json '
 				cmd5 = '-lambda 322 '
 				cmd6 = '-prediction ' + prediction + ' '
-				cmd7 = '-split ' + split + ' -inferiorBitPlane ' + inferior_bitplane + ' -superiorBitPlane ' + superior_bitplane + ' -evaluateOptimumBitPlane 0 > summary.txt'
+				cmd7 = '-split ' + split + ' -inferiorBitPlane ' + inferior_bitplane + ' -superiorBitPlane ' + superior_bitplane + ' -evaluateOptimumBitPlane 0 -performRDO 0 > summary.txt'
 				
 				print(cmd1 + cmd2 + cmd3 + cmd4 + cmd5 + cmd6 + cmd7)
 				os.system(cmd1 + cmd2 + cmd3 + cmd4 + cmd5 + cmd6 + cmd7)

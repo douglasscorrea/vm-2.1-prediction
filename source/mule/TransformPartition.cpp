@@ -70,6 +70,7 @@ void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTr
 	stats->calcCoeffEnergy(&transformedBlock);
 	stats->calcSumCoeff(&transformedBlock);
 	stats->countCoefficients(&transformedBlock);
+	stats->calcCoeffsPerBitPlane(&transformedBlock);
 	stats->countPartitioning(mPartitionCode);
 	// DSC end
 
@@ -80,9 +81,9 @@ void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTr
     entropyCoder.DeleteProbabilisticModelState(currentCoderModelState);
 	// DSC begin
 	/* commenting */
-	printf("\t\tmPartitionCode = %s\n", mPartitionCode);    
+	//printf("\t\tmPartitionCode = %s\n", mPartitionCode);    
 	partition_code_file << mPartitionCode << '\n';
-	printf("\t\tmInferiorBitPlane = %d\n", entropyCoder.mInferiorBitPlane);
+	//printf("\t\tmInferiorBitPlane = %d\n", entropyCoder.mInferiorBitPlane);
 	// DSC end   
 }
 

@@ -1,7 +1,7 @@
 import os
 import sys
 
-prediction_list = ['mule', 'diffRDC', 'diffR']
+prediction_list = ['diffCDC']
 split_flags = ['1', '0']
 #superior_bitplanes = ['0', '2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '22', '24', '26', '28']
 superior_bitplanes = ['30']
