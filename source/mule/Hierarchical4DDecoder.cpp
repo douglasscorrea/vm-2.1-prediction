@@ -5,12 +5,11 @@
 
 Hierarchical4DDecoder :: Hierarchical4DDecoder(void) {
 	// DSC begin
+	quantizedCoefficients.open("quantized_coefficients.txt");
+	// DSC end
     mSuperiorBitPlane = 30;
-	//mSuperiorBitPlane = 20;
 
     mInferiorBitPlane = 0;
-	//mInferiorBitPlane = 5;
-	// DSC end
     mPreSegmentation = 1;
 }
 Hierarchical4DDecoder :: ~Hierarchical4DDecoder(void) {
@@ -125,6 +124,12 @@ void Hierarchical4DDecoder :: DecodeBlock(int position_t, int position_s, int po
         int coefficient =  DecodeCoefficient(bitplane);     
 
         mSubbandLF.mPixel[position_t][position_s][position_v][position_u] = coefficient;
+
+		// DSC begin
+		quantizedCoefficients << coefficient << '\n';
+		//printf("qCoeff: %d\n", coefficient);
+		// DSC end
+
         return;
     }
     

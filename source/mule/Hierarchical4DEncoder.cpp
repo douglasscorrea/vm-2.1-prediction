@@ -603,6 +603,7 @@ int Hierarchical4DEncoder :: OptimumBitplane(double lambda) {
     long int subbandSize = mSubbandLF.mlength_t*mSubbandLF.mlength_s;
     subbandSize *= mSubbandLF.mlength_v*mSubbandLF.mlength_u;
     double Jmin;
+	//double minDistortion, minRate;
     int optimumBitplane;
     double accumulatedRate = 0;
 //    double estimatedRate;
@@ -657,7 +658,9 @@ int Hierarchical4DEncoder :: OptimumBitplane(double lambda) {
         //if((J < Jmin)||(bit_position == mSuperiorBitPlane)) {
         if((J <= Jmin)||(bit_position == mSuperiorBitPlane)) {
             Jmin = J;
-            optimumBitplane = bit_position;
+			// minDistortion = distortion;
+			// minRate = accumulatedRate + signalRate;
+            // optimumBitplane = bit_position;
             //estimatedRate = accumulatedRate + signalRate;
             //estimatedDistortion = coefficientsDistortion;
             //numberOfCoefficientsEstimated = numberOfCoefficients;

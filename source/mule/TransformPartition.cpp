@@ -38,6 +38,7 @@ void TransformPartition :: RDoptimizeTransform(Block4D &inputBlock, MultiscaleTr
     mPartitionCode = new char [1];
     mPartitionCode[0] = 0;          //initializes the partition code string as the null string
 	// DSC begin
+	mUseSameBitPlane = 1;
     //mEvaluateOptimumBitPlane = 1;
 	// DSC end
     mPartitionData.SetDimension(inputBlock.mlength_t, inputBlock.mlength_s, inputBlock.mlength_v, inputBlock.mlength_u);
@@ -113,7 +114,7 @@ double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4
 	// 		mEvaluateOptimumBitPlane = 0;
 	// 	}
 	// }
-	
+
 	if(mEvaluateOptimumBitPlane == 0) {
 		entropyCoder.mInferiorBitPlane = mInferiorBitPlane;
 	}

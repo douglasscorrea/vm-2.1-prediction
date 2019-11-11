@@ -51,7 +51,7 @@ void PartitionDecoder :: DecodePartitionStep(int *position, int *length, Hierarc
         entropyDecoder.mSubbandLF.Zeros();
         //entropyDecoder.mSubbandLF.CopySubblockFrom(mPartitionData, position[0], position[1], position[2], position[3]);
         //entropyDecoder.DecodeAll(lambda, entropyDecoder.mInferiorBitPlane);
-        entropyDecoder.DecodeBlock(0, 0, 0, 0, length[0], length[1], length[2], length[3], entropyDecoder.mSuperiorBitPlane); 
+        entropyDecoder.DecodeBlock(0, 0, 0, 0, length[0], length[1], length[2], length[3], entropyDecoder.mSuperiorBitPlane);
         mt.InverseTransform4D(entropyDecoder.mSubbandLF);  
         mPartitionData.CopySubblockFrom(entropyDecoder.mSubbandLF, 0, 0, 0, 0, position[0], position[1], position[2], position[3]);
         return;

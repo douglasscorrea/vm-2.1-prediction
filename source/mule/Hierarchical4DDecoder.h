@@ -9,6 +9,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+// DSC begin
+#include <fstream>
+
+using namespace std;
+// DSC end
+
 #ifndef HIERARCHICAL4DDECODER_H
 #define HIERARCHICAL4DDECODER_H
 
@@ -18,6 +24,9 @@
 
 class Hierarchical4DDecoder {
 public:
+	// DSC begin
+	ofstream quantizedCoefficients;
+	// DSC end
     Block4D mSubbandLF;
     ArithmeticDecoder mEntropyDecoder;
     int mSuperiorBitPlane, mInferiorBitPlane;
