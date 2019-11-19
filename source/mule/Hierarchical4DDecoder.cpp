@@ -126,6 +126,7 @@ void Hierarchical4DDecoder :: DecodeBlock(int position_t, int position_s, int po
         mSubbandLF.mPixel[position_t][position_s][position_v][position_u] = coefficient;
 
 		// DSC begin
+		//printf("qCoeff: %d\n", coefficient);
 		quantizedCoefficients << coefficient << '\n';
 		//printf("qCoeff: %d\n", coefficient);
 		// DSC end
@@ -223,7 +224,6 @@ int Hierarchical4DDecoder :: DecodeCoefficient(int bitplane) {
              }
             
         }
-
         magnitude = magnitude << mInferiorBitPlane;
         if(magnitude > 0) {
             magnitude += (1 << mInferiorBitPlane)/2;
@@ -232,7 +232,6 @@ int Hierarchical4DDecoder :: DecodeCoefficient(int bitplane) {
             }
         }            
         
-
         return(magnitude);
 }
 

@@ -27,7 +27,7 @@ public:
 	// DSC begin
 	int counter, mPerformRDO;
 	long long int signalTotalEnergy;
-	ofstream magnitudeFile;
+	ofstream magnitudeFile, distortionPerBlock, ratePerBlock;
 	// DSC end
     Block4D mSubbandLF;   
     ArithmeticCoder mEntropyCoder;
@@ -50,6 +50,7 @@ public:
 	// DSC begin
 	Hierarchical4DEncoder(int superiorBitPlane, int performRDO);
 	//Hierarchical4DEncoder(void);
+	void getBlockRateDistortion(int mInferiorBitPlane);
 	void EncodeSubblock(double lambda, Statistics *stats);
 	//void EncodeSubblock(double lambda);
 	double RdOptimizeHexadecaTree(int position_t, int position_s, int position_v, int position_u, int length_t, int length_s, int length_v, int length_u, double lambda, int bitplane, char **codeString, double &signalEnergy, Statistics *stats);

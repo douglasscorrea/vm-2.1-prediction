@@ -26,6 +26,8 @@ Hierarchical4DEncoder :: Hierarchical4DEncoder(int superiorBitPlane, int perform
     mSuperiorBitPlane = superiorBitPlane;
 	mPerformRDO = performRDO;
 
+	distortionPerBlock.open("distortionPerBlock.txt");
+	ratePerBlock.open("ratePerBlock.txt");
     mInferiorBitPlane = 0;
     mPreSegmentation = 1;
     mSegmentationTreeCodeBuffer = NULL;
@@ -599,11 +601,73 @@ void Hierarchical4DEncoder :: SetDimension(int length_t, int length_s, int lengt
     mSegmentationTreeCodeBuffer = new char [mSegmentationTreeCodeBufferSize];
 }
 
+// DSC begin
+void Hierarchical4DEncoder :: getBlockRateDistortion(int mInferiorBitPlane) {
+	int bit_position = mInferiorBitPlane;
+	long int subbandSize = mSubbandLF.mlength_t*mSubbandLF.mlength_s;
+    subbandSize *= mSubbandLF.mlength_v*mSubbandLF.mlength_u;
+    double Jmin;
+	double minDistortion, minRate;
+    int optimumBitplane;
+    double accumulatedRate = 0;
+
+	double distortion = 0.0;
+	double coefficientsDistortion = 0.0;
+	double signalRate = 0.0;
+	double J;
+	int numberOfCoefficients = 0;
+	
+	int onesMask = 0;
+	onesMask = ~onesMask;
+	int bitMask = onesMask << bit_position;
+	
+	for(long int coefficient_index=0; coefficient_index < subbandSize; coefficient_index++) {
+		int magnitude = mSubbandLF.mPixelData[coefficient_index];
+		if(magnitude < 0) {
+			magnitude = -magnitude;
+		}
+		int Threshold = (1 << bit_position);
+		if(magnitude >= Threshold) {
+			int bit = (magnitude >> bit_position)&01;
+			accumulatedRate += mEntropyCoder.rate(bit, bit_position+1+mFindBitplaneArithmeticModelIndex);
+			mEntropyCoder.update_model(bit, bit_position+1+mFindBitplaneArithmeticModelIndex);
+
+			int quantizedMagnitude = magnitude&bitMask;
+			if(quantizedMagnitude > 0) {
+				signalRate += 1.0;
+			}
+			numberOfCoefficients++;
+		}
+		int quantizedMagnitude = magnitude&bitMask;
+		if(quantizedMagnitude > 0) {
+			quantizedMagnitude += (1 << bit_position)/2;
+		} 
+		double magnitude_error = magnitude - quantizedMagnitude;
+		distortion += magnitude_error*magnitude_error;
+		if(magnitude >= (1 << bit_position)) {
+			coefficientsDistortion += magnitude_error*magnitude_error;
+		}
+	}
+
+	// J = distortion + accumulatedRate + signalRate;
+	// printf("J: %.0lf\n", J);
+	// if((J <= Jmin)||(bit_position == mSuperiorBitPlane)) {
+	// 	Jmin = J;
+	// 	minDistortion = distortion;
+	// 	minRate = accumulatedRate + signalRate;
+	// 	optimumBitplane = bit_position;
+	// }
+
+	distortionPerBlock << distortion << '\n';
+	ratePerBlock << (accumulatedRate + signalRate) << '\n';
+}
+// DSC end
+
 int Hierarchical4DEncoder :: OptimumBitplane(double lambda) {
     long int subbandSize = mSubbandLF.mlength_t*mSubbandLF.mlength_s;
     subbandSize *= mSubbandLF.mlength_v*mSubbandLF.mlength_u;
     double Jmin;
-	//double minDistortion, minRate;
+	double minDistortion, minRate;
     int optimumBitplane;
     double accumulatedRate = 0;
 //    double estimatedRate;
@@ -658,15 +722,18 @@ int Hierarchical4DEncoder :: OptimumBitplane(double lambda) {
         //if((J < Jmin)||(bit_position == mSuperiorBitPlane)) {
         if((J <= Jmin)||(bit_position == mSuperiorBitPlane)) {
             Jmin = J;
-			// minDistortion = distortion;
-			// minRate = accumulatedRate + signalRate;
-            // optimumBitplane = bit_position;
+			minDistortion = distortion;
+			minRate = accumulatedRate + signalRate;
+            optimumBitplane = bit_position;
             //estimatedRate = accumulatedRate + signalRate;
             //estimatedDistortion = coefficientsDistortion;
             //numberOfCoefficientsEstimated = numberOfCoefficients;
         }
        
     }
+	distortionPerBlock << minDistortion << '\n';
+	ratePerBlock << minRate << '\n';
+
     return(optimumBitplane);
 }
 

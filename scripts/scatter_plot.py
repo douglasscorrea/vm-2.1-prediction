@@ -6,6 +6,7 @@ import matplotlib.cm as cm
 import os
 
 prediction_list = ['diffRDC', 'diffR', 'mule']
+inferior_bitplanes = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28]
 
 # mule_br_no_split = [214936051, 180136042, 145144499, 109402678, 71236774, 32135540, 8590766, 1530109, 319640, 76314, 14028, 4643, 2790, 2784, 2778]
 # mule_pnsr_no_split = [61.2259, 61.2259, 61.2259, 61.2259, 60.3524, 53.9502, 45.2463, 38.7549, 33.023, 27.0258, 22.3152, 19.5535, 15.9364, 15.9364, 15.9364]
@@ -31,8 +32,6 @@ prediction_list = ['diffRDC', 'diffR', 'mule']
 # diffCDC_br_split = [216639128, 181950359, 147098450, 111612518, 73968717, 34162215, 7495588, 1148514, 236232, 50914, 11942, 13301, 13395, 13461, 13519]
 # diffCDC_psnr_split = [61.2259, 61.2259, 61.2259, 61.2105, 57.8287, 49.2616, 40.8399, 34.1546, 28.1193, 22.3542, 19.6544, 19.88, 19.88, 19.88, 19.88]
 
-inferior_bitplanes = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28]
-
 # mule_partition_numbers = [263, 265, 267, 274, 297, 256, 128, 684, 920, 1585, 1706, 2840, 3616, 3618, 3619]
 # diffRDC_partition_numbers = [420, 419, 425, 428, 454, 476, 629, 2229, 1755, 2124, 3374, 3584, 3594, 3600, 3610]
 # diffR_partition_numbers = [423, 423, 428, 435, 458, 484, 671, 2350, 2315, 2037, 2723, 3615, 3625, 3631, 3636]
@@ -56,31 +55,41 @@ inferior_bitplanes = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28]
 # diffCDC_split_bc_decrease = [312577432, 312218143, 311878963, 311419652, 308502126, 275046115, 146789280, 52591608, 20491462, 7309142, 4215001, 3544722, 2760450, 1973520, 1185048]
 # diffC_split_bc_decrease = [319058292, 318724619, 318392140, 317938381, 315043004, 281564480, 153247141, 58922732, 24212219, 8364434, 4142538, 3542832, 2760009, 1972920, 1184625]
 
-mule_spatial_partitionings = [559, 571, 577, 566, 597, 464, 177, 852, 1094, 1398, 2309, 7796, 12202, 12250, 12254]
-diffRDC_spatial_partitionings = [919, 913, 933, 960, 1031, 1091, 820, 1845, 925, 1612, 8361, 12027, 12103, 12181, 12247]
-diffR_spatial_partitionings = [936, 904, 969, 969, 1014, 1146, 848, 1883, 974, 1612, 4623, 12706, 12791, 12833, 12913]
-diffCDC_spartial_partitionings = [1540, 1550,1534, 1628, 1655,  1684, 1251, 1879, 833, 1576, 8971, 12030, 12139, 12188, 12262]
+# mule_spatial_partitionings = [559, 571, 577, 566, 597, 464, 177, 852, 1094, 1398, 2309, 7796, 12202, 12250, 12254]
+# diffRDC_spatial_partitionings = [919, 913, 933, 960, 1031, 1091, 820, 1845, 925, 1612, 8361, 12027, 12103, 12181, 12247]
+# diffR_spatial_partitionings = [936, 904, 969, 969, 1014, 1146, 848, 1883, 974, 1612, 4623, 12706, 12791, 12833, 12913]
+# diffCDC_spartial_partitionings = [1540, 1550,1534, 1628, 1655,  1684, 1251, 1879, 833, 1576, 8971, 12030, 12139, 12188, 12262]
 
 # mule_angular_partitionings = [834, 830, 831, 861, 837, 502, 98, 285, 688, 996, 1125, 2901, 4981, 4985, 5026]
 # diffRDC_angular_partitionings = [1383, 1385, 1391, 1373, 1434, 1403, 998, 2402, 1473, 1243, 2848, 4778, 4839, 4883, 4948]
 # diffR_angular_partitionings = [1372, 1404, 1355, 1391, 1467, 1380, 1036, 2578, 2124, 1184, 1579, 5526, 5569, 5643, 5659]
 # diffCDC_angular_partitionings = [2064, 2062, 2108, 2092, 2250, 2116, 1425, 2152, 1156, 1116, 3019, 4764, 4819, 4888, 4918]
 
+inferior_bitplanes = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+mule_rate_per_block_average = [76003.45771756979, 75722.89496442255, 74599.86685823755, 70126.53174603175, 54180.389545703336, 24252.85199781062, 5854.90619047619, 904.2509799124248, 176.2204508155446, 35.313111223316916, 3.867041423097975]
+diffR_rate_per_block_average = [76006.9678708265, 75748.84146141216, 74715.88741105638, 70620.2432676519, 56262.44792008757, 25703.328544061304, 4298.691036945813, 549.7681889846743, 115.34612776683088, 31.860186902025177, 2.1338514532019706]
+diffC_rate_per_block_average = [76011.84846743295, 75782.56888341543, 74861.00689655173, 71180.64679802956, 57532.58070607553, 26913.21943076081, 4708.649315544609, 605.9283674657909, 126.67019985495348, 24.282507019704433, 0.4448844471811713]
+# mule_distortion_per_block_average = [57510.530651340996, 860917.3199233717, 15917751.888341544, 363637415.98248494, 6635289244.663383, 53751068308.70279, 228048975451.55994, 633989477941.9814, 2033369439244.6633, 6485188945539.135]
+# diffR_distortion_per_block_average = [57470.204707170225, 857406.7969348659, 15670465.982484948, 348334469.8960044, 6984148407.224959, 59026246141.2151, 180005849616.85825, 423626550301.04, 1273472268281.3354, 5650057742829.775]
+# diffC_distortion_per_block_average = [57421.87821565408, 853147.5881226053, 15409316.748768473, 344524130.8155446, 7064019187.192119, 61636293322.38643, 195223962972.0854, 461540162452.1073, 1494865813409.9617, 4531159221182.266]
+
+
+
 #plt.figure(figsize=(30, 10))
-plt.plot(inferior_bitplanes, mule_spatial_partitionings, '-or', label='MuLe', linewidth=3)
+plt.plot(inferior_bitplanes, mule_rate_per_block_average, '-or', label='MuLe', linewidth=3)
 # for i, txt in enumerate(inferior_bitplanes):
 # 	plt.annotate(txt, (inferior_bitplanes[i], mule_partition_numbers[i]))
 
-plt.plot(inferior_bitplanes, diffRDC_spatial_partitionings, '-ob', label='diffRDC', linewidth=3)
-# for i, txt in enumerate(inferior_bitplanes):
-# 	plt.annotate(txt, (inferior_bitplanes[i], diffRDC_partition_numbers[i]))
+# plt.plot(inferior_bitplanes, diffRDC_spatial_partitionings, '-ob', label='diffRDC', linewidth=3)
+# # for i, txt in enumerate(inferior_bitplanes):
+# # 	plt.annotate(txt, (inferior_bitplanes[i], diffRDC_partition_numbers[i]))
 
 
-plt.plot(inferior_bitplanes, diffR_spatial_partitionings, '-og', label='diffR', linewidth=3)
+plt.plot(inferior_bitplanes, diffR_rate_per_block_average, '-og', label='diffR', linewidth=3)
 # for i, txt in enumerate(inferior_bitplanes):
 # 	plt.annotate(txt, (inferior_bitplanes[i], diffR_partition_numbers[i]))
 
-plt.plot(inferior_bitplanes, diffCDC_spartial_partitionings, '-ok', label='diffCDC', linewidth=3)
+plt.plot(inferior_bitplanes, diffC_rate_per_block_average, '-ok', label='diffC', linewidth=3)
 # for i, txt in enumerate(inferior_bitplanes):
 # 	plt.annotate(txt, (inferior_bitplanes[i], diffR_partition_numbers[i]))
 

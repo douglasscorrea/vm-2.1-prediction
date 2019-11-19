@@ -119,7 +119,9 @@ double TransformPartition :: RDoptimizeTransformStep(Block4D &inputBlock, Block4
 		entropyCoder.mInferiorBitPlane = mInferiorBitPlane;
 	}
 	else if(mUseSameBitPlane == 1) {
-		entropyCoder.mInferiorBitPlane = entropyCoder.OptimumBitplane(lambda);
+		entropyCoder.getBlockRateDistortion(mInferiorBitPlane);
+		//entropyCoder.mInferiorBitPlane = entropyCoder.OptimumBitplane(lambda);
+		entropyCoder.mInferiorBitPlane = mInferiorBitPlane;
 		mUseSameBitPlane = 0;
 	}
 	// DSC end
