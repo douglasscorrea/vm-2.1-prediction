@@ -1,6 +1,9 @@
 #include "Block4D.h"
 #include <iostream>
 #include <fstream>
+#include <vector>
+#include <algorithm>
+#include <tuple>
 
 using namespace std;
 
@@ -23,7 +26,7 @@ public:
 	int maxCoeff, minCoeff;
 	int counterBcDecrease, counterSplitHexaDecaTree;
 	int coeffsPerBitPlanes[31] = {0};
-
+	
 	static const int refPlaneTotalSamples = 3562650;
 	static const int otherPlanesTotalSamples = 46314450;
 
@@ -64,6 +67,7 @@ public:
 	int getMaxCoeff();
 	int getMinCoeff();
 	int getPartitioningCounter();
+	float entropyVector(const std::vector<int> &v);
 	double getZeroCoefficients();
 	double getTotalCoefficients();
 	double getYRefPlaneEnergy();

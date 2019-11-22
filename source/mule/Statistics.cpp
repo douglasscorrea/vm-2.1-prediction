@@ -561,3 +561,27 @@ void Statistics :: countPartitioning(char *partitionCode) {
 		partitioningCounter++;
 	}
 }
+
+float entropyVector(const std::vector<int> &v) {
+    auto values = v;
+    std::vector<std::tuple<int, uint, float>> elements_count;
+
+    std::sort(values.begin(), values.end());
+    auto unique_values = values;
+
+    auto it = std::unique(unique_values.begin(), unique_values.end());
+    unique_values.resize(std::distance(unique_values.begin(), it));
+
+    for (auto &i : unique_values) {
+        int v_count = std::count(values.begin(), values.end(), i);
+        float v_freq = float(v_count) / values.size();
+        elements_count.emplace_back(i, v_count, v_freq);
+    }
+
+    float prob, entropy = 0;
+    for (auto &it : elements_count) {
+        prob = std::get<2>(it);
+        entropy += prob * log2(prob);
+    }
+    return -entropy;
+}

@@ -114,7 +114,7 @@ void Hierarchical4DDecoder :: RestartProbabilisticModel(void) {
 
 }
 
-void Hierarchical4DDecoder :: DecodeBlock(int position_t, int position_s, int position_v, int position_u, int length_t, int length_s, int length_v, int length_u, int bitplane) {
+void Hierarchical4DDecoder :: DecodeBlock(int position_t, int position_s, int position_v, int position_u, int length_t, int length_s, int length_v, int length_u, int bitplane, std::vector<int> *v) {
     
     if(bitplane < mInferiorBitPlane) {
         return;
@@ -127,6 +127,7 @@ void Hierarchical4DDecoder :: DecodeBlock(int position_t, int position_s, int po
 
 		// DSC begin
 		//printf("qCoeff: %d\n", coefficient);
+		v->push_back(coefficient);
 		quantizedCoefficients << coefficient << '\n';
 		//printf("qCoeff: %d\n", coefficient);
 		// DSC end
@@ -141,7 +142,7 @@ void Hierarchical4DDecoder :: DecodeBlock(int position_t, int position_s, int po
             
     if(Significance == 0) {
         
-        DecodeBlock(position_t, position_s, position_v, position_u, length_t, length_s, length_v, length_u, bitplane-1);
+        DecodeBlock(position_t, position_s, position_v, position_u, length_t, length_s, length_v, length_u, bitplane-1, v);
         
         return;
     }
@@ -176,7 +177,7 @@ void Hierarchical4DDecoder :: DecodeBlock(int position_t, int position_s, int po
                         int new_length_v = (index_v == 0) ? half_length_v : (length_v-half_length_v);
                         int new_length_u = (index_u == 0) ? half_length_u : (length_u-half_length_u);
                                            
-                        DecodeBlock(new_position_t, new_position_s, new_position_v, new_position_u, new_length_t, new_length_s, new_length_v, new_length_u, bitplane);
+                        DecodeBlock(new_position_t, new_position_s, new_position_v, new_position_u, new_length_t, new_length_s, new_length_v, new_length_u, bitplane, v);
                 
                    }
                     

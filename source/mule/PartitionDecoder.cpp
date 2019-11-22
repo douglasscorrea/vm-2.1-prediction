@@ -15,7 +15,7 @@ PartitionDecoder :: ~PartitionDecoder(void) {
 }
 
    
-void PartitionDecoder :: DecodePartition(Hierarchical4DDecoder &entropyDecoder, MultiscaleTransform &mt) {
+void PartitionDecoder :: DecodePartition(Hierarchical4DDecoder &entropyDecoder, MultiscaleTransform &mt, std::vector<int> *v) {
     
     
     int position[4];
@@ -37,11 +37,11 @@ void PartitionDecoder :: DecodePartition(Hierarchical4DDecoder &entropyDecoder, 
     mPartitionCodeIndex = 0;
     entropyDecoder.mInferiorBitPlane = entropyDecoder.mEntropyDecoder.decode_symbol(2);
 	//printf("mInferiorBitPlane: %d\n", entropyDecoder.mInferiorBitPlane);
-    DecodePartitionStep(position, length, entropyDecoder, mt);
+    DecodePartitionStep(position, length, entropyDecoder, mt, v);
         
 }
 
-void PartitionDecoder :: DecodePartitionStep(int *position, int *length, Hierarchical4DDecoder &entropyDecoder, MultiscaleTransform &mt) {
+void PartitionDecoder :: DecodePartitionStep(int *position, int *length, Hierarchical4DDecoder &entropyDecoder, MultiscaleTransform &mt, std::vector<int> *v) {
 
     
     if(mPartitionCode[mPartitionCodeIndex] == NOSPLITFLAG) {
@@ -51,7 +51,7 @@ void PartitionDecoder :: DecodePartitionStep(int *position, int *length, Hierarc
         entropyDecoder.mSubbandLF.Zeros();
         //entropyDecoder.mSubbandLF.CopySubblockFrom(mPartitionData, position[0], position[1], position[2], position[3]);
         //entropyDecoder.DecodeAll(lambda, entropyDecoder.mInferiorBitPlane);
-        entropyDecoder.DecodeBlock(0, 0, 0, 0, length[0], length[1], length[2], length[3], entropyDecoder.mSuperiorBitPlane);
+        entropyDecoder.DecodeBlock(0, 0, 0, 0, length[0], length[1], length[2], length[3], entropyDecoder.mSuperiorBitPlane, v);
         mt.InverseTransform4D(entropyDecoder.mSubbandLF);  
         mPartitionData.CopySubblockFrom(entropyDecoder.mSubbandLF, 0, 0, 0, 0, position[0], position[1], position[2], position[3]);
         return;
@@ -73,22 +73,22 @@ void PartitionDecoder :: DecodePartitionStep(int *position, int *length, Hierarc
         new_length[3] = length[3]/2;
         
         //Decode four spatial subblocks 
-        DecodePartitionStep(new_position, new_length, entropyDecoder, mt);
+        DecodePartitionStep(new_position, new_length, entropyDecoder, mt, v);
 
         new_position[3] = position[3] + length[3]/2;
         new_length[3] = length[3] - length[3]/2;
         
-        DecodePartitionStep(new_position, new_length, entropyDecoder, mt);
+        DecodePartitionStep(new_position, new_length, entropyDecoder, mt, v);
 
         new_position[2] = position[2] + length[2]/2;
         new_length[2] = length[2] - length[2]/2;
         
-        DecodePartitionStep(new_position, new_length, entropyDecoder, mt);
+        DecodePartitionStep(new_position, new_length, entropyDecoder, mt, v);
         
         new_position[3] = position[3];
         new_length[3] = length[3]/2;
         
-        DecodePartitionStep(new_position, new_length, entropyDecoder, mt);
+        DecodePartitionStep(new_position, new_length, entropyDecoder, mt, v);
         return;
     }
     if(mPartitionCode[mPartitionCodeIndex] == INTERVIEWSPLITFLAG) {
@@ -108,23 +108,23 @@ void PartitionDecoder :: DecodePartitionStep(int *position, int *length, Hierarc
         new_length[3] = length[3];
         
         //Decode four view subblocks 
-        DecodePartitionStep(new_position, new_length, entropyDecoder, mt);
+        DecodePartitionStep(new_position, new_length, entropyDecoder, mt, v);
         //optimize partition for Block_V returning JV, the transformed Block_V, partitionCode_S and arithmetic_model_S
 
         new_position[1] = position[1] + length[1]/2;
         new_length[1] = length[1] - length[1]/2;
         
-        DecodePartitionStep(new_position, new_length, entropyDecoder, mt);
+        DecodePartitionStep(new_position, new_length, entropyDecoder, mt, v);
 
         new_position[0] = position[0] + length[0]/2;
         new_length[0] = length[0] - length[0]/2;
         
-        DecodePartitionStep(new_position, new_length, entropyDecoder, mt);
+        DecodePartitionStep(new_position, new_length, entropyDecoder, mt, v);
         
         new_position[1] = position[1];
         new_length[1] = length[1]/2;
         
-        DecodePartitionStep(new_position, new_length, entropyDecoder, mt);
+        DecodePartitionStep(new_position, new_length, entropyDecoder, mt, v);
         return;
     }
 }

@@ -65,42 +65,50 @@ inferior_bitplanes = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28]
 # diffR_angular_partitionings = [1372, 1404, 1355, 1391, 1467, 1380, 1036, 2578, 2124, 1184, 1579, 5526, 5569, 5643, 5659]
 # diffCDC_angular_partitionings = [2064, 2062, 2108, 2092, 2250, 2116, 1425, 2152, 1156, 1116, 3019, 4764, 4819, 4888, 4918]
 
-inferior_bitplanes = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
-mule_rate_per_block_average = [76003.45771756979, 75722.89496442255, 74599.86685823755, 70126.53174603175, 54180.389545703336, 24252.85199781062, 5854.90619047619, 904.2509799124248, 176.2204508155446, 35.313111223316916, 3.867041423097975]
-diffR_rate_per_block_average = [76006.9678708265, 75748.84146141216, 74715.88741105638, 70620.2432676519, 56262.44792008757, 25703.328544061304, 4298.691036945813, 549.7681889846743, 115.34612776683088, 31.860186902025177, 2.1338514532019706]
-diffC_rate_per_block_average = [76011.84846743295, 75782.56888341543, 74861.00689655173, 71180.64679802956, 57532.58070607553, 26913.21943076081, 4708.649315544609, 605.9283674657909, 126.67019985495348, 24.282507019704433, 0.4448844471811713]
+# inferior_bitplanes = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+# mule_rate_per_block_average = [76003.45771756979, 75722.89496442255, 74599.86685823755, 70126.53174603175, 54180.389545703336, 24252.85199781062, 5854.90619047619, 904.2509799124248, 176.2204508155446, 35.313111223316916, 3.867041423097975]
+# diffR_rate_per_block_average = [76006.9678708265, 75748.84146141216, 74715.88741105638, 70620.2432676519, 56262.44792008757, 25703.328544061304, 4298.691036945813, 549.7681889846743, 115.34612776683088, 31.860186902025177, 2.1338514532019706]
+# diffC_rate_per_block_average = [76011.84846743295, 75782.56888341543, 74861.00689655173, 71180.64679802956, 57532.58070607553, 26913.21943076081, 4708.649315544609, 605.9283674657909, 126.67019985495348, 24.282507019704433, 0.4448844471811713]
 # mule_distortion_per_block_average = [57510.530651340996, 860917.3199233717, 15917751.888341544, 363637415.98248494, 6635289244.663383, 53751068308.70279, 228048975451.55994, 633989477941.9814, 2033369439244.6633, 6485188945539.135]
 # diffR_distortion_per_block_average = [57470.204707170225, 857406.7969348659, 15670465.982484948, 348334469.8960044, 6984148407.224959, 59026246141.2151, 180005849616.85825, 423626550301.04, 1273472268281.3354, 5650057742829.775]
 # diffC_distortion_per_block_average = [57421.87821565408, 853147.5881226053, 15409316.748768473, 344524130.8155446, 7064019187.192119, 61636293322.38643, 195223962972.0854, 461540162452.1073, 1494865813409.9617, 4531159221182.266]
 
-
+mule_entropy = [2.894885, 2.446538, 2.489241, 2.622870, 2.538011, 2.068713]
+diffR_entropy = [2.604822, 2.099063, 2.542728, 3.001533, 2.854086, 1.374804]
+diffRDC_entropy = [2.602737, 2.080967, 2.468326, 2.847147, 2.273651, 1.278627]
+diffC_entropy = [2.653079, 2.168220, 2.452615, 2.684127, 2.255027, 1.448555]
+diffCDC_entropy = [2.650712, 2.154374, 2.412318, 2.621170, 2.176118, 1.416698]
+mule_pnsr_split = [53.9537, 45.2631, 38.8318, 33.0411, 27.109, 22.503]
+diffR_psnr_split = [48.2703, 40.1699, 33.5126, 27.5476, 21.9401, 16.7155]
+diffRDC_psnr_split = [48.2743, 40.1824, 33.5018, 27.0946, 20.4069, 15.807]
+diffCDC_psnr_split = [49.2616, 40.8399, 34.1546, 28.1193, 22.3542, 19.6544]
 
 #plt.figure(figsize=(30, 10))
-plt.plot(inferior_bitplanes, mule_rate_per_block_average, '-or', label='MuLe', linewidth=3)
+plt.plot(mule_entropy, mule_pnsr_split, '-or', label='MuLe', linewidth=3)
 # for i, txt in enumerate(inferior_bitplanes):
 # 	plt.annotate(txt, (inferior_bitplanes[i], mule_partition_numbers[i]))
 
-# plt.plot(inferior_bitplanes, diffRDC_spatial_partitionings, '-ob', label='diffRDC', linewidth=3)
+plt.plot(diffRDC_entropy, diffRDC_psnr_split, '-ob', label='diffRDC', linewidth=3)
 # # for i, txt in enumerate(inferior_bitplanes):
 # # 	plt.annotate(txt, (inferior_bitplanes[i], diffRDC_partition_numbers[i]))
 
 
-plt.plot(inferior_bitplanes, diffR_rate_per_block_average, '-og', label='diffR', linewidth=3)
+plt.plot(diffR_entropy, diffR_psnr_split, '-og', label='diffR', linewidth=3)
 # for i, txt in enumerate(inferior_bitplanes):
 # 	plt.annotate(txt, (inferior_bitplanes[i], diffR_partition_numbers[i]))
 
-plt.plot(inferior_bitplanes, diffC_rate_per_block_average, '-ok', label='diffC', linewidth=3)
+plt.plot(diffCDC_entropy, diffCDC_psnr_split, '-ok', label='diffCDC', linewidth=3)
 # for i, txt in enumerate(inferior_bitplanes):
 # 	plt.annotate(txt, (inferior_bitplanes[i], diffR_partition_numbers[i]))
 
 # plt.plot(inferior_bitplanes, diffC_split_bc_decrease, '-om', label='diffC', linewidth=3)
 # for i, txt in enumerate(inferior_bitplanes):
 # 	plt.annotate(txt, (inferior_bitplanes[i], diffR_partition_numbers[i]))
-plt.xlabel('Bmin', fontsize=20)
+plt.xlabel('PSNR', fontsize=20)
 plt.legend(fontsize=22)
 plt.tight_layout()
-plt.ylabel('Spatial partitionings', fontsize=20)
-plt.title('SPLIT', fontsize=22)
+plt.ylabel('Entropy', fontsize=20)
+#plt.title('SPLIT', fontsize=22)
 plt.xticks(fontsize=20)
 plt.yticks(fontsize=20)
 ax = plt.gca()

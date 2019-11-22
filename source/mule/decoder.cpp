@@ -1,5 +1,5 @@
 #include "LightField.h"
-#include "Hierarchical4DDecoder.h"
+//#include "Hierarchical4DDecoder.h"
 //#include "Matrix.h"
 //#include "MultiscaleTransform.h"
 #include "PartitionDecoder.h"
@@ -12,6 +12,8 @@
 #include <iostream>
 #include <fstream>
 #include "Prediction.h"
+#include "Statistics.h"
+#include <vector>
 
 using namespace std;
 // DSC end
@@ -175,6 +177,9 @@ int main(int argc, char **argv) {
 		int prediction = 2;
 	}
 	Prediction pred(prediction);
+	Statistics stats(prediction);
+	std::vector<int> quantizedCoefficients;
+
 	// ifstream DCPredictorFile;
 	// DCPredictorFile.open("DC_predictors.txt");
 	// DSC end
@@ -242,7 +247,10 @@ int main(int argc, char **argv) {
                             printf("transforming the 4D block at position (%d %d %d %d)\n", verticalView, horizontalView, viewLine, viewColumn);
                         lfBlock.Zeros();
 						lfRecBlock.Zeros();
-                        pd.DecodePartition(hdt, IDCTarray);
+						// DSC begin
+                        //pd.DecodePartition(hdt, IDCTarray)
+						pd.DecodePartition(hdt, IDCTarray, &quantizedCoefficients);
+						// DSC end
 
                         lfBlock.CopySubblockFrom(pd.mPartitionData, 0, 0, 0, 0);
                         if(viewColumn + transformLength_u > outputLF.mNumberOfViewColumns)
@@ -321,7 +329,35 @@ int main(int argc, char **argv) {
         }
     }
     hdt.DoneDecoding();
-        
+	
+	// DSC begin
+	/* CALCULATE ENTROPY */
+	auto values = quantizedCoefficients;
+    std::vector<std::tuple<int, uint, float>> elements_count;
+
+    std::sort(values.begin(), values.end());
+    auto unique_values = values;
+
+    auto it = std::unique(unique_values.begin(), unique_values.end());
+    unique_values.resize(std::distance(unique_values.begin(), it));
+
+    for (auto &i : unique_values) {
+        int v_count = std::count(values.begin(), values.end(), i);
+        float v_freq = float(v_count) / values.size();
+        elements_count.emplace_back(i, v_count, v_freq);
+    }
+
+    float prob, entropy = 0;
+    for (auto &it : elements_count) {
+        prob = std::get<2>(it);
+        entropy += prob * log2(prob);
+    }
+
+	printf("\nSUMMARY ----------------------------------------------------------------------\n");
+	printf("\tPrediction: %s\n", par.Prediction);
+ 	printf("\tEntropy: %f\n", -entropy);
+	// DSC end
+
     outputLF.CloseLightField();
 
 }

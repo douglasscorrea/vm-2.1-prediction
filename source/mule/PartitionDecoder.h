@@ -20,8 +20,13 @@ public:
     Block4D mPartitionData;             /*!< DCT of all subblocks of the partition */
     PartitionDecoder(void);
     ~PartitionDecoder(void);
-    void DecodePartition(Hierarchical4DDecoder &entropyDecoder, MultiscaleTransform &mt);
-    void DecodePartitionStep(int *position, int *length, Hierarchical4DDecoder &entropyDecoder, MultiscaleTransform &mt);
+	// DSC begin
+    //void DecodePartition(Hierarchical4DDecoder &entropyDecoder, MultiscaleTransform &mt);
+	void DecodePartition(Hierarchical4DDecoder &entropyDecoder, MultiscaleTransform &mt, std::vector<int> *v);
+
+    //void DecodePartitionStep(int *position, int *length, Hierarchical4DDecoder &entropyDecoder, MultiscaleTransform &mt);
+	void DecodePartitionStep(int *position, int *length, Hierarchical4DDecoder &entropyDecoder, MultiscaleTransform &mt, std::vector<int> *v);
+	// DSC end
     void DecodePartitionString(Hierarchical4DDecoder &entropyDecoder);
     void DecodePartitionStringStep(Hierarchical4DDecoder &entropyDecoder);
 };

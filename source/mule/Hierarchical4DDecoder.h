@@ -11,6 +11,7 @@
 
 // DSC begin
 #include <fstream>
+#include <vector>
 
 using namespace std;
 // DSC end
@@ -45,7 +46,10 @@ public:
     void GetFromSubBand4D(Block4D &B, int sbb_t, int sbb_s, int sbb_v, int sbb_u);
     void StartDecoder(char *inputFile);
     void RestartProbabilisticModel(void);
-    void DecodeBlock(int position_t, int position_s, int position_v, int position_u, int length_t, int length_s, int length_v, int length_u, int bitplane);
+	// DSC begin
+    //void DecodeBlock(int position_t, int position_s, int position_v, int position_u, int length_t, int length_s, int length_v, int length_u, int bitplane);
+	void DecodeBlock(int position_t, int position_s, int position_v, int position_u, int length_t, int length_s, int length_v, int length_u, int bitplane, std::vector<int> *v);
+	// DSC end
     int DecodeCoefficient(int bitplane);
     int DecodeTernaryFlag(int base_arithmetic_model_index, int adapt);
     int DecodePartitionSymbol(void);
